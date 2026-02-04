@@ -1,0 +1,99 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  
+  // App Data
+  workouts      WorkoutSet[]
+  routines      Routine[]
+  customExercises Exercise[]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Application Models
+
+model Exercise {
+  id        String   @id @default(cuid())
+  name      String
+  category  String
+  isCustom  Boolean  @default(false)
+  userId    String?  // If null, it's a global exercise
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WorkoutSet {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  exerciseId    String
+  exerciseName  String
+  weightPerSide Float
+  totalWeight   Float
+  reps          Int
+  sets          Int
+  date          DateTime
+  
+  type          String   @default("normal") // normal, warmup, drop, failure
+  notes         String?
+  restTime      Int?     // seconds
+  
+  createdAt     DateTime @default(now())
+}
+
+model Routine {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  exerciseIds String   // Stored as JSON string "['id1', 'id2']" or comma separated
+  createdAt   DateTime @default(now())
+}
