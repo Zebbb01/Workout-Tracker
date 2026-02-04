@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from '@/components/Calendar';
 import WorkoutCard from '@/components/WorkoutCard';
-import { getWorkouts } from '@/lib/storage';
+import { getWorkoutsAction, deleteWorkoutAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { isSameDay, format } from 'date-fns';
 import { Plus } from 'lucide-react';
@@ -14,8 +14,8 @@ export default function CalendarPage() {
     const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
     const [selectedDayWorkouts, setSelectedDayWorkouts] = useState<WorkoutSet[]>([]);
 
-    const loadWorkouts = () => {
-        const data = getWorkouts();
+    const loadWorkouts = async () => {
+        const data = await getWorkoutsAction();
         setWorkouts(data);
     };
 
@@ -59,7 +59,10 @@ export default function CalendarPage() {
                             <WorkoutCard
                                 key={workout.id}
                                 workout={workout}
-                                onDelete={loadWorkouts}
+                                onDelete={async () => {
+                                    await deleteWorkoutAction(workout.id);
+                                    loadWorkouts();
+                                }}
                             />
                         ))}
                     </div>

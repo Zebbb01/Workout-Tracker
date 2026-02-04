@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useExercises } from '@/lib/useExercises';
-import { getRoutines, saveRoutine, deleteRoutine } from '@/lib/storage';
+import { getRoutinesAction, saveRoutineAction, deleteRoutineAction } from '@/lib/actions';
 import { Routine } from '@/lib/types';
 import { Plus, Trash2, ChevronRight, Dumbbell, Play } from 'lucide-react';
 import Link from 'next/link';
@@ -16,22 +16,21 @@ export default function RoutinesPage() {
     const [newRoutineName, setNewRoutineName] = useState('');
     const [selectedExIds, setSelectedExIds] = useState<string[]>([]);
 
+    const loadRoutines = async () => {
+        const data = await getRoutinesAction();
+        setRoutines(data);
+    };
+
     useEffect(() => {
-        setRoutines(getRoutines());
+        loadRoutines();
     }, []);
 
-    const handleSave = (e: React.FormEvent) => {
+    const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newRoutineName || selectedExIds.length === 0) return;
 
-        const newRoutine: Routine = {
-            id: crypto.randomUUID(),
-            name: newRoutineName,
-            exerciseIds: selectedExIds,
-        };
-
-        saveRoutine(newRoutine);
-        setRoutines(getRoutines());
+        await saveRoutineAction(newRoutineName, selectedExIds);
+        loadRoutines();
 
         // Reset
         setNewRoutineName('');
@@ -39,10 +38,10 @@ export default function RoutinesPage() {
         setIsCreating(false);
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = async (id: string) => {
         if (confirm('Delete this routine?')) {
-            deleteRoutine(id);
-            setRoutines(getRoutines());
+            await deleteRoutineAction(id);
+            loadRoutines();
         }
     };
 

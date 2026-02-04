@@ -1,6 +1,6 @@
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = "file:dev.db"
 }
 
 generator client {
@@ -16,7 +16,6 @@ model User {
   accounts      Account[]
   sessions      Session[]
   
-  // App Data
   workouts      WorkoutSet[]
   routines      Routine[]
   customExercises Exercise[]
@@ -57,14 +56,12 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Application Models
-
 model Exercise {
   id        String   @id @default(cuid())
   name      String
   category  String
   isCustom  Boolean  @default(false)
-  userId    String?  // If null, it's a global exercise
+  userId    String?
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -81,9 +78,9 @@ model WorkoutSet {
   sets          Int
   date          DateTime
   
-  type          String   @default("normal") // normal, warmup, drop, failure
+  type          String   @default("normal")
   notes         String?
-  restTime      Int?     // seconds
+  restTime      Int?
   
   createdAt     DateTime @default(now())
 }
@@ -94,6 +91,6 @@ model Routine {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
   name        String
-  exerciseIds String   // Stored as JSON string "['id1', 'id2']" or comma separated
+  exerciseIds String
   createdAt   DateTime @default(now())
 }

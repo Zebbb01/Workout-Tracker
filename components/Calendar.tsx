@@ -13,7 +13,7 @@ import {
     isToday
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Dumbbell } from 'lucide-react'; // Dumbbell icon for workout indicator
-import { getWorkouts } from '@/lib/storage';
+import { getWorkoutsAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 
 interface CalendarProps {
@@ -26,11 +26,14 @@ export default function Calendar({ selectedDate, onSelectDate }: CalendarProps) 
     const [workoutDates, setWorkoutDates] = useState<string[]>([]);
 
     useEffect(() => {
-        // Load workout dates to show indicators
-        const workouts = getWorkouts();
-        const dates = Array.from(new Set(workouts.map(w => w.date.split('T')[0])));
-        setWorkoutDates(dates);
-    }, [currentMonth]); // Refresh when month changes (or could be improved to refresh on focus)
+        const load = async () => {
+            const data = await getWorkoutsAction();
+            // We only need the date strings
+            const dates = Array.from(new Set(data.map(w => w.date.split('T')[0])));
+            setWorkoutDates(dates);
+        }
+        load();
+    }, [currentMonth]);
 
     const days = eachDayOfInterval({
         start: startOfMonth(currentMonth),

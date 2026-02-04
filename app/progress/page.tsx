@@ -2,21 +2,31 @@
 
 import React, { useState, useEffect } from 'react';
 import ProgressChart from '@/components/ProgressChart';
-import { getWorkouts } from '@/lib/storage';
-import { EXERCISES } from '@/lib/exercises';
+import { getWorkoutsAction } from '@/lib/actions';
+import { useExercises } from '@/lib/useExercises';
 import { WorkoutSet } from '@/lib/types';
 
 export default function ProgressPage() {
-    const [selectedExerciseId, setSelectedExerciseId] = useState(EXERCISES[0].id);
+    const { exercises } = useExercises();
+    const [selectedExerciseId, setSelectedExerciseId] = useState('');
     const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
 
     useEffect(() => {
-        const allWorkouts = getWorkouts();
-        setWorkouts(allWorkouts);
+        if (exercises.length > 0 && !selectedExerciseId) {
+            setSelectedExerciseId(exercises[0].id);
+        }
+    }, [exercises]);
+
+    useEffect(() => {
+        const load = async () => {
+            const allWorkouts = await getWorkoutsAction();
+            setWorkouts(allWorkouts);
+        }
+        load();
     }, []);
 
     const filteredWorkouts = workouts.filter(w => w.exerciseId === selectedExerciseId);
-    const currentExercise = EXERCISES.find(e => e.id === selectedExerciseId);
+    const currentExercise = exercises.find(e => e.id === selectedExerciseId);
 
     // Calculate stats
     const maxWeight = filteredWorkouts.length > 0
@@ -39,7 +49,7 @@ export default function ProgressPage() {
                     onChange={(e) => setSelectedExerciseId(e.target.value)}
                     className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
                 >
-                    {EXERCISES.map(ex => (
+                    {exercises.map(ex => (
                         <option key={ex.id} value={ex.id}>{ex.name}</option>
                     ))}
                 </select>

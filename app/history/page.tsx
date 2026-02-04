@@ -2,18 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import WorkoutCard from '@/components/WorkoutCard';
-import { getWorkouts } from '@/lib/storage';
+import { getWorkoutsAction, deleteWorkoutAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { format } from 'date-fns';
 
 export default function HistoryPage() {
     const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
 
-    const loadWorkouts = () => {
-        const data = getWorkouts();
-        // Sort by date desc
-        const sorted = data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        setWorkouts(sorted);
+    const loadWorkouts = async () => {
+        try {
+            const data = await getWorkoutsAction();
+            setWorkouts(data);
+        } catch (e) {
+            console.error("Failed to load history", e);
+        }
     };
 
     useEffect(() => {
@@ -55,7 +57,10 @@ export default function HistoryPage() {
                                         key={workout.id}
                                         workout={workout}
                                         isPR={workout.totalWeight === prMap[workout.exerciseId]}
-                                        onDelete={loadWorkouts}
+                                        onDelete={async () => {
+                                            await deleteWorkoutAction(workout.id);
+                                            loadWorkouts();
+                                        }}
                                     />
                                 ))}
                             </div>

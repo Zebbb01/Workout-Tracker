@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getWorkouts } from '@/lib/storage';
+import { getWorkoutsAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { EXERCISES } from '@/lib/exercises';
 import { format } from 'date-fns';
@@ -18,19 +18,22 @@ export default function Home() {
     });
 
     useEffect(() => {
-        const data = getWorkouts();
-        setWorkouts(data);
+        const load = async () => {
+            const data = await getWorkoutsAction();
+            setWorkouts(data);
 
-        setStats({
-            totalWorkouts: data.length,
-            totalWeight: data.reduce((acc, curr) => acc + curr.totalWeight, 0),
-            recentCount: data.filter(w => {
-                const d = new Date(w.date);
-                const now = new Date();
-                const diff = now.getTime() - d.getTime();
-                return diff < 7 * 24 * 60 * 60 * 1000;
-            }).length
-        });
+            setStats({
+                totalWorkouts: data.length,
+                totalWeight: data.reduce((acc, curr) => acc + curr.totalWeight, 0),
+                recentCount: data.filter(w => {
+                    const d = new Date(w.date);
+                    const now = new Date();
+                    const diff = now.getTime() - d.getTime();
+                    return diff < 7 * 24 * 60 * 60 * 1000;
+                }).length
+            });
+        }
+        load();
     }, []);
 
     const todayStr = format(new Date(), 'MMM do, yyyy');

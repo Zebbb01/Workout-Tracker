@@ -1,40 +1,35 @@
 import { useState, useEffect } from 'react';
 import { Exercise } from './types';
-import { EXERCISES as DEFAULT_EXERCISES } from './exercises';
+import { getExercisesAction, addCustomExerciseAction } from './actions';
 
 export function useExercises() {
-    const [exercises, setExercises] = useState<Exercise[]>(DEFAULT_EXERCISES);
+    const [exercises, setExercises] = useState<Exercise[]>([]);
 
     useEffect(() => {
-        // Load custom exercises from local storage
-        const stored = localStorage.getItem('custom-exercises');
-        if (stored) {
-            try {
-                const custom: Exercise[] = JSON.parse(stored);
-                setExercises([...DEFAULT_EXERCISES, ...custom]);
-            } catch (e) {
-                console.error('Failed to parse custom exercises', e);
-            }
+        const load = async () => {
+            const data = await getExercisesAction();
+            setExercises(data);
         }
+        load();
     }, []);
 
-    const addCustomExercise = (name: string, category: string) => {
-        const newExercise: Exercise = {
-            id: `custom-${crypto.randomUUID()}`,
-            name,
-            category,
-            isCustom: true
-        };
+    const addCustomExercise = async (name: string, category: string) => {
+        // Optimistic update
+        const tempId = `temp-${crypto.randomUUID()}`;
+        const newEx: Exercise = { id: tempId, name, category, isCustom: true };
+        setExercises(prev => [...prev, newEx]);
 
-        // Update state
-        const updatedExercises = [...exercises, newExercise];
-        setExercises(updatedExercises);
-
-        // Persist custom only
-        const currentCustom = updatedExercises.filter(e => e.isCustom);
-        localStorage.setItem('custom-exercises', JSON.stringify(currentCustom));
-
-        return newExercise;
+        try {
+            const saved = await addCustomExerciseAction(name, category);
+            // Replace temp with real
+            setExercises(prev => prev.map(e => e.id === tempId ? saved : e));
+            return saved;
+        } catch (e) {
+            console.error("Failed to add custom exercise", e);
+            // Revert on failure
+            setExercises(prev => prev.filter(e => e.id !== tempId));
+            throw e;
+        }
     };
 
     return { exercises, addCustomExercise };

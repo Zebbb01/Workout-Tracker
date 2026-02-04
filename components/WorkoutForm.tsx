@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useExercises } from '@/lib/useExercises';
-import { saveWorkout } from '@/lib/storage';
+import { saveWorkoutAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { Plus, Save, Clock, FileText, Dumbbell } from 'lucide-react';
 import CreateExercise from './CreateExercise';
@@ -32,7 +32,7 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
         }
     }, [weightPerSide]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!exerciseId || !weightPerSide || !reps || !sets) return;
 
@@ -52,7 +52,7 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
             type: setType,
         };
 
-        saveWorkout(newWorkout);
+        await saveWorkoutAction(newWorkout);
 
         // Reset form partially for rapid entry
         setReps('');
@@ -62,8 +62,8 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
         onSuccess();
     };
 
-    const handleCreateExercise = (name: string, category: string) => {
-        const newEx = addCustomExercise(name, category);
+    const handleCreateExercise = async (name: string, category: string) => {
+        const newEx = await addCustomExercise(name, category);
         setExerciseId(newEx.id);
         setIsCreatingExercise(false);
     };

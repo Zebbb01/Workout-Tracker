@@ -3,7 +3,6 @@
 import React from 'react';
 import { WorkoutSet } from '@/lib/types';
 import { Trash2 } from 'lucide-react';
-import { deleteWorkout } from '@/lib/storage';
 
 interface WorkoutCardProps {
     workout: WorkoutSet;
@@ -14,7 +13,6 @@ interface WorkoutCardProps {
 export default function WorkoutCard({ workout, isPR, onDelete }: WorkoutCardProps) {
     const handleDelete = () => {
         if (confirm('Are you sure you want to delete this log?')) {
-            deleteWorkout(workout.id);
             onDelete();
         }
     };
