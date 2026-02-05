@@ -5,6 +5,9 @@ import ProgressChart from '@/components/ProgressChart';
 import { getWorkoutsAction } from '@/lib/actions';
 import { useExercises } from '@/lib/useExercises';
 import { WorkoutSet } from '@/lib/types';
+import { Settings } from 'lucide-react';
+import Link from 'next/link';
+import Select from '@/components/ui/Select';
 
 export default function ProgressPage() {
     const { exercises } = useExercises();
@@ -26,6 +29,7 @@ export default function ProgressPage() {
     }, []);
 
     const filteredWorkouts = workouts.filter(w => w.exerciseId === selectedExerciseId);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const currentExercise = exercises.find(e => e.id === selectedExerciseId);
 
     // Calculate stats
@@ -37,22 +41,22 @@ export default function ProgressPage() {
 
     return (
         <div className="space-y-6 pb-20 animate-in">
-            <header>
+            <header className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-white">Progress</h1>
+                <Link href="/settings" className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-full border border-zinc-700 transition-colors text-zinc-400 hover:text-white">
+                    <Settings size={20} />
+                </Link>
             </header>
 
             {/* Exercise Selector */}
             <div className="glass-card p-4 rounded-xl">
-                <label className="block text-xs text-slate-400 mb-2">Select Exercise</label>
-                <select
+                <Select
+                    label="Select Exercise"
+                    options={exercises.map(ex => ({ id: ex.id, label: ex.name }))}
                     value={selectedExerciseId}
-                    onChange={(e) => setSelectedExerciseId(e.target.value)}
-                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
-                >
-                    {exercises.map(ex => (
-                        <option key={ex.id} value={ex.id}>{ex.name}</option>
-                    ))}
-                </select>
+                    onChange={setSelectedExerciseId}
+                    placeholder="Select Exercise"
+                />
             </div>
 
             {/* Chart */}

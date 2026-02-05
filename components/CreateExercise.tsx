@@ -2,11 +2,23 @@
 
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
+import Select from '@/components/ui/Select';
 
 interface CreateExerciseProps {
     onCreate: (name: string, category: string) => void;
     onCancel: () => void;
 }
+
+const CATEGORY_OPTIONS = [
+    { id: 'Legs', label: 'Legs' },
+    { id: 'Chest', label: 'Chest' },
+    { id: 'Back', label: 'Back' },
+    { id: 'Shoulders', label: 'Shoulders' },
+    { id: 'Arms', label: 'Arms' },
+    { id: 'Core', label: 'Core' },
+    { id: 'Cardio', label: 'Cardio' },
+    { id: 'Other', label: 'Other' },
+];
 
 export default function CreateExercise({ onCreate, onCancel }: CreateExerciseProps) {
     const [name, setName] = useState('');
@@ -23,7 +35,7 @@ export default function CreateExercise({ onCreate, onCancel }: CreateExercisePro
         <div className="bg-zinc-900 border border-zinc-800 p-4 rounded-xl animate-in space-y-4">
             <div className="flex justify-between items-center">
                 <h3 className="text-white font-semibold">Create New Exercise</h3>
-                <button onClick={onCancel} className="text-zinc-500 hover:text-white">
+                <button onClick={onCancel} className="text-zinc-500 hover:text-white transition-colors">
                     <X size={20} />
                 </button>
             </div>
@@ -35,32 +47,25 @@ export default function CreateExercise({ onCreate, onCancel }: CreateExercisePro
                         value={name}
                         onChange={e => setName(e.target.value)}
                         placeholder="Exercise Name (e.g. Donkey Kicks)"
-                        className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none"
+                        className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none transition-colors"
                         required
                         autoFocus
                     />
                 </div>
 
                 <div>
-                    <select
+                    <Select
+                        options={CATEGORY_OPTIONS}
                         value={category}
-                        onChange={e => setCategory(e.target.value)}
-                        className="w-full bg-black/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none"
-                    >
-                        <option value="Legs">Legs</option>
-                        <option value="Chest">Chest</option>
-                        <option value="Back">Back</option>
-                        <option value="Shoulders">Shoulders</option>
-                        <option value="Arms">Arms</option>
-                        <option value="Core">Core</option>
-                        <option value="Cardio">Cardio</option>
-                        <option value="Other">Other</option>
-                    </select>
+                        onChange={setCategory}
+                        placeholder="Select Category"
+                        label="Category"
+                    />
                 </div>
 
                 <button
                     type="submit"
-                    className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-3 rounded-lg transition-all active:scale-[0.98] flex items-center justify-center gap-2"
                 >
                     <Plus size={18} />
                     Create Exercise

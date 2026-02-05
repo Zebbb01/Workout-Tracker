@@ -6,6 +6,7 @@ import { saveWorkoutAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { Plus, Save, Clock, FileText, Dumbbell } from 'lucide-react';
 import CreateExercise from './CreateExercise';
+import Select from './ui/Select';
 
 interface WorkoutFormProps {
     selectedDate: Date | null;
@@ -82,28 +83,18 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
             <div className="space-y-4">
                 {/* Exercise Selection */}
                 <div>
-                    <label className="block text-xs text-zinc-400 mb-1">Exercise</label>
-                    <div className="flex gap-2">
-                        <select
-                            value={exerciseId}
-                            onChange={(e) => setExerciseId(e.target.value)}
-                            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors appearance-none"
-                            required
-                        >
-                            <option value="">Select Exercise</option>
-                            {exercises.map(ex => (
-                                <option key={ex.id} value={ex.id}>{ex.name} {ex.isCustom ? '(Custom)' : ''}</option>
-                            ))}
-                        </select>
-                        <button
-                            type="button"
-                            onClick={() => setIsCreatingExercise(true)}
-                            className="bg-zinc-800 hover:bg-zinc-700 text-orange-500 p-3 rounded-lg border border-zinc-700 transition-colors"
-                            title="Create New Exercise"
-                        >
-                            <Plus size={20} />
-                        </button>
-                    </div>
+                    <Select
+                        label="Exercise"
+                        options={exercises.map(ex => ({ id: ex.id, label: ex.name, subLabel: ex.isCustom ? '(Custom)' : undefined }))}
+                        value={exerciseId}
+                        onChange={setExerciseId}
+                        placeholder="Select Exercise"
+                        action={{
+                            label: "Create New Exercise",
+                            onClick: () => setIsCreatingExercise(true),
+                            icon: <Plus size={20} />
+                        }}
+                    />
                 </div>
 
                 {/* Set Type Toggles */}
@@ -112,8 +103,8 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
                     <div className="flex rounded-lg overflow-hidden border border-zinc-700">
                         {(['normal', 'warmup', 'drop', 'failure'] as const).map((type) => (
                             <button
-                                key={type}
                                 type="button"
+                                key={type}
                                 onClick={() => setSetType(type)}
                                 className={`flex-1 py-2 text-xs font-bold uppercase transition-colors
                                     ${setType === type

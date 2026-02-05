@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useExercises } from '@/lib/useExercises';
 import { getRoutinesAction, saveRoutineAction, deleteRoutineAction } from '@/lib/actions';
 import { Routine } from '@/lib/types';
-import { Plus, Trash2, ChevronRight, Dumbbell, Play } from 'lucide-react';
+import { Plus, Trash2, ChevronRight, Dumbbell, Play, Settings } from 'lucide-react';
 import Link from 'next/link';
 
 export default function RoutinesPage() {
@@ -60,14 +60,19 @@ export default function RoutinesPage() {
                     <h1 className="text-2xl font-bold text-white">Routines</h1>
                     <p className="text-zinc-500 text-xs">Manage your workout plans</p>
                 </div>
-                {!isCreating && (
-                    <button
-                        onClick={() => setIsCreating(true)}
-                        className="bg-orange-600 hover:bg-orange-500 text-white p-2 rounded-xl transition-colors shadow-lg shadow-orange-600/20"
-                    >
-                        <Plus size={24} />
-                    </button>
-                )}
+                <div className="flex gap-2">
+                    <Link href="/settings" className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-xl border border-zinc-700 transition-colors text-zinc-400 hover:text-white flex items-center justify-center">
+                        <Settings size={22} />
+                    </Link>
+                    {!isCreating && (
+                        <button
+                            onClick={() => setIsCreating(true)}
+                            className="bg-orange-600 hover:bg-orange-500 text-white p-2 rounded-xl transition-colors shadow-lg shadow-orange-600/20"
+                        >
+                            <Plus size={24} />
+                        </button>
+                    )}
+                </div>
             </header>
 
             {isCreating ? (

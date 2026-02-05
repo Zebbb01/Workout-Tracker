@@ -1,6 +1,7 @@
 datasource db {
-  provider = "sqlite"
-  url      = "file:dev.db"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -16,9 +17,55 @@ model User {
   accounts      Account[]
   sessions      Session[]
   
-  workouts      WorkoutSet[]
-  routines      Routine[]
+  workouts        WorkoutSet[]
+  routines        Routine[]
   customExercises Exercise[]
+  profile         UserProfile?
+  weightEntries   WeightEntry[]
+}
+
+model UserProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Physical stats
+  heightCm      Float?
+  weightKg      Float?
+  age           Int?
+  gender        String?   // 'male' | 'female'
+  activityLevel String?   // 'sedentary' | 'light' | 'moderate' | 'active' | 'veryActive'
+  bodyFatPct    Float?    // Optional body fat percentage
+  
+  // Calculated values
+  bmr           Float?
+  tdee          Float?
+  targetCalories Float?
+  
+  // Goals
+  goal          String?   // 'cutting' | 'maintenance' | 'bulking'
+  proteinTarget Float?    // grams per day
+  carbsTarget   Float?    // grams per day
+  fatTarget     Float?    // grams per day
+  
+  // Unit preference
+  useImperial   Boolean   @default(false)
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model WeightEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  weightKg  Float
+  bodyFatPct Float?
+  notes     String?
+  date      DateTime @default(now())
+  
+  createdAt DateTime @default(now())
 }
 
 model Account {

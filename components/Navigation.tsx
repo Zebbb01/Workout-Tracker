@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Calendar as CalIcon, PlusCircle, History, TrendingUp, ClipboardList } from 'lucide-react';
+import { Home, Calendar as CalIcon, PlusCircle, History, TrendingUp, ClipboardList, Flame } from 'lucide-react';
 
 export default function Navigation() {
     const pathname = usePathname();
@@ -13,7 +13,7 @@ export default function Navigation() {
         { name: 'Calendar', href: '/calendar', icon: CalIcon },
         { name: 'Log', href: '/log', icon: PlusCircle },
         { name: 'Routines', href: '/routines', icon: ClipboardList },
-        { name: 'History', href: '/history', icon: History },
+        { name: 'TDEE', href: '/tdee', icon: Flame },
         { name: 'Progress', href: '/progress', icon: TrendingUp },
     ];
 

@@ -6,7 +6,7 @@ import WorkoutCard from '@/components/WorkoutCard';
 import { getWorkoutsAction, deleteWorkoutAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { isSameDay, format } from 'date-fns';
-import { Plus } from 'lucide-react';
+import { Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CalendarPage() {
@@ -32,8 +32,11 @@ export default function CalendarPage() {
 
     return (
         <div className="space-y-6 pb-20 animate-in">
-            <header>
+            <header className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-white">Calendar</h1>
+                <Link href="/settings" className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-full border border-zinc-700 transition-colors text-zinc-400 hover:text-white">
+                    <Settings size={20} />
+                </Link>
             </header>
 
             <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
