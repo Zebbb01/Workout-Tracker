@@ -4,11 +4,16 @@ import { getExercisesAction, addCustomExerciseAction } from './actions';
 
 export function useExercises() {
     const [exercises, setExercises] = useState<Exercise[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const load = async () => {
-            const data = await getExercisesAction();
-            setExercises(data);
+            try {
+                const data = await getExercisesAction();
+                setExercises(data);
+            } finally {
+                setIsLoading(false);
+            }
         }
         load();
     }, []);
@@ -32,5 +37,5 @@ export function useExercises() {
         }
     };
 
-    return { exercises, addCustomExercise };
+    return { exercises, isLoading, addCustomExercise };
 }

@@ -15,9 +15,11 @@ interface WorkoutFormProps {
 }
 
 export default function WorkoutForm({ selectedDate, routineId, onSuccess }: WorkoutFormProps) {
-    const { exercises, addCustomExercise } = useExercises();
+    const { exercises, isLoading: isLoadingExercises, addCustomExercise } = useExercises();
     const [isCreatingExercise, setIsCreatingExercise] = useState(false);
     const [routine, setRoutine] = useState<Routine | null>(null);
+    const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
 
     const [exerciseId, setExerciseId] = useState('');
     const [weightPerSide, setWeightPerSide] = useState<string>('');
@@ -33,21 +35,26 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
     // Load initial unit preference and routine
     useEffect(() => {
         const load = async () => {
-            const profile = await getUserProfileAction();
-            if (profile?.useImperial) {
-                setUnitSystem('imperial');
-            }
+            setIsLoadingInitial(true);
+            try {
+                const profile = await getUserProfileAction();
+                if (profile?.useImperial) {
+                    setUnitSystem('imperial');
+                }
 
-            if (routineId) {
-                const allRoutines = await getRoutinesAction();
-                const found = allRoutines.find(r => r.id === routineId);
-                if (found) {
-                    setRoutine(found);
-                    // Automatically select first exercise in routine
-                    if (found.exerciseIds.length > 0) {
-                        setExerciseId(found.exerciseIds[0]);
+                if (routineId) {
+                    const allRoutines = await getRoutinesAction();
+                    const found = allRoutines.find(r => r.id === routineId);
+                    if (found) {
+                        setRoutine(found);
+                        // Automatically select first exercise in routine
+                        if (found.exerciseIds.length > 0) {
+                            setExerciseId(found.exerciseIds[0]);
+                        }
                     }
                 }
+            } finally {
+                setIsLoadingInitial(false);
             }
         };
         load();
@@ -68,32 +75,39 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!exerciseId || !weightPerSide || !reps || !sets) return;
+        if (!exerciseId || !weightPerSide || !reps || !sets || isSaving) return;
 
-        const exercise = exercises.find(ex => ex.id === exerciseId);
-        if (!exercise) return;
+        setIsSaving(true);
+        try {
+            const exercise = exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
 
-        const newWorkout: WorkoutSet = {
-            id: crypto.randomUUID(),
-            exerciseId,
-            exerciseName: exercise.name,
-            weightPerSide: Number(weightPerSide),
-            totalWeight: Number(totalWeight),
-            reps: Number(reps),
-            sets: Number(sets),
-            date: (selectedDate || new Date()).toISOString(),
-            notes,
-            type: setType,
-        };
+            const newWorkout: WorkoutSet = {
+                id: crypto.randomUUID(),
+                exerciseId,
+                exerciseName: exercise.name,
+                weightPerSide: Number(weightPerSide),
+                totalWeight: Number(totalWeight),
+                reps: Number(reps),
+                sets: Number(sets),
+                date: (selectedDate || new Date()).toISOString(),
+                notes,
+                type: setType,
+            };
 
-        await saveWorkoutAction(newWorkout);
+            await saveWorkoutAction(newWorkout);
 
-        // Reset form partially for rapid entry
-        setReps('');
-        setNotes('');
-        setSetType('normal');
+            // Reset form partially for rapid entry
+            setReps('');
+            setNotes('');
+            setSetType('normal');
 
-        onSuccess();
+            onSuccess();
+        } catch (error: any) {
+            alert(error.message || "Failed to log workout");
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleCreateExercise = async (name: string, category: string) => {
@@ -104,6 +118,24 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
 
     if (isCreatingExercise) {
         return <CreateExercise onCreate={handleCreateExercise} onCancel={() => setIsCreatingExercise(false)} />;
+    }
+
+    if (isLoadingInitial) {
+        return (
+            <div className="glass-card p-6 rounded-xl space-y-5 animate-pulse">
+                <div className="h-8 bg-zinc-900 rounded-lg w-1/3 mb-4" />
+                <div className="space-y-4">
+                    <div className="h-12 bg-zinc-900 rounded-lg" />
+                    <div className="h-12 bg-zinc-900 rounded-lg" />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="h-12 bg-zinc-900 rounded-lg" />
+                        <div className="h-12 bg-zinc-900 rounded-lg" />
+                    </div>
+                    <div className="h-24 bg-zinc-900 rounded-lg" />
+                    <div className="h-14 bg-zinc-900 rounded-lg" />
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -161,7 +193,7 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                             options={exercises.map(ex => ({ id: ex.id, label: ex.name, subLabel: ex.isCustom ? '(Custom)' : undefined }))}
                             value={exerciseId}
                             onChange={setExerciseId}
-                            placeholder="Select Exercise"
+                            placeholder={isLoadingExercises ? "Loading exercises..." : "Select Exercise"}
                             action={{
                                 label: "Create New Exercise",
                                 onClick: () => setIsCreatingExercise(true),
@@ -171,6 +203,8 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                     </div>
 
                     {/* Set Type Toggles */}
+                    {/* ... rest of the form ... */}
+                    {/* (I'll use a larger block to ensure context) */}
                     <div>
                         <label className="block text-xs text-zinc-400 mb-2">Set Type</label>
                         <div className="flex rounded-lg overflow-hidden border border-zinc-700">
@@ -227,7 +261,8 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                                     type="number"
                                     value={weightPerSide}
                                     onChange={(e) => setWeightPerSide(e.target.value)}
-                                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                                    disabled={isSaving}
+                                    className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors disabled:opacity-50"
                                     placeholder={unitSystem === 'metric' ? "50" : "110"}
                                     required
                                 />
@@ -253,7 +288,8 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                                 type="number"
                                 value={reps}
                                 onChange={(e) => setReps(e.target.value)}
-                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                                disabled={isSaving}
+                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors disabled:opacity-50"
                                 placeholder="Repetitions"
                                 required
                             />
@@ -264,7 +300,8 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                                 type="number"
                                 value={sets}
                                 onChange={(e) => setSets(e.target.value)}
-                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                                disabled={isSaving}
+                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors disabled:opacity-50"
                                 placeholder="Total Sets"
                                 required
                             />
@@ -279,7 +316,8 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                         <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
-                            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm"
+                            disabled={isSaving}
+                            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors text-sm disabled:opacity-50"
                             placeholder="RPE, feelings, etc..."
                             rows={2}
                         />
@@ -288,10 +326,11 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                     {/* Submit Button */}
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-600/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                        disabled={isSaving}
+                        className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-600/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
-                        <Plus size={20} />
-                        Log {setType !== 'normal' ? setType : 'Set'}
+                        {isSaving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus size={20} />}
+                        {isSaving ? 'Logging...' : `Log ${setType !== 'normal' ? setType : 'Set'}`}
                     </button>
                 </div>
             </form>

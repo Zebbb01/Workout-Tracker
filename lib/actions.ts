@@ -33,6 +33,14 @@ export async function getExercisesAction() {
 
 export async function addCustomExerciseAction(name: string, category: string) {
     const userId = await getUser();
+    // Check for duplicate
+    const existing = await prisma.exercise.findFirst({
+        where: { name, userId }
+    });
+    if (existing) {
+        throw new Error("An exercise with this name already exists.");
+    }
+
     const newExercise = await prisma.exercise.create({
         data: {
             name,
@@ -116,6 +124,14 @@ export async function getRoutinesAction() {
 
 export async function saveRoutineAction(name: string, exerciseIds: string[]) {
     const userId = await getUser();
+
+    // Check for duplicate
+    const existing = await prisma.routine.findFirst({
+        where: { name, userId }
+    });
+    if (existing) {
+        throw new Error("A routine with this name already exists.");
+    }
 
     await prisma.routine.create({
         data: {
