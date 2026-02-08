@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useExercises } from '@/lib/useExercises';
-import { saveWorkoutAction } from '@/lib/actions';
+import { saveWorkoutAction, getUserProfileAction, updateUnitPreferenceAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { Plus, Save, Clock, FileText, Dumbbell } from 'lucide-react';
 import CreateExercise from './CreateExercise';
@@ -24,6 +24,25 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
     const [sets, setSets] = useState('');
     const [notes, setNotes] = useState('');
     const [setType, setSetType] = useState<WorkoutSet['type']>('normal');
+
+    // Unit Preference
+    const [unitSystem, setUnitSystem] = useState<string>('metric');
+
+    // Load initial unit preference
+    useEffect(() => {
+        const load = async () => {
+            const data = await getUserProfileAction();
+            if (data?.useImperial) {
+                setUnitSystem('imperial');
+            }
+        };
+        load();
+    }, []);
+
+    const handleUnitChange = async (unit: string) => {
+        setUnitSystem(unit);
+        await updateUnitPreferenceAction(unit === 'imperial');
+    };
 
     // Auto-calculate total or per-side
     useEffect(() => {
@@ -119,28 +138,56 @@ export default function WorkoutForm({ selectedDate, onSuccess }: WorkoutFormProp
                     </div>
                 </div>
 
-                {/* Weights */}
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-xs text-zinc-400 mb-1">Weight / Side (kg)</label>
-                        <input
-                            type="number"
-                            value={weightPerSide}
-                            onChange={(e) => setWeightPerSide(e.target.value)}
-                            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
-                            placeholder="50"
-                            required
-                        />
+                {/* Unit and Weights */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <label className="block text-xs font-bold text-zinc-600 uppercase tracking-widest">Weights</label>
+                        <div className="flex bg-zinc-900/50 rounded-lg p-0.5 border border-zinc-800">
+                            <button
+                                type="button"
+                                onClick={() => handleUnitChange('metric')}
+                                className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${unitSystem === 'metric'
+                                    ? 'bg-zinc-800 text-white shadow-sm'
+                                    : 'text-zinc-600 hover:text-zinc-400'
+                                    }`}
+                            >
+                                kg
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => handleUnitChange('imperial')}
+                                className={`px-3 py-1 text-[10px] font-bold uppercase rounded-md transition-all ${unitSystem === 'imperial'
+                                    ? 'bg-zinc-800 text-white shadow-sm'
+                                    : 'text-zinc-600 hover:text-zinc-400'
+                                    }`}
+                            >
+                                lbs
+                            </button>
+                        </div>
                     </div>
-                    <div>
-                        <label className="block text-xs text-zinc-400 mb-1">Total (kg)</label>
-                        <input
-                            type="number"
-                            value={totalWeight}
-                            readOnly
-                            className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 text-zinc-500 cursor-not-allowed"
-                            placeholder="100"
-                        />
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-xs text-zinc-400 mb-1">Weight / Side ({unitSystem === 'metric' ? 'kg' : 'lbs'})</label>
+                            <input
+                                type="number"
+                                value={weightPerSide}
+                                onChange={(e) => setWeightPerSide(e.target.value)}
+                                className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors"
+                                placeholder={unitSystem === 'metric' ? "50" : "110"}
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs text-zinc-400 mb-1">Total ({unitSystem === 'metric' ? 'kg' : 'lbs'})</label>
+                            <input
+                                type="number"
+                                value={totalWeight}
+                                readOnly
+                                className="w-full bg-zinc-900/50 border border-zinc-800 rounded-lg p-3 text-zinc-500 cursor-not-allowed"
+                                placeholder={unitSystem === 'metric' ? "100" : "220"}
+                            />
+                        </div>
                     </div>
                 </div>
 

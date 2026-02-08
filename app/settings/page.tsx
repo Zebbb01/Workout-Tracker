@@ -19,10 +19,6 @@ export default function SettingsPage() {
     const [name, setName] = useState('');
     const [isSaving, setIsSaving] = useState(false);
 
-    // Unit Preference State
-    const [unitSystem, setUnitSystem] = useState<string>('metric');
-    const [isSavingUnit, setIsSavingUnit] = useState(false);
-
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
@@ -37,8 +33,6 @@ export default function SettingsPage() {
                 }
                 setProfile(data);
                 if (data?.name) setName(data.name);
-                // Set unit system based on profile
-                setUnitSystem(data.useImperial ? 'imperial' : 'metric');
             } catch (e) {
                 console.error("Failed to load profile", e);
             }
@@ -52,20 +46,6 @@ export default function SettingsPage() {
         await updateUserProfileAction(name);
         setIsSaving(false);
         alert('Profile updated!');
-    };
-
-    const handleUnitChange = async (value: string) => {
-        setUnitSystem(value);
-        setIsSavingUnit(true);
-        try {
-            await updateUnitPreferenceAction(value === 'imperial');
-        } catch (error) {
-            console.error("Failed to update unit preference", error);
-            // Revert on failure
-            setUnitSystem(value === 'imperial' ? 'metric' : 'imperial');
-        } finally {
-            setIsSavingUnit(false);
-        }
     };
 
     const handleLogout = async () => {
@@ -128,40 +108,6 @@ export default function SettingsPage() {
                         {isSaving ? 'Saving...' : 'Update Profile'}
                     </button>
                 </form>
-            </section>
-
-            {/* Preferences Section */}
-            <section className="space-y-3">
-                <h3 className="text-xs font-bold text-zinc-600 uppercase tracking-widest px-1">Preferences</h3>
-
-                <div className="glass-card p-4 rounded-xl space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-zinc-300 mb-2">Weight Unit</label>
-                        <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-900/50 rounded-lg border border-zinc-800">
-                            <button
-                                onClick={() => handleUnitChange('metric')}
-                                className={`py-2 px-4 rounded-md text-sm font-medium transition-all ${unitSystem === 'metric'
-                                    ? 'bg-zinc-800 text-white shadow-sm'
-                                    : 'text-zinc-500 hover:text-zinc-300'
-                                    }`}
-                            >
-                                Metric (kg)
-                            </button>
-                            <button
-                                onClick={() => handleUnitChange('imperial')}
-                                className={`py-2 px-4 rounded-md text-sm font-medium transition-all ${unitSystem === 'imperial'
-                                    ? 'bg-zinc-800 text-white shadow-sm'
-                                    : 'text-zinc-500 hover:text-zinc-300'
-                                    }`}
-                            >
-                                Imperial (lbs)
-                            </button>
-                        </div>
-                        <p className="text-xs text-zinc-600 mt-2">
-                            This will update how weight is displayed throughout the app.
-                        </p>
-                    </div>
-                </div>
             </section>
 
             {/* Account Actions */}
