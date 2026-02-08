@@ -138,10 +138,24 @@ export async function deleteRoutineAction(id: string) {
 // --- User Settings ---
 export async function getUserProfileAction() {
     const userId = await getUser();
-    return prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
         where: { id: userId },
-        select: { name: true, email: true, image: true }
+        select: {
+            name: true,
+            email: true,
+            image: true,
+            profile: {
+                select: {
+                    useImperial: true
+                }
+            }
+        }
     });
+
+    return {
+        ...user,
+        useImperial: user?.profile?.useImperial ?? false
+    };
 }
 
 export async function updateUserProfileAction(name: string) {
@@ -151,6 +165,25 @@ export async function updateUserProfileAction(name: string) {
         data: { name }
     });
     revalidatePath('/settings');
+}
+
+export async function updateUnitPreferenceAction(useImperial: boolean) {
+    const userId = await getUser();
+
+    // We need to ensure a profile exists, or create one if not
+    await prisma.userProfile.upsert({
+        where: { userId },
+        create: {
+            userId,
+            useImperial
+        },
+        update: {
+            useImperial
+        }
+    });
+
+    revalidatePath('/settings');
+    revalidatePath('/'); // Might affect other pages displaying units
 }
 
 export async function deleteAccountAction() {

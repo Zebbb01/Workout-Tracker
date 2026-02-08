@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import {
     getUserProfileAction,
     updateUserProfileAction,
+    updateUnitPreferenceAction,
     deleteAccountAction,
     signOutAction
 } from '@/lib/actions';
@@ -14,9 +15,14 @@ import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 export default function SettingsPage() {
     const router = useRouter();
-    const [profile, setProfile] = useState<{ name: string | null, email: string | null, image: string | null } | null>(null);
+    const [profile, setProfile] = useState<{ name?: string | null, email?: string | null, image?: string | null, useImperial?: boolean } | null>(null);
     const [name, setName] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
+    // Unit Preference State
+    const [unitSystem, setUnitSystem] = useState<string>('metric');
+    const [isSavingUnit, setIsSavingUnit] = useState(false);
+
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
@@ -31,6 +37,8 @@ export default function SettingsPage() {
                 }
                 setProfile(data);
                 if (data?.name) setName(data.name);
+                // Set unit system based on profile
+                setUnitSystem(data.useImperial ? 'imperial' : 'metric');
             } catch (e) {
                 console.error("Failed to load profile", e);
             }
@@ -43,10 +51,21 @@ export default function SettingsPage() {
         setIsSaving(true);
         await updateUserProfileAction(name);
         setIsSaving(false);
-        // Could replace this alert with a toast, but keeping simple for now or use the dialog?
-        // Let's use a simple window alert or we can make a Toast later. User asked for "modern alert" 
-        // usually implies confirmation dialogs. A success toast is different.
         alert('Profile updated!');
+    };
+
+    const handleUnitChange = async (value: string) => {
+        setUnitSystem(value);
+        setIsSavingUnit(true);
+        try {
+            await updateUnitPreferenceAction(value === 'imperial');
+        } catch (error) {
+            console.error("Failed to update unit preference", error);
+            // Revert on failure
+            setUnitSystem(value === 'imperial' ? 'metric' : 'imperial');
+        } finally {
+            setIsSavingUnit(false);
+        }
     };
 
     const handleLogout = async () => {
@@ -59,7 +78,7 @@ export default function SettingsPage() {
 
     const confirmDeleteAccount = async () => {
         await deleteAccountAction();
-        await signOutAction(); // Ensure session is cleared server-side (if that's what this does)
+        await signOutAction();
         window.location.href = '/login';
     };
 
@@ -111,6 +130,40 @@ export default function SettingsPage() {
                 </form>
             </section>
 
+            {/* Preferences Section */}
+            <section className="space-y-3">
+                <h3 className="text-xs font-bold text-zinc-600 uppercase tracking-widest px-1">Preferences</h3>
+
+                <div className="glass-card p-4 rounded-xl space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-zinc-300 mb-2">Weight Unit</label>
+                        <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-900/50 rounded-lg border border-zinc-800">
+                            <button
+                                onClick={() => handleUnitChange('metric')}
+                                className={`py-2 px-4 rounded-md text-sm font-medium transition-all ${unitSystem === 'metric'
+                                    ? 'bg-zinc-800 text-white shadow-sm'
+                                    : 'text-zinc-500 hover:text-zinc-300'
+                                    }`}
+                            >
+                                Metric (kg)
+                            </button>
+                            <button
+                                onClick={() => handleUnitChange('imperial')}
+                                className={`py-2 px-4 rounded-md text-sm font-medium transition-all ${unitSystem === 'imperial'
+                                    ? 'bg-zinc-800 text-white shadow-sm'
+                                    : 'text-zinc-500 hover:text-zinc-300'
+                                    }`}
+                            >
+                                Imperial (lbs)
+                            </button>
+                        </div>
+                        <p className="text-xs text-zinc-600 mt-2">
+                            This will update how weight is displayed throughout the app.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             {/* Account Actions */}
             <section className="space-y-3">
                 <h3 className="text-xs font-bold text-zinc-600 uppercase tracking-widest px-1">Account</h3>
@@ -124,19 +177,28 @@ export default function SettingsPage() {
                     </div>
                     <span className="font-medium">Sign Out / Switch Account</span>
                 </button>
+            </section>
 
-                <button
-                    onClick={handleDeleteClick}
-                    className="w-full glass-card p-4 rounded-xl flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors text-left border border-transparent hover:border-red-500/30"
-                >
-                    <div className="bg-red-900/20 p-2 rounded-lg">
-                        <Trash2 size={20} />
+            {/* Danger Zone */}
+            <section className="space-y-3 pt-6 border-t border-white/5">
+                <h3 className="text-xs font-bold text-red-900/40 uppercase tracking-widest px-1">Danger Zone</h3>
+
+                <div className="glass-card p-4 rounded-xl border border-red-900/20 bg-red-950/5">
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <span className="font-bold text-red-500 block text-sm">Delete Account</span>
+                            <span className="text-xs text-red-500/50">Permanently remove your account and all data</span>
+                        </div>
                     </div>
-                    <div>
-                        <span className="font-bold block">Delete Account</span>
-                        <span className="text-xs text-red-500/70">Permanently remove all data</span>
-                    </div>
-                </button>
+
+                    <button
+                        onClick={handleDeleteClick}
+                        className="w-full border border-red-900/30 text-red-800 hover:bg-red-950/30 hover:text-red-500 font-medium py-3 rounded-lg flex items-center justify-center gap-2 transition-colors text-sm"
+                    >
+                        <Trash2 size={16} />
+                        Delete Account
+                    </button>
+                </div>
             </section>
 
             <ConfirmDialog
