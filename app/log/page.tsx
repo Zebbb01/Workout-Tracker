@@ -11,6 +11,7 @@ function LogContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const dateParam = searchParams.get('date');
+    const routineId = searchParams.get('routine');
 
     const selectedDate = dateParam ? new Date(dateParam) : new Date();
 
@@ -28,6 +29,7 @@ function LogContent() {
 
             <WorkoutForm
                 selectedDate={selectedDate}
+                routineId={routineId || undefined}
                 onSuccess={() => router.push('/calendar')}
             />
 

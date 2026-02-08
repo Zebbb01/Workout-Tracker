@@ -2,18 +2,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { useExercises } from '@/lib/useExercises';
-import { getRoutinesAction, saveRoutineAction, deleteRoutineAction } from '@/lib/actions';
+import { getRoutinesAction, saveRoutineAction, deleteRoutineAction, updateRoutineAction } from '@/lib/actions';
 import { Routine } from '@/lib/types';
-import { Plus, Trash2, ChevronRight, Dumbbell, Play, Settings } from 'lucide-react';
+import { Plus, Trash2, ChevronRight, Dumbbell, Play, Settings, Edit2, X } from 'lucide-react';
 import Link from 'next/link';
 
 export default function RoutinesPage() {
     const { exercises } = useExercises();
     const [routines, setRoutines] = useState<Routine[]>([]);
     const [isCreating, setIsCreating] = useState(false);
+    const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
 
-    // Creation State
-    const [newRoutineName, setNewRoutineName] = useState('');
+    // Expansion State
+    const [expandedRoutineId, setExpandedRoutineId] = useState<string | null>(null);
+
+    // Creation/Edit State
+    const [routineName, setRoutineName] = useState('');
     const [selectedExIds, setSelectedExIds] = useState<string[]>([]);
 
     const loadRoutines = async () => {
@@ -25,20 +29,42 @@ export default function RoutinesPage() {
         loadRoutines();
     }, []);
 
+    const startCreating = () => {
+        setRoutineName('');
+        setSelectedExIds([]);
+        setEditingRoutine(null);
+        setIsCreating(true);
+    };
+
+    const startEditing = (routine: Routine) => {
+        setRoutineName(routine.name);
+        setSelectedExIds(routine.exerciseIds);
+        setEditingRoutine(routine);
+        setIsCreating(true);
+    };
+
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!newRoutineName || selectedExIds.length === 0) return;
+        if (!routineName || selectedExIds.length === 0) return;
 
-        await saveRoutineAction(newRoutineName, selectedExIds);
+        if (editingRoutine) {
+            await updateRoutineAction(editingRoutine.id, routineName, selectedExIds);
+        } else {
+            await saveRoutineAction(routineName, selectedExIds);
+        }
+
         loadRoutines();
 
         // Reset
-        setNewRoutineName('');
+        setRoutineName('');
         setSelectedExIds([]);
+        setEditingRoutine(null);
         setIsCreating(false);
     };
 
-    const handleDelete = async (id: string) => {
+    const handleDelete = async (id: string, e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
         if (confirm('Delete this routine?')) {
             await deleteRoutineAction(id);
             loadRoutines();
@@ -66,7 +92,7 @@ export default function RoutinesPage() {
                     </Link>
                     {!isCreating && (
                         <button
-                            onClick={() => setIsCreating(true)}
+                            onClick={startCreating}
                             className="bg-orange-600 hover:bg-orange-500 text-white p-2 rounded-xl transition-colors shadow-lg shadow-orange-600/20"
                         >
                             <Plus size={24} />
@@ -77,14 +103,14 @@ export default function RoutinesPage() {
 
             {isCreating ? (
                 <form onSubmit={handleSave} className="glass-card p-4 rounded-xl space-y-4">
-                    <h3 className="text-white font-semibold">New Routine</h3>
+                    <h3 className="text-white font-semibold">{editingRoutine ? 'Edit Routine' : 'New Routine'}</h3>
 
                     <div>
                         <label className="block text-xs text-zinc-500 mb-1">Routine Name</label>
                         <input
                             type="text"
-                            value={newRoutineName}
-                            onChange={e => setNewRoutineName(e.target.value)}
+                            value={routineName}
+                            onChange={e => setRoutineName(e.target.value)}
                             className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg p-3 text-white focus:border-orange-500 outline-none"
                             placeholder="e.g. Leg Day Destruction"
                             required
@@ -123,46 +149,67 @@ export default function RoutinesPage() {
                             type="submit"
                             className="flex-1 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold py-3 rounded-lg shadow-lg hover:shadow-orange-500/20"
                         >
-                            Save Routine
+                            {editingRoutine ? 'Update Routine' : 'Save Routine'}
                         </button>
                     </div>
                 </form>
             ) : (
                 <div className="space-y-4">
-                    {routines.map(routine => (
-                        <div key={routine.id} className="glass-card p-5 rounded-xl group relative overflow-hidden">
-                            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                <button onClick={() => handleDelete(routine.id)} className="text-zinc-600 hover:text-red-500 transition-colors">
-                                    <Trash2 size={18} />
-                                </button>
-                            </div>
+                    {routines.map(routine => {
+                        const isExpanded = expandedRoutineId === routine.id;
+                        const visibleExercises = isExpanded ? routine.exerciseIds : routine.exerciseIds.slice(0, 3);
 
-                            <div className="mb-4">
-                                <h3 className="text-lg font-bold text-white">{routine.name}</h3>
-                                <p className="text-xs text-zinc-500">{routine.exerciseIds.length} Exercises</p>
-                            </div>
+                        return (
+                            <div key={routine.id} className="glass-card p-5 rounded-xl group relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 transition-all">
+                                    <button onClick={() => startEditing(routine)} className="text-zinc-600 hover:text-orange-500 transition-colors">
+                                        <Edit2 size={18} />
+                                    </button>
+                                    <button onClick={(e) => handleDelete(routine.id, e)} className="text-zinc-600 hover:text-red-500 transition-colors">
+                                        <Trash2 size={18} />
+                                    </button>
+                                </div>
 
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {routine.exerciseIds.slice(0, 3).map(id => {
-                                    const ex = exercises.find(e => e.id === id);
-                                    return ex ? (
-                                        <span key={id} className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded border border-zinc-700">
-                                            {ex.name}
-                                        </span>
-                                    ) : null;
-                                })}
-                                {routine.exerciseIds.length > 3 && (
-                                    <span className="text-[10px] bg-zinc-800 text-zinc-500 px-2 py-1 rounded">+{routine.exerciseIds.length - 3} more</span>
-                                )}
-                            </div>
+                                <div className="mb-4">
+                                    <h3 className="text-lg font-bold text-white">{routine.name}</h3>
+                                    <p className="text-xs text-zinc-500">{routine.exerciseIds.length} Exercises</p>
+                                </div>
 
-                            <Link href={`/log?routine=${routine.id}`} className="block w-full">
-                                <button className="w-full bg-orange-600/10 hover:bg-orange-600/20 border border-orange-600/30 text-orange-500 font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all group-hover:bg-orange-600 group-hover:text-white">
-                                    <Play size={16} /> Start Workout
-                                </button>
-                            </Link>
-                        </div>
-                    ))}
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    {visibleExercises.map(id => {
+                                        const ex = exercises.find(e => e.id === id);
+                                        return ex ? (
+                                            <span key={id} className="text-[10px] bg-zinc-800 text-zinc-400 px-2 py-1 rounded border border-zinc-700">
+                                                {ex.name}
+                                            </span>
+                                        ) : null;
+                                    })}
+                                    {!isExpanded && routine.exerciseIds.length > 3 && (
+                                        <button
+                                            onClick={() => setExpandedRoutineId(routine.id)}
+                                            className="text-[10px] bg-zinc-800 text-zinc-500 px-2 py-1 rounded hover:bg-zinc-700 hover:text-zinc-300 transition-colors"
+                                        >
+                                            +{routine.exerciseIds.length - 3} more
+                                        </button>
+                                    )}
+                                    {isExpanded && (
+                                        <button
+                                            onClick={() => setExpandedRoutineId(null)}
+                                            className="text-[10px] bg-zinc-800 text-zinc-500 px-2 py-1 rounded hover:bg-zinc-700 hover:text-zinc-300 transition-colors flex items-center gap-1"
+                                        >
+                                            Show less <X size={10} />
+                                        </button>
+                                    )}
+                                </div>
+
+                                <Link href={`/log?routine=${routine.id}`} className="block w-full">
+                                    <button className="w-full bg-orange-600/10 hover:bg-orange-600/20 border border-orange-600/30 text-orange-500 font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all group-hover:bg-orange-600 group-hover:text-white">
+                                        <Play size={16} /> Start Workout
+                                    </button>
+                                </Link>
+                            </div>
+                        );
+                    })}
 
                     {routines.length === 0 && (
                         <div className="text-center py-12 border border-dashed border-zinc-800 rounded-xl">
@@ -170,7 +217,7 @@ export default function RoutinesPage() {
                                 <Dumbbell size={20} />
                             </div>
                             <p className="text-zinc-500 text-sm">No routines created yet.</p>
-                            <button onClick={() => setIsCreating(true)} className="text-orange-500 text-xs font-bold mt-2 hover:underline">
+                            <button onClick={startCreating} className="text-orange-500 text-xs font-bold mt-2 hover:underline">
                                 Create your first routine
                             </button>
                         </div>

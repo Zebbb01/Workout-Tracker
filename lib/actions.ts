@@ -127,6 +127,19 @@ export async function saveRoutineAction(name: string, exerciseIds: string[]) {
     revalidatePath('/routines');
 }
 
+export async function updateRoutineAction(id: string, name: string, exerciseIds: string[]) {
+    const userId = await getUser();
+
+    await prisma.routine.update({
+        where: { id, userId },
+        data: {
+            name,
+            exerciseIds: JSON.stringify(exerciseIds)
+        }
+    });
+    revalidatePath('/routines');
+}
+
 export async function deleteRoutineAction(id: string) {
     const userId = await getUser();
     await prisma.routine.delete({
