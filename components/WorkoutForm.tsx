@@ -14,6 +14,9 @@ interface WorkoutFormProps {
     onSuccess: () => void;
 }
 
+import { db } from '@/lib/db';
+import { syncWorkouts } from '@/lib/sync';
+
 export default function WorkoutForm({ selectedDate, routineId, onSuccess }: WorkoutFormProps) {
     const { exercises, isLoading: isLoadingExercises, addCustomExercise } = useExercises();
     const [isCreatingExercise, setIsCreatingExercise] = useState(false);
@@ -43,10 +46,10 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                 }
 
                 if (routineId) {
-                    const allRoutines = await getRoutinesAction();
-                    const found = allRoutines.find(r => r.id === routineId);
+                    // Load from Dexie
+                    const found = await db.routines.get(routineId);
                     if (found) {
-                        setRoutine(found);
+                        setRoutine(found as any); // Type assertion needed or update Routine type
                         // Automatically select first exercise in routine
                         if (found.exerciseIds.length > 0) {
                             setExerciseId(found.exerciseIds[0]);
@@ -65,13 +68,7 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
         await updateUnitPreferenceAction(unit === 'imperial');
     };
 
-    // Auto-calculate total or per-side
-    useEffect(() => {
-        if (weightPerSide && !isNaN(Number(weightPerSide))) {
-            const perSide = Number(weightPerSide);
-            setTotalWeight((perSide * 2).toString());
-        }
-    }, [weightPerSide]);
+    // ...
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,8 +79,9 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
             const exercise = exercises.find(ex => ex.id === exerciseId);
             if (!exercise) return;
 
-            const newWorkout: WorkoutSet = {
-                id: crypto.randomUUID(),
+            const workoutId = crypto.randomUUID();
+            const newWorkout = {
+                id: workoutId,
                 exerciseId,
                 exerciseName: exercise.name,
                 weightPerSide: Number(weightPerSide),
@@ -92,10 +90,13 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                 sets: Number(sets),
                 date: (selectedDate || new Date()).toISOString(),
                 notes,
-                type: setType,
+                type: setType || 'normal',
+                userId: 'current-user',
+                syncStatus: 'pending_create' as const
             };
 
-            await saveWorkoutAction(newWorkout);
+            await db.workouts.add(newWorkout);
+            syncWorkouts();
 
             // Reset form partially for rapid entry
             setReps('');
