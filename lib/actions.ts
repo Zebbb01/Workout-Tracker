@@ -67,7 +67,8 @@ export async function getWorkoutsAction() {
         date: d.date.toISOString(),
         restTime: d.restTime ?? undefined,
         notes: d.notes ?? undefined,
-        type: (d.type as any) ?? 'normal'
+        type: (d.type as any) ?? 'normal',
+        unit: (d.unit as any) ?? 'metric'
     }));
 }
 
@@ -85,6 +86,7 @@ export async function saveWorkoutAction(data: any) {
             sets: data.sets,
             date: new Date(data.date),
             type: data.type || 'normal',
+            unit: data.unit || 'metric',
             notes: data.notes,
             restTime: data.restTime
         }

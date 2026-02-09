@@ -126,6 +126,7 @@ model WorkoutSet {
   date          DateTime
   
   type          String   @default("normal")
+  unit          String   @default("metric") // 'metric' (kg) or 'imperial' (lbs)
   notes         String?
   restTime      Int?
   

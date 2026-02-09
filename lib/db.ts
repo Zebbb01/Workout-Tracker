@@ -28,6 +28,7 @@ export interface LocalWorkoutSet {
     date: string; // ISO String
     notes?: string;
     type: 'normal' | 'warmup' | 'drop' | 'failure';
+    unit: 'metric' | 'imperial';
     userId: string;
     syncStatus: 'synced' | 'pending_create' | 'pending_delete';
 }

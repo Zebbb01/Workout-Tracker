@@ -101,7 +101,8 @@ export async function syncWorkouts() {
             if (w.syncStatus === 'pending_create') {
                 await saveWorkoutAction({
                     ...w,
-                    date: w.date // Ensure format matches what action expects
+                    date: w.date, // Ensure format matches what action expects
+                    unit: w.unit || 'metric'
                 });
                 await db.workouts.update(w.id, { syncStatus: 'synced' });
             }

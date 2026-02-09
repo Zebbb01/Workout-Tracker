@@ -16,6 +16,7 @@ export interface WorkoutSet {
   date: string;
   // New Fields
   type?: 'normal' | 'warmup' | 'drop' | 'failure';
+  unit?: 'metric' | 'imperial';
   notes?: string;
   restTime?: number; // in seconds
 }
