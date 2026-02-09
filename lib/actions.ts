@@ -227,7 +227,8 @@ export async function deleteAccountAction() {
 import { signOut } from "@/auth";
 
 export async function signOutAction() {
-    await signOut({ redirectTo: "/login" });
+    // This will redirect to /login after signout
+    await signOut({ redirect: true, redirectTo: "/login" });
 }
 
 // --- TDEE Profile ---

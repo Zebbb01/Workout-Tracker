@@ -49,6 +49,16 @@ export default function SettingsPage() {
     };
 
     const handleLogout = async () => {
+        // Clear local database cache on logout
+        try {
+            const { db } = await import('@/lib/db');
+            await db.workouts.clear();
+            await db.routines.clear();
+            await db.exercises.clear();
+        } catch (e) {
+            console.warn('Failed to clear local cache:', e);
+        }
+        // Sign out and redirect
         await signOutAction();
     };
 

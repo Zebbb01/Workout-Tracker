@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getWorkoutsAction, getUserTDEEProfileAction, getWeightEntriesAction } from '@/lib/actions';
+import { getWorkoutsAction, getUserTDEEProfileAction, getWeightEntriesAction, getMealPlansAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { format, differenceInDays, startOfDay, subDays } from 'date-fns';
 import {
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import ActivityChart from '@/components/ActivityChart';
+import BeginnerTips from '@/components/BeginnerTips';
 import { motion } from 'framer-motion';
 
 interface TDEEProfile {
@@ -31,6 +32,7 @@ export default function Home() {
     const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
     const [tdeeProfile, setTdeeProfile] = useState<TDEEProfile | null>(null);
     const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
+    const [hasMeals, setHasMeals] = useState(false);
     const [stats, setStats] = useState({
         totalWorkouts: 0,
         totalWeight: 0,
@@ -92,6 +94,10 @@ export default function Home() {
                 // Load weight entries
                 const weights = await getWeightEntriesAction(7);
                 setWeightEntries(weights as WeightEntry[]);
+
+                // Check if user has any meals
+                const todayMeals = await getMealPlansAction(new Date());
+                setHasMeals(todayMeals.length > 0);
             } catch (e) {
                 console.error('Failed to load dashboard data', e);
             }
@@ -129,6 +135,14 @@ export default function Home() {
                 </Link>
             </header>
 
+            {/* Beginner Tips - Show for new users */}
+            <BeginnerTips
+                hasWorkouts={stats.totalWorkouts > 0}
+                hasMeals={hasMeals}
+                hasTDEE={!!tdeeProfile?.tdee}
+                hasWeight={weightEntries.length > 0}
+            />
+
             {/* TDEE/Calories Card - Only show if profile exists */}
             {tdeeProfile?.tdee && (
                 <motion.div
@@ -144,8 +158,8 @@ export default function Home() {
                             <div>
                                 <h3 className="text-xs text-zinc-500 font-medium">Daily Target</h3>
                                 <span className={`text-xs px-2 py-0.5 rounded-full ${goalColor === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' :
-                                        goalColor === 'amber' ? 'bg-amber-500/20 text-amber-400' :
-                                            'bg-blue-500/20 text-blue-400'
+                                    goalColor === 'amber' ? 'bg-amber-500/20 text-amber-400' :
+                                        'bg-blue-500/20 text-blue-400'
                                     }`}>
                                     {goalLabel}
                                 </span>
@@ -236,10 +250,10 @@ export default function Home() {
                         </div>
                         {weightChange !== null && (
                             <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${weightChange < 0
-                                    ? 'bg-emerald-500/20 text-emerald-400'
-                                    : weightChange > 0
-                                        ? 'bg-amber-500/20 text-amber-400'
-                                        : 'bg-zinc-800 text-zinc-400'
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : weightChange > 0
+                                    ? 'bg-amber-500/20 text-amber-400'
+                                    : 'bg-zinc-800 text-zinc-400'
                                 }`}>
                                 {weightChange < 0 ? <TrendingDown size={12} /> : weightChange > 0 ? <TrendingUp size={12} /> : null}
                                 {weightChange !== 0 ? `${Math.abs(weightChange).toFixed(1)} kg` : 'No change'}

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { db, LocalWorkoutSet, LocalRoutine, LocalExercise } from './db';
 import { syncWorkouts, syncRoutines, syncExercises } from './sync';
-import { getUserProfileAction } from './actions';
+import { getUserProfileAction, getMealPlansAction, getAllAchievementsAction, getUserAchievementsAction, getUserTDEEProfileAction } from './actions';
 import { useLiveQuery } from 'dexie-react-hooks';
 
 interface UserProfile {
@@ -19,6 +19,10 @@ interface CacheContextType {
     routines: LocalRoutine[];
     exercises: LocalExercise[];
     userProfile: UserProfile | null;
+    meals: any[];
+    achievements: any[];
+    userAchievements: any[];
+    tdeeProfile: any | null;
 
     // Loading states
     isLoading: boolean;
@@ -29,6 +33,9 @@ interface CacheContextType {
     refreshRoutines: () => Promise<void>;
     refreshExercises: () => Promise<void>;
     refreshUserProfile: () => Promise<void>;
+    refreshMeals: (date?: Date) => Promise<void>;
+    refreshAchievements: () => Promise<void>;
+    refreshTDEE: () => Promise<void>;
     refreshAll: () => Promise<void>;
 
     // Derived data
@@ -41,6 +48,10 @@ export function CacheProvider({ children }: { children: ReactNode }) {
     const [isLoading, setIsLoading] = useState(true);
     const [isInitialized, setIsInitialized] = useState(false);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+    const [meals, setMeals] = useState<any[]>([]);
+    const [achievements, setAchievements] = useState<any[]>([]);
+    const [userAchievements, setUserAchievements] = useState<any[]>([]);
+    const [tdeeProfile, setTdeeProfile] = useState<any | null>(null);
 
     // Use Dexie's live queries for reactive local data
     const workouts = useLiveQuery(() => db.workouts.toArray(), [], []) as LocalWorkoutSet[];
@@ -88,6 +99,37 @@ export function CacheProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    const refreshMeals = useCallback(async (date?: Date) => {
+        try {
+            const data = await getMealPlansAction(date || new Date());
+            setMeals(data);
+        } catch (err) {
+            console.warn('Failed to fetch meals:', err);
+        }
+    }, []);
+
+    const refreshAchievements = useCallback(async () => {
+        try {
+            const [all, user] = await Promise.all([
+                getAllAchievementsAction(),
+                getUserAchievementsAction()
+            ]);
+            setAchievements(all);
+            setUserAchievements(user);
+        } catch (err) {
+            console.warn('Failed to fetch achievements:', err);
+        }
+    }, []);
+
+    const refreshTDEE = useCallback(async () => {
+        try {
+            const profile = await getUserTDEEProfileAction();
+            setTdeeProfile(profile);
+        } catch (err) {
+            console.warn('Failed to fetch TDEE profile:', err);
+        }
+    }, []);
+
     const refreshAll = useCallback(async () => {
         setIsLoading(true);
         try {
@@ -96,11 +138,14 @@ export function CacheProvider({ children }: { children: ReactNode }) {
                 refreshRoutines(),
                 refreshWorkouts(),
                 refreshUserProfile(),
+                refreshMeals(),
+                refreshAchievements(),
+                refreshTDEE(),
             ]);
         } finally {
             setIsLoading(false);
         }
-    }, [refreshExercises, refreshRoutines, refreshWorkouts, refreshUserProfile]);
+    }, [refreshExercises, refreshRoutines, refreshWorkouts, refreshUserProfile, refreshMeals, refreshAchievements, refreshTDEE]);
 
     // Initial load - happens once on mount
     useEffect(() => {
@@ -140,12 +185,19 @@ export function CacheProvider({ children }: { children: ReactNode }) {
         routines,
         exercises,
         userProfile,
+        meals,
+        achievements,
+        userAchievements,
+        tdeeProfile,
         isLoading,
         isInitialized,
         refreshWorkouts,
         refreshRoutines,
         refreshExercises,
         refreshUserProfile,
+        refreshMeals,
+        refreshAchievements,
+        refreshTDEE,
         refreshAll,
         userUnit,
     };
@@ -180,4 +232,19 @@ export function useCachedExercises() {
 export function useUserProfile() {
     const { userProfile, userUnit, refreshUserProfile, isLoading } = useCache();
     return { profile: userProfile, userUnit, refresh: refreshUserProfile, isLoading };
+}
+
+export function useMeals() {
+    const { meals, refreshMeals, isLoading } = useCache();
+    return { meals, refresh: refreshMeals, isLoading };
+}
+
+export function useAchievements() {
+    const { achievements, userAchievements, refreshAchievements, isLoading } = useCache();
+    return { achievements, userAchievements, refresh: refreshAchievements, isLoading };
+}
+
+export function useTDEE() {
+    const { tdeeProfile, refreshTDEE, isLoading } = useCache();
+    return { tdeeProfile, refresh: refreshTDEE, isLoading };
 }

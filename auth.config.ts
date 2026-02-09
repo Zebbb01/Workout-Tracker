@@ -14,6 +14,11 @@ export const authConfig = {
             const isOnLogin = nextUrl.pathname.startsWith('/login');
             const isOnOnboarding = nextUrl.pathname.startsWith('/onboarding');
 
+            // If logged in and trying to access onboarding, redirect to home
+            if (isOnOnboarding && isLoggedIn) {
+                return Response.redirect(new URL('/', nextUrl));
+            }
+
             // Allow unauthenticated access to onboarding
             if (isOnOnboarding) {
                 return true;
