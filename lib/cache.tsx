@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
 import { db, LocalWorkoutSet, LocalRoutine, LocalExercise } from './db';
 import { syncWorkouts, syncRoutines, syncExercises } from './sync';
 import { getUserProfileAction, getMealPlansAction, getAllAchievementsAction, getUserAchievementsAction, getUserTDEEProfileAction } from './actions';
@@ -45,6 +46,7 @@ interface CacheContextType {
 const CacheContext = createContext<CacheContextType | null>(null);
 
 export function CacheProvider({ children }: { children: ReactNode }) {
+    const pathname = usePathname();
     const [isLoading, setIsLoading] = useState(true);
     const [isInitialized, setIsInitialized] = useState(false);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -52,6 +54,9 @@ export function CacheProvider({ children }: { children: ReactNode }) {
     const [achievements, setAchievements] = useState<any[]>([]);
     const [userAchievements, setUserAchievements] = useState<any[]>([]);
     const [tdeeProfile, setTdeeProfile] = useState<any | null>(null);
+
+    // Skip auth-required calls on public routes (onboarding, login)
+    const isPublicRoute = pathname?.startsWith('/onboarding') || pathname?.startsWith('/login');
 
     // Use Dexie's live queries for reactive local data
     const workouts = useLiveQuery(() => db.workouts.toArray(), [], []) as LocalWorkoutSet[];
@@ -147,12 +152,18 @@ export function CacheProvider({ children }: { children: ReactNode }) {
         }
     }, [refreshExercises, refreshRoutines, refreshWorkouts, refreshUserProfile, refreshMeals, refreshAchievements, refreshTDEE]);
 
-    // Initial load - happens once on mount
+    // Initial load - happens once on mount (skip on public routes)
     useEffect(() => {
         if (!isInitialized) {
-            refreshAll().then(() => setIsInitialized(true));
+            if (isPublicRoute) {
+                // On public routes, just mark as initialized without fetching auth-required data
+                setIsLoading(false);
+                setIsInitialized(true);
+            } else {
+                refreshAll().then(() => setIsInitialized(true));
+            }
         }
-    }, [isInitialized, refreshAll]);
+    }, [isInitialized, isPublicRoute, refreshAll]);
 
     // Background sync on visibility change (when user returns to tab)
     useEffect(() => {
