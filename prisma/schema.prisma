@@ -22,6 +22,8 @@ model User {
   customExercises Exercise[]
   profile         UserProfile?
   weightEntries   WeightEntry[]
+  mealPlans       MealPlan[]
+  achievements    UserAchievement[]
 }
 
 model UserProfile {
@@ -50,6 +52,9 @@ model UserProfile {
   
   // Unit preference
   useImperial   Boolean   @default(false)
+  
+  // Onboarding
+  hasCompletedOnboarding Boolean @default(false)
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -141,4 +146,45 @@ model Routine {
   name        String
   exerciseIds String
   createdAt   DateTime @default(now())
+}
+
+model MealPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  mealType    String   // 'breakfast' | 'lunch' | 'dinner' | 'snack'
+  calories    Int?
+  protein     Float?
+  carbs       Float?
+  fat         Float?
+  notes       String?
+  date        DateTime @default(now())
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon        String   // emoji or icon name
+  category    String   // 'workout' | 'streak' | 'weight' | 'meals'
+  requirement Int      // numeric threshold to unlock
+  
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  
+  unlockedAt    DateTime    @default(now())
+  
+  @@unique([userId, achievementId])
 }

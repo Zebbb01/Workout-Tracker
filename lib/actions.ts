@@ -339,3 +339,161 @@ export async function saveWeightEntryAction(weightKg: number, bodyFatPct?: numbe
     return entry;
 }
 
+// --- Meal Plans ---
+export async function getMealPlansAction(date: Date) {
+    const userId = await getUser();
+
+    // Get meals for the specific date (start of day to end of day)
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const meals = await prisma.mealPlan.findMany({
+        where: {
+            userId,
+            date: {
+                gte: startOfDay,
+                lte: endOfDay
+            }
+        },
+        orderBy: { createdAt: 'asc' }
+    });
+
+    return meals.map(m => ({
+        ...m,
+        date: m.date,
+        createdAt: m.createdAt,
+        updatedAt: m.updatedAt
+    }));
+}
+
+export async function addMealPlanAction(data: {
+    name: string;
+    mealType: string;
+    date: Date;
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+    notes?: string;
+}) {
+    const userId = await getUser();
+
+    const meal = await prisma.mealPlan.create({
+        data: {
+            userId,
+            name: data.name,
+            mealType: data.mealType,
+            date: new Date(data.date),
+            calories: data.calories,
+            protein: data.protein,
+            carbs: data.carbs,
+            fat: data.fat,
+            notes: data.notes
+        }
+    });
+
+    revalidatePath('/meals');
+    return meal;
+}
+
+export async function updateMealPlanAction(id: string, data: {
+    name?: string;
+    mealType?: string;
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+    notes?: string;
+}) {
+    const userId = await getUser();
+
+    const meal = await prisma.mealPlan.update({
+        where: { id, userId },
+        data
+    });
+
+    revalidatePath('/meals');
+    return meal;
+}
+
+export async function deleteMealPlanAction(id: string) {
+    const userId = await getUser();
+
+    await prisma.mealPlan.delete({
+        where: { id, userId }
+    });
+
+    revalidatePath('/meals');
+}
+
+// --- Achievements ---
+export async function getAllAchievementsAction() {
+    const achievements = await prisma.achievement.findMany({
+        orderBy: { category: 'asc' }
+    });
+    return achievements;
+}
+
+export async function getUserAchievementsAction() {
+    const userId = await getUser();
+
+    const userAchievements = await prisma.userAchievement.findMany({
+        where: { userId },
+        include: { achievement: true }
+    });
+
+    return userAchievements.map(ua => ({
+        ...ua.achievement,
+        unlockedAt: ua.unlockedAt
+    }));
+}
+
+export async function checkAndUnlockAchievementsAction() {
+    const userId = await getUser();
+
+    // Get user stats
+    const [workoutCount, mealCount, weightEntries] = await Promise.all([
+        prisma.workoutSet.count({ where: { userId } }),
+        prisma.mealPlan.count({ where: { userId } }),
+        prisma.weightEntry.count({ where: { userId } })
+    ]);
+
+    // Get all achievements
+    const allAchievements = await prisma.achievement.findMany();
+    const userAchievements = await prisma.userAchievement.findMany({
+        where: { userId }
+    });
+    const unlockedIds = new Set(userAchievements.map(ua => ua.achievementId));
+
+    // Check which achievements should be unlocked
+    const newlyUnlocked = [];
+    for (const achievement of allAchievements) {
+        if (unlockedIds.has(achievement.id)) continue;
+
+        let shouldUnlock = false;
+        switch (achievement.category) {
+            case 'workout':
+                shouldUnlock = workoutCount >= achievement.requirement;
+                break;
+            case 'meals':
+                shouldUnlock = mealCount >= achievement.requirement;
+                break;
+            case 'weight':
+                shouldUnlock = weightEntries >= achievement.requirement;
+                break;
+        }
+
+        if (shouldUnlock) {
+            await prisma.userAchievement.create({
+                data: { userId, achievementId: achievement.id }
+            });
+            newlyUnlocked.push(achievement);
+        }
+    }
+
+    revalidatePath('/achievements');
+    revalidatePath('/');
+    return newlyUnlocked;
+}

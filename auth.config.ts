@@ -12,6 +12,12 @@ export const authConfig = {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
             const isOnLogin = nextUrl.pathname.startsWith('/login');
+            const isOnOnboarding = nextUrl.pathname.startsWith('/onboarding');
+
+            // Allow unauthenticated access to onboarding
+            if (isOnOnboarding) {
+                return true;
+            }
 
             if (isOnLogin) {
                 if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
@@ -19,7 +25,8 @@ export const authConfig = {
             }
 
             if (!isLoggedIn) {
-                return false; // Redirect to login
+                // Redirect to onboarding instead of login for new users
+                return Response.redirect(new URL('/onboarding', nextUrl));
             }
 
             return true;
