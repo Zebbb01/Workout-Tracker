@@ -80,6 +80,17 @@ export default function WelcomeScreen({ onContinue }: WelcomeScreenProps) {
                     Continue
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
+
+                {/* Skip to Sign In */}
+                <motion.a
+                    href="/login"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.9 }}
+                    className="mt-4 text-zinc-500 hover:text-orange-400 text-sm transition-colors text-center block"
+                >
+                    Already know the app? Skip to sign in →
+                </motion.a>
             </motion.div>
         </motion.div>
     );
