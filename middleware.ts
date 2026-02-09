@@ -8,5 +8,6 @@ export default auth((req) => {
 })
 
 export const config = {
-    matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+    // Exclude onboarding, login, api routes, and static files from middleware
+    matcher: ["/((?!api|_next/static|_next/image|favicon.ico|onboarding|login|manifest.json|icon-|sw.js).*)"],
 }

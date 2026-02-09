@@ -6,8 +6,8 @@ import {
     updateUserProfileAction,
     updateUnitPreferenceAction,
     deleteAccountAction,
-    signOutAction
 } from '@/lib/actions';
+import { signOut } from 'next-auth/react';
 import { User, LogOut, Trash2, Save, ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -28,7 +28,7 @@ export default function SettingsPage() {
                 if (!data) {
                     // User authenticates but record is missing in DB (e.g. after DB switch)
                     console.warn("User profile not found. Signing out.");
-                    await signOutAction();
+                    await signOut({ callbackUrl: '/onboarding' });
                     return;
                 }
                 setProfile(data);
@@ -58,8 +58,8 @@ export default function SettingsPage() {
         } catch (e) {
             console.warn('Failed to clear local cache:', e);
         }
-        // Sign out and redirect
-        await signOutAction();
+        // Sign out using client-side method - this properly clears the session
+        await signOut({ callbackUrl: '/onboarding' });
     };
 
     const handleDeleteClick = () => {
@@ -68,8 +68,7 @@ export default function SettingsPage() {
 
     const confirmDeleteAccount = async () => {
         await deleteAccountAction();
-        await signOutAction();
-        window.location.href = '/login';
+        await signOut({ callbackUrl: '/onboarding' });
     };
 
     if (!profile) return <div className="p-8 text-center text-zinc-500">Loading settings...</div>;
