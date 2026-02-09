@@ -39,6 +39,78 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
     // Session History (for batch logging)
     const [sessionWorkouts, setSessionWorkouts] = useState<any[]>([]);
 
+    // Per-Exercise Draft State (to prevent reset when switching tabs)
+    const [exerciseDrafts, setExerciseDrafts] = useState<Record<string, {
+        weightPerSide: string;
+        reps: string;
+        sets: string;
+        notes: string;
+        setType: WorkoutSet['type'];
+        logUnit: string;
+    }>>({});
+
+    // Helper to save current form state to drafts
+    const saveDraft = (exId: string) => {
+        if (!exId) return;
+        setExerciseDrafts(prev => ({
+            ...prev,
+            [exId]: { weightPerSide, reps, sets, notes, setType, logUnit }
+        }));
+    };
+
+    // Helper to load draft or pre-fill from history
+    const loadDraftOrPrefill = async (exId: string) => {
+        if (!exId) return;
+
+        // Check if we have a draft for this exercise
+        if (exerciseDrafts[exId]) {
+            const draft = exerciseDrafts[exId];
+            setWeightPerSide(draft.weightPerSide);
+            setReps(draft.reps);
+            setSets(draft.sets);
+            setNotes(draft.notes);
+            setSetType(draft.setType);
+            setLogUnit(draft.logUnit);
+            return;
+        }
+
+        // No draft, try to pre-fill from last log
+        const lastLog = await db.workouts
+            .where('exerciseId').equals(exId)
+            .reverse()
+            .sortBy('date');
+
+        if (lastLog && lastLog.length > 0) {
+            const prev = lastLog[0];
+            setReps(String(prev.reps));
+            setSets(String(prev.sets));
+            setNotes('');
+            setSetType('normal');
+
+            const prevUnit = prev.unit || 'metric';
+            if (prevUnit === logUnit) {
+                setWeightPerSide(String(prev.weightPerSide));
+            } else {
+                const weight = prev.weightPerSide;
+                if (prevUnit === 'imperial' && logUnit === 'metric') {
+                    setWeightPerSide((weight * 0.453592).toFixed(1));
+                } else if (prevUnit === 'metric' && logUnit === 'imperial') {
+                    setWeightPerSide((weight * 2.20462).toFixed(1));
+                }
+            }
+        } else {
+            // Clear inputs if no history
+            setWeightPerSide('');
+            setReps('');
+            setSets('');
+            setNotes('');
+            setSetType('normal');
+        }
+    };
+
+    // Track previous exerciseId to save draft on change
+    const prevExerciseIdRef = React.useRef<string>('');
+
     // 1. Load Initial Data (Profile & Routine)
     useEffect(() => {
         const load = async () => {
@@ -68,60 +140,29 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
         load();
     }, [routineId, exercises.length]); // Dependencies need care to avoid loops
 
-    // 2. Pre-fill Data when Exercise Changes
+    // 2. Handle Exercise Change: Save old draft, load new draft/prefill
     useEffect(() => {
-        const loadLastLog = async () => {
-            if (!exerciseId) return;
+        if (prevExerciseIdRef.current && prevExerciseIdRef.current !== exerciseId) {
+            // Save draft for the exercise we're leaving
+            saveDraft(prevExerciseIdRef.current);
+        }
 
-            // Find last log for this exercise
-            const lastLog = await db.workouts
-                .where('exerciseId').equals(exerciseId)
-                .reverse()
-                .sortBy('date');
+        // Load draft or prefill for the new exercise
+        loadDraftOrPrefill(exerciseId);
 
-            if (lastLog && lastLog.length > 0) {
-                const prev = lastLog[0];
-                setReps(String(prev.reps));
-                setSets(String(prev.sets));
+        prevExerciseIdRef.current = exerciseId;
+    }, [exerciseId]);
 
-                // Handle Unit Conversion for Pre-fill
-                // If previous log unit matches current log unit preference, use as is
-                // Else convert
-                const prevUnit = prev.unit || 'metric';
-
-                if (prevUnit === logUnit) {
-                    setWeightPerSide(String(prev.weightPerSide));
-                } else {
-                    // Conversion needed
-                    const weight = prev.weightPerSide;
-                    if (prevUnit === 'imperial' && logUnit === 'metric') {
-                        // lbs -> kg
-                        setWeightPerSide((weight * 0.453592).toFixed(1));
-                    } else if (prevUnit === 'metric' && logUnit === 'imperial') {
-                        // kg -> lbs
-                        setWeightPerSide((weight * 2.20462).toFixed(1));
-                    }
-                }
-            } else {
-                // Clear inputs if no history
-                setWeightPerSide('');
-                setReps('');
-                setSets('');
-                setNotes('');
+    // 3. Calculator Effect - supports ranges like "35-40" by using max value for display
+    useEffect(() => {
+        const parseWeight = (val: string): number => {
+            if (val.includes('-')) {
+                const parts = val.split('-').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+                return parts.length > 0 ? Math.max(...parts) : 0;
             }
+            return parseFloat(val) || 0;
         };
-        loadLastLog();
-    }, [exerciseId, logUnit]); // Re-run if exercise OR unit preference changes
-
-    // 3. Calculator Effect
-    useEffect(() => {
-        const w = parseFloat(weightPerSide) || 0;
-        // Total = 2 * side (assuming bar is negligible or part of side? 
-        // Logic for dumbbells usually is side + side. Barbell is plate + plate + bar.
-        // The app seems to interpret 'Weight / Side' as per dumbbell or per side of machine.
-        // Let's keep existing logic: Total = weightPerSide * 2? Or just input total?
-        // Checking previous code: totalWeight was calculated but not shown how.
-        // Let's assume standard: Total = w * 2. 
+        const w = parseWeight(weightPerSide);
         setTotalWeight((w * 2).toFixed(1));
     }, [weightPerSide]);
 
@@ -160,6 +201,15 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
             const exercise = exercises.find(ex => ex.id === exerciseId);
             if (!exercise) return;
 
+            // Parse range values (e.g., "35-40") by taking max value
+            const parseNumericValue = (val: string): number => {
+                if (val.includes('-')) {
+                    const parts = val.split('-').map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+                    return parts.length > 0 ? Math.max(...parts) : 0;
+                }
+                return parseFloat(val) || 0;
+            };
+
             const workoutId = crypto.randomUUID();
             const date = (selectedDate || new Date()).toISOString();
 
@@ -167,12 +217,12 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                 id: workoutId,
                 exerciseId,
                 exerciseName: exercise.name,
-                weightPerSide: Number(weightPerSide),
-                totalWeight: Number(totalWeight),
-                reps: Number(reps),
-                sets: Number(sets),
+                weightPerSide: parseNumericValue(weightPerSide),
+                totalWeight: parseNumericValue(weightPerSide) * 2,
+                reps: parseNumericValue(reps),
+                sets: parseNumericValue(sets),
                 date,
-                notes,
+                notes: `${weightPerSide} ${logUnit === 'metric' ? 'kg' : 'lbs'}, ${reps} reps, ${sets} sets${notes ? ' - ' + notes : ''}`,
                 type: setType || 'normal',
                 unit: logUnit as 'metric' | 'imperial',
                 userId: 'current-user',
@@ -340,13 +390,13 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                                 <span className="text-[10px] text-zinc-600 uppercase">{logUnit}</span>
                             </label>
                             <input
-                                type="number"
-                                step="0.1"
+                                type="text"
+                                inputMode="decimal"
                                 value={weightPerSide}
                                 onChange={(e) => setWeightPerSide(e.target.value)}
                                 disabled={isSaving}
                                 className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors text-lg font-mono"
-                                placeholder="0"
+                                placeholder="0 or 35-40"
                                 required
                             />
                             {/* Quick Adds */}
@@ -375,22 +425,24 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                         <div>
                             <label className="block text-xs text-zinc-400 mb-1">Reps</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="numeric"
                                 value={reps}
                                 onChange={(e) => setReps(e.target.value)}
                                 className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors text-lg font-mono"
-                                placeholder="0"
+                                placeholder="0 or 8-12"
                                 required
                             />
                         </div>
                         <div>
                             <label className="block text-xs text-zinc-400 mb-1">Sets</label>
                             <input
-                                type="number"
+                                type="text"
+                                inputMode="numeric"
                                 value={sets}
                                 onChange={(e) => setSets(e.target.value)}
                                 className="w-full bg-slate-800/50 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-orange-500 transition-colors text-lg font-mono"
-                                placeholder="0"
+                                placeholder="0 or 3-4"
                                 required
                             />
                         </div>
