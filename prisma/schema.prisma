@@ -188,3 +188,13 @@ model UserAchievement {
   
   @@unique([userId, achievementId])
 }
+
+model NutritionCache {
+  id           String   @id @default(cuid())
+  queryKey     String   @unique  // normalized lowercase meal description
+  calories     Int
+  protein      Float
+  carbs        Float
+  fat          Float
+  createdAt    DateTime @default(now())
+}
