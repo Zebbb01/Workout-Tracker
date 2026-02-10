@@ -247,7 +247,7 @@ export default function MealsPage() {
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.5, type: "spring" }}
                 onClick={() => setShowAddForm(true)}
-                className="fixed bottom-24 right-4 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center z-40"
+                className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center z-40"
             >
                 <Plus className="w-6 h-6 text-white" />
             </motion.button>

@@ -37,6 +37,12 @@ const bottomItems = [
     { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
+// Get page title from current path
+function getPageTitle(pathname: string): string {
+    const route = [...navItems, ...bottomItems].find(item => item.href === pathname);
+    return route?.name || 'Body Tracker';
+}
+
 export default function Sidebar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
@@ -62,16 +68,34 @@ export default function Sidebar() {
     // Don't render on login/onboarding pages
     if (pathname?.startsWith('/login') || pathname?.startsWith('/onboarding')) return null;
 
+    const pageTitle = getPageTitle(pathname || '/');
+
     return (
         <>
-            {/* Hamburger Button */}
-            <button
-                onClick={() => setIsOpen(true)}
-                className="fixed top-4 left-4 z-50 bg-zinc-900/80 backdrop-blur-xl border border-white/10 p-2.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-200 shadow-lg shadow-black/20"
-                aria-label="Open menu"
-            >
-                <Menu size={22} />
-            </button>
+            {/* Top Navbar */}
+            <div className="sticky top-0 z-50 w-full max-w-md mx-auto">
+                <div className="flex items-center justify-between px-4 py-3 bg-zinc-950/80 backdrop-blur-xl border-b border-white/5">
+                    {/* Left: Hamburger + Title */}
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setIsOpen(true)}
+                            className="p-2 -ml-1 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800/80 transition-all duration-200"
+                            aria-label="Open menu"
+                        >
+                            <Menu size={22} />
+                        </button>
+                        <h1 className="text-lg font-bold text-white tracking-tight">{pageTitle}</h1>
+                    </div>
+
+                    {/* Right: Settings */}
+                    <Link
+                        href="/settings"
+                        className="p-2 rounded-xl text-zinc-500 hover:text-white hover:bg-zinc-800/80 transition-all duration-200"
+                    >
+                        <Settings size={20} />
+                    </Link>
+                </div>
+            </div>
 
             <AnimatePresence>
                 {isOpen && (
