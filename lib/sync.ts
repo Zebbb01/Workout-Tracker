@@ -14,7 +14,8 @@ export async function syncExercises() {
             try {
                 // We use the action but we might need to handle ID mapping if the server assigns a different ID
                 // For now, let's assume the server respects the ID or we handle duplication by name
-                const result = await addCustomExerciseAction(ex.name, ex.category);
+                // Pass the local ID to the server action to ensure consistency
+                const result = await addCustomExerciseAction(ex.name, ex.category, ex.id);
 
                 // If server returns a different ID, we'd need to update local. 
                 // But simplified: Mark as synced.
@@ -56,7 +57,7 @@ export async function syncRoutines() {
     for (const r of pending) {
         try {
             if (r.syncStatus === 'pending_create') {
-                await saveRoutineAction(r.name, r.exerciseIds);
+                await saveRoutineAction(r.name, r.exerciseIds, r.id);
             } else if (r.syncStatus === 'pending_update') {
                 await updateRoutineAction(r.id, r.name, r.exerciseIds);
             } else if (r.syncStatus === 'pending_delete') {
@@ -103,7 +104,7 @@ export async function syncWorkouts() {
                     ...w,
                     date: w.date, // Ensure format matches what action expects
                     unit: w.unit || 'metric'
-                });
+                }, w.id);
                 await db.workouts.update(w.id, { syncStatus: 'synced' });
             }
         } catch (e) { console.error(e); }

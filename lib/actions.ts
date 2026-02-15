@@ -31,7 +31,7 @@ export async function getExercisesAction() {
     return exercises;
 }
 
-export async function addCustomExerciseAction(name: string, category: string) {
+export async function addCustomExerciseAction(name: string, category: string, id?: string) {
     const userId = await getUser();
     // Check for duplicate
     const existing = await prisma.exercise.findFirst({
@@ -43,6 +43,7 @@ export async function addCustomExerciseAction(name: string, category: string) {
 
     const newExercise = await prisma.exercise.create({
         data: {
+            id: id || undefined, // Use client ID if provided
             name,
             category,
             isCustom: true,
@@ -72,11 +73,12 @@ export async function getWorkoutsAction() {
     }));
 }
 
-export async function saveWorkoutAction(data: any) {
+export async function saveWorkoutAction(data: any, id?: string) {
     const userId = await getUser();
 
     await prisma.workoutSet.create({
         data: {
+            id: id || data.id || undefined, // Use provided ID or data.id or let Prisma generate
             userId,
             exerciseId: data.exerciseId,
             exerciseName: data.exerciseName,
@@ -124,7 +126,7 @@ export async function getRoutinesAction() {
     }));
 }
 
-export async function saveRoutineAction(name: string, exerciseIds: string[]) {
+export async function saveRoutineAction(name: string, exerciseIds: string[], id?: string) {
     const userId = await getUser();
 
     // Check for duplicate
@@ -137,6 +139,7 @@ export async function saveRoutineAction(name: string, exerciseIds: string[]) {
 
     await prisma.routine.create({
         data: {
+            id: id || undefined, // Use client ID if provided
             userId,
             name,
             exerciseIds: JSON.stringify(exerciseIds)
