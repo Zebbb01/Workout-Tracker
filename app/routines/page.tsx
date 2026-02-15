@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useExercises } from '@/lib/useExercises';
 import { getRoutinesAction, saveRoutineAction, deleteRoutineAction, updateRoutineAction } from '@/lib/actions';
 import { Routine } from '@/lib/types';
-import { Plus, Trash2, ChevronRight, Dumbbell, Play, Settings, Edit2, X } from 'lucide-react';
+import { Plus, Trash2, ChevronRight, Dumbbell, Play, Settings, Edit2, X, Search } from 'lucide-react';
 import Link from 'next/link';
 
 import { db, LocalRoutine } from '@/lib/db';
@@ -28,6 +28,7 @@ export default function RoutinesPage() {
     // Creation/Edit State
     const [routineName, setRoutineName] = useState('');
     const [selectedExIds, setSelectedExIds] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         // Initial sync
@@ -140,7 +141,20 @@ export default function RoutinesPage() {
 
                     <div>
                         <label className="block text-xs text-zinc-500 mb-2">Select Exercises ({selectedExIds.length})</label>
-                        <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+
+                        {/* Search Input */}
+                        <div className="relative mb-2">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search exercises..."
+                                className="w-full bg-zinc-900/50 border border-zinc-700 rounded-lg py-2 pl-9 pr-3 text-sm text-white focus:border-orange-500 outline-none transition-colors placeholder:text-zinc-600"
+                            />
+                        </div>
+
+                        <div className="max-h-60 overflow-y-auto space-y-2 pr-1 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
                             {isLoadingExercises ? (
                                 <div className="space-y-2">
                                     {[1, 2, 3, 4].map(i => (
@@ -148,20 +162,27 @@ export default function RoutinesPage() {
                                     ))}
                                 </div>
                             ) : (
-                                exercises.map(ex => (
-                                    <div
-                                        key={ex.id}
-                                        onClick={() => toggleSelection(ex.id)}
-                                        className={`p-3 rounded-lg border flex justify-between items-center cursor-pointer transition-all
-                                            ${selectedExIds.includes(ex.id)
-                                                ? 'bg-orange-500/10 border-orange-500 text-orange-200'
-                                                : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:bg-zinc-800'}
-                                        `}
-                                    >
-                                        <span className="text-sm font-medium">{ex.name}</span>
-                                        {selectedExIds.includes(ex.id) && <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />}
-                                    </div>
-                                ))
+                                exercises
+                                    .filter(ex => ex.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                                    .map(ex => (
+                                        <div
+                                            key={ex.id}
+                                            onClick={() => toggleSelection(ex.id)}
+                                            className={`p-3 rounded-lg border flex justify-between items-center cursor-pointer transition-all
+                                                ${selectedExIds.includes(ex.id)
+                                                    ? 'bg-orange-500/10 border-orange-500 text-orange-200'
+                                                    : 'bg-zinc-800/50 border-zinc-700 text-zinc-400 hover:bg-zinc-800'}
+                                            `}
+                                        >
+                                            <span className="text-sm font-medium">{ex.name}</span>
+                                            {selectedExIds.includes(ex.id) && <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />}
+                                        </div>
+                                    ))
+                            )}
+                            {!isLoadingExercises && exercises.filter(ex => ex.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                                <div className="text-center py-4 text-zinc-500 text-xs">
+                                    No exercises found
+                                </div>
                             )}
                         </div>
                     </div>
