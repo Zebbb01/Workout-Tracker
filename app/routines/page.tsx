@@ -111,9 +111,6 @@ export default function RoutinesPage() {
                     <p className="text-zinc-500 text-xs">Manage your workout plans</p>
                 </div>
                 <div className="flex gap-2">
-                    <Link href="/settings" className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-xl border border-zinc-700 transition-colors text-zinc-400 hover:text-white flex items-center justify-center">
-                        <Settings size={22} />
-                    </Link>
                     {!isCreating && (
                         <button
                             onClick={startCreating}

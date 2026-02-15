@@ -130,9 +130,6 @@ export default function Home() {
                     </h1>
                     <p className="text-zinc-500 text-xs font-medium">{todayStr}</p>
                 </div>
-                <Link href="/settings" className="bg-zinc-800 hover:bg-zinc-700 p-2 rounded-full border border-zinc-700 transition-colors text-zinc-400 hover:text-white">
-                    <SettingsIcon size={20} />
-                </Link>
             </header>
 
             {/* Beginner Tips - Show for new users */}
