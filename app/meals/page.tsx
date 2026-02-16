@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import {
     Plus, Calendar, ChevronLeft, ChevronRight,
@@ -190,7 +191,7 @@ export default function MealsPage() {
     const getMealsByType = (type: string) => meals.filter((m) => m.mealType === type);
 
     return (
-        <div className="pb-8 animate-in">
+        <div className="pb-24 animate-in">
             {/* Header */}
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
@@ -239,10 +240,10 @@ export default function MealsPage() {
                     <div className="flex items-center justify-between mb-3">
                         <h3 className="text-sm text-zinc-400">Daily Summary</h3>
                         <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border ${tdeeTargets.goal === 'cutting'
-                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                                : tdeeTargets.goal === 'bulking'
-                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                                    : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
+                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                            : tdeeTargets.goal === 'bulking'
+                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                                : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
                             }`}>
                             <Target size={11} />
                             {goalLabels[tdeeTargets.goal]?.label || 'Maintain'} Goal
@@ -369,8 +370,8 @@ export default function MealsPage() {
                                 animate={{ width: `${Math.min((totals.calories / tdeeTargets.targetCalories) * 100, 100)}%` }}
                                 transition={{ duration: 0.8, ease: 'easeOut' }}
                                 className={`h-full rounded-full ${totals.calories > tdeeTargets.targetCalories
-                                        ? 'bg-gradient-to-r from-red-500 to-red-600'
-                                        : 'bg-gradient-to-r from-orange-500 to-amber-500'
+                                    ? 'bg-gradient-to-r from-red-500 to-red-600'
+                                    : 'bg-gradient-to-r from-orange-500 to-amber-500'
                                     }`}
                             />
                         </div>
@@ -404,13 +405,25 @@ export default function MealsPage() {
 
                                 <div className="space-y-2">
                                     {typeMeals.length > 0 ? (
-                                        typeMeals.map((meal) => (
-                                            <MealCard
-                                                key={meal.id}
-                                                meal={meal}
-                                                onDelete={handleDeleteMeal}
-                                            />
-                                        ))
+                                        <>
+                                            {typeMeals.map((meal) => (
+                                                <MealCard
+                                                    key={meal.id}
+                                                    meal={meal}
+                                                    onDelete={handleDeleteMeal}
+                                                />
+                                            ))}
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedMealType(type);
+                                                    setShowAddForm(true);
+                                                }}
+                                                className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-dashed border-zinc-700/60 hover:border-orange-500/40 text-zinc-500 hover:text-orange-400 transition-colors"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                                <span className="text-xs">Add another {config.label.toLowerCase()}</span>
+                                            </button>
+                                        </>
                                     ) : (
                                         <button
                                             onClick={() => {
@@ -430,24 +443,29 @@ export default function MealsPage() {
                 </div>
             )}
 
-            {/* Floating Add Button */}
-            <motion.button
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: "spring" }}
-                onClick={() => setShowAddForm(true)}
-                className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center z-40"
-            >
-                <Plus className="w-6 h-6 text-white" />
-            </motion.button>
+            {/* Floating Add Button — rendered via portal to escape template transform */}
+            {typeof document !== 'undefined' && createPortal(
+                <motion.button
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.5, type: "spring" }}
+                    onClick={() => setShowAddForm(true)}
+                    className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-600 rounded-full shadow-lg shadow-orange-500/30 flex items-center justify-center z-40"
+                    style={{ transform: 'none' }}
+                >
+                    <Plus className="w-6 h-6 text-white" />
+                </motion.button>,
+                document.body
+            )}
 
-            {/* Add Meal Modal */}
-            {showAddForm && (
+            {/* Add Meal Modal — rendered via portal to escape template transform */}
+            {showAddForm && typeof document !== 'undefined' && createPortal(
                 <AddMealForm
                     defaultMealType={selectedMealType}
                     onSubmit={handleAddMeal}
                     onClose={() => setShowAddForm(false)}
-                />
+                />,
+                document.body
             )}
         </div>
     );

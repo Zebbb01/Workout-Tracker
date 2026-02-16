@@ -102,7 +102,7 @@ export default function AddMealForm({ defaultMealType = 'breakfast', onSubmit, o
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4"
+                className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4"
                 onClick={onClose}
             >
                 <motion.div
@@ -110,7 +110,7 @@ export default function AddMealForm({ defaultMealType = 'breakfast', onSubmit, o
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: 100, opacity: 0 }}
                     onClick={(e) => e.stopPropagation()}
-                    className="w-full max-w-md glass-card p-6 rounded-t-3xl sm:rounded-3xl max-h-[85vh] overflow-y-auto"
+                    className="w-full max-w-md bg-zinc-900/95 border border-white/10 p-6 rounded-t-3xl sm:rounded-3xl max-h-[85vh] overflow-y-auto"
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between mb-6">
