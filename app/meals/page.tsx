@@ -10,6 +10,9 @@ import {
 import { getMealPlansAction, addMealPlanAction, deleteMealPlanAction, getUserTDEEProfileAction } from '@/lib/actions';
 import MealCard from '@/components/MealCard';
 import AddMealForm from '@/components/AddMealForm';
+import FastingWidget from '@/components/FastingWidget';
+import CalorieBanner from '@/components/CalorieBanner';
+import MacroHalfPie from '@/components/MacroHalfPie';
 
 interface Meal {
     id: string;
@@ -240,10 +243,10 @@ export default function MealsPage() {
                     <div className="flex items-center justify-between mb-3">
                         <h3 className="text-sm text-zinc-400">Daily Summary</h3>
                         <div className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border ${tdeeTargets.goal === 'cutting'
-                            ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                            : tdeeTargets.goal === 'bulking'
-                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-                                : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
+                                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                                : tdeeTargets.goal === 'bulking'
+                                    ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+                                    : 'bg-blue-500/10 border-blue-500/30 text-blue-400'
                             }`}>
                             <Target size={11} />
                             {goalLabels[tdeeTargets.goal]?.label || 'Maintain'} Goal
@@ -252,132 +255,54 @@ export default function MealsPage() {
                 )}
                 {!tdeeTargets && <h3 className="text-sm text-zinc-400 mb-3">Daily Summary</h3>}
 
-                {/* Macro cards with progress rings */}
-                <div className="grid grid-cols-4 gap-3">
-                    {/* Calories */}
-                    <div className="text-center">
-                        <div className="relative inline-flex items-center justify-center mb-1">
-                            {tdeeTargets ? (
-                                <>
-                                    <ProgressRing
-                                        value={totals.calories}
-                                        max={tdeeTargets.targetCalories}
-                                        color="#f97316"
-                                    />
-                                    <Flame className="w-4 h-4 text-orange-500 absolute" />
-                                </>
-                            ) : (
-                                <Flame className="w-5 h-5 text-orange-500 mx-auto mb-1" />
-                            )}
-                        </div>
-                        <div className="text-lg font-bold text-white">{totals.calories}</div>
-                        {tdeeTargets ? (
-                            <div className="text-[10px] text-zinc-500">/ {tdeeTargets.targetCalories}</div>
-                        ) : (
+                {/* Half-Pie chart when TDEE targets available, else simple grid */}
+                {tdeeTargets ? (
+                    <MacroHalfPie
+                        calories={totals.calories}
+                        protein={totals.protein}
+                        carbs={totals.carbs}
+                        fat={totals.fat}
+                        targetCalories={tdeeTargets.targetCalories}
+                        proteinTarget={tdeeTargets.proteinTarget}
+                        carbsTarget={tdeeTargets.carbsTarget}
+                        fatTarget={tdeeTargets.fatTarget}
+                    />
+                ) : (
+                    <div className="grid grid-cols-4 gap-3">
+                        <div className="text-center">
+                            <Flame className="w-5 h-5 text-orange-500 mx-auto mb-1" />
+                            <div className="text-lg font-bold text-white">{totals.calories}</div>
                             <div className="text-xs text-zinc-500">kcal</div>
-                        )}
-                    </div>
-
-                    {/* Protein */}
-                    <div className="text-center">
-                        <div className="relative inline-flex items-center justify-center mb-1">
-                            {tdeeTargets ? (
-                                <>
-                                    <ProgressRing
-                                        value={totals.protein}
-                                        max={tdeeTargets.proteinTarget}
-                                        color="#f87171"
-                                    />
-                                    <Beef className="w-4 h-4 text-red-400 absolute" />
-                                </>
-                            ) : (
-                                <Beef className="w-5 h-5 text-red-400 mx-auto mb-1" />
-                            )}
                         </div>
-                        <div className="text-lg font-bold text-white">{totals.protein.toFixed(0)}g</div>
-                        {tdeeTargets ? (
-                            <div className="text-[10px] text-zinc-500">/ {tdeeTargets.proteinTarget}g</div>
-                        ) : (
+                        <div className="text-center">
+                            <Beef className="w-5 h-5 text-red-400 mx-auto mb-1" />
+                            <div className="text-lg font-bold text-white">{totals.protein.toFixed(0)}g</div>
                             <div className="text-xs text-zinc-500">Protein</div>
-                        )}
-                    </div>
-
-                    {/* Carbs */}
-                    <div className="text-center">
-                        <div className="relative inline-flex items-center justify-center mb-1">
-                            {tdeeTargets ? (
-                                <>
-                                    <ProgressRing
-                                        value={totals.carbs}
-                                        max={tdeeTargets.carbsTarget}
-                                        color="#fbbf24"
-                                    />
-                                    <Wheat className="w-4 h-4 text-amber-400 absolute" />
-                                </>
-                            ) : (
-                                <Wheat className="w-5 h-5 text-amber-400 mx-auto mb-1" />
-                            )}
                         </div>
-                        <div className="text-lg font-bold text-white">{totals.carbs.toFixed(0)}g</div>
-                        {tdeeTargets ? (
-                            <div className="text-[10px] text-zinc-500">/ {tdeeTargets.carbsTarget}g</div>
-                        ) : (
+                        <div className="text-center">
+                            <Wheat className="w-5 h-5 text-amber-400 mx-auto mb-1" />
+                            <div className="text-lg font-bold text-white">{totals.carbs.toFixed(0)}g</div>
                             <div className="text-xs text-zinc-500">Carbs</div>
-                        )}
-                    </div>
-
-                    {/* Fat */}
-                    <div className="text-center">
-                        <div className="relative inline-flex items-center justify-center mb-1">
-                            {tdeeTargets ? (
-                                <>
-                                    <ProgressRing
-                                        value={totals.fat}
-                                        max={tdeeTargets.fatTarget}
-                                        color="#60a5fa"
-                                    />
-                                    <Droplets className="w-4 h-4 text-blue-400 absolute" />
-                                </>
-                            ) : (
-                                <Droplets className="w-5 h-5 text-blue-400 mx-auto mb-1" />
-                            )}
                         </div>
-                        <div className="text-lg font-bold text-white">{totals.fat.toFixed(0)}g</div>
-                        {tdeeTargets ? (
-                            <div className="text-[10px] text-zinc-500">/ {tdeeTargets.fatTarget}g</div>
-                        ) : (
+                        <div className="text-center">
+                            <Droplets className="w-5 h-5 text-blue-400 mx-auto mb-1" />
+                            <div className="text-lg font-bold text-white">{totals.fat.toFixed(0)}g</div>
                             <div className="text-xs text-zinc-500">Fat</div>
-                        )}
-                    </div>
-                </div>
-
-                {/* Remaining Calories Bar */}
-                {tdeeTargets && (
-                    <div className="mt-4 pt-3 border-t border-white/5">
-                        <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-xs text-zinc-500">Calories remaining</span>
-                            <span className={`text-xs font-medium ${totals.calories > tdeeTargets.targetCalories ? 'text-red-400' : 'text-emerald-400'
-                                }`}>
-                                {totals.calories > tdeeTargets.targetCalories
-                                    ? `${totals.calories - tdeeTargets.targetCalories} over`
-                                    : `${tdeeTargets.targetCalories - totals.calories} left`
-                                }
-                            </span>
-                        </div>
-                        <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${Math.min((totals.calories / tdeeTargets.targetCalories) * 100, 100)}%` }}
-                                transition={{ duration: 0.8, ease: 'easeOut' }}
-                                className={`h-full rounded-full ${totals.calories > tdeeTargets.targetCalories
-                                    ? 'bg-gradient-to-r from-red-500 to-red-600'
-                                    : 'bg-gradient-to-r from-orange-500 to-amber-500'
-                                    }`}
-                            />
                         </div>
                     </div>
                 )}
             </motion.div>
+
+            {/* Fasting Tracker */}
+            <FastingWidget />
+
+            {/* Calorie Limit Banner */}
+            {tdeeTargets && (
+                <CalorieBanner
+                    consumed={totals.calories}
+                    target={tdeeTargets.targetCalories}
+                />
+            )}
 
             {/* Meal Sections */}
             {loading ? (

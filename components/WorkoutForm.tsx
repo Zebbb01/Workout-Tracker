@@ -7,6 +7,7 @@ import { WorkoutSet, Routine } from '@/lib/types';
 import { Plus, Save, Clock, FileText, Dumbbell, ListChecks, CheckCircle2 } from 'lucide-react';
 import CreateExercise from './CreateExercise';
 import Select from './ui/Select';
+import { getExerciseImage, getCategoryColor } from '@/lib/exerciseImages';
 
 interface WorkoutFormProps {
     selectedDate: Date | null;
@@ -381,6 +382,24 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                             ))}
                         </div>
                     </div>
+
+                    {/* Exercise Image Banner */}
+                    {exerciseId && (() => {
+                        const selectedEx = exercises.find(e => e.id === exerciseId);
+                        if (!selectedEx) return null;
+                        const imgUrl = getExerciseImage(selectedEx.category);
+                        const color = getCategoryColor(selectedEx.category);
+                        return (
+                            <div className="relative w-full h-24 rounded-xl overflow-hidden mb-1" style={{ border: `1px solid ${color}30` }}>
+                                <img src={imgUrl} alt={selectedEx.category} className="absolute inset-0 w-full h-full object-cover opacity-30" />
+                                <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${color}30, transparent 70%)` }} />
+                                <div className="absolute bottom-2 left-3">
+                                    <span className="text-xs font-bold uppercase tracking-widest" style={{ color }}>{selectedEx.category}</span>
+                                    <p className="text-sm font-semibold text-white">{selectedEx.name}</p>
+                                </div>
+                            </div>
+                        );
+                    })()}
 
                     {/* Weights */}
                     <div className="grid grid-cols-2 gap-4">

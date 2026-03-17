@@ -501,3 +501,94 @@ export async function checkAndUnlockAchievementsAction() {
     revalidatePath('/');
     return newlyUnlocked;
 }
+
+// --- Fasting (raw SQL — Prisma ORM available after DB migration) ---
+
+interface FastingSessionRow {
+    id: string;
+    userId: string;
+    startedAt: Date;
+    endedAt: Date | null;
+    targetHours: number;
+    notes: string | null;
+    createdAt: Date;
+}
+
+function genId() {
+    return Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+export async function startFastingAction(targetHours: number = 16) {
+    const userId = await getUser();
+
+    // End any existing active session first
+    await prisma.$executeRaw`
+        UPDATE "FastingSession"
+        SET "endedAt" = NOW()
+        WHERE "userId" = ${userId} AND "endedAt" IS NULL
+    `;
+
+    const id = genId();
+    const now = new Date();
+
+    await prisma.$executeRaw`
+        INSERT INTO "FastingSession" ("id", "userId", "startedAt", "targetHours", "createdAt")
+        VALUES (${id}, ${userId}, ${now}, ${targetHours}, ${now})
+    `;
+
+    revalidatePath('/meals');
+    return { id, userId, startedAt: now.toISOString(), endedAt: null, targetHours };
+}
+
+export async function stopFastingAction(id: string) {
+    const userId = await getUser();
+    const now = new Date();
+
+    await prisma.$executeRaw`
+        UPDATE "FastingSession"
+        SET "endedAt" = ${now}
+        WHERE "id" = ${id} AND "userId" = ${userId}
+    `;
+
+    revalidatePath('/meals');
+    return { id, endedAt: now.toISOString() };
+}
+
+export async function getActiveFastingAction(): Promise<{ id: string; startedAt: string; targetHours: number } | null> {
+    const userId = await getUser();
+
+    const rows = await prisma.$queryRaw<FastingSessionRow[]>`
+        SELECT * FROM "FastingSession"
+        WHERE "userId" = ${userId} AND "endedAt" IS NULL
+        ORDER BY "startedAt" DESC
+        LIMIT 1
+    `;
+
+    if (!rows.length) return null;
+    const s = rows[0];
+    return {
+        id: s.id,
+        startedAt: new Date(s.startedAt).toISOString(),
+        targetHours: Number(s.targetHours),
+    };
+}
+
+export async function getFastingHistoryAction(limit: number = 7) {
+    const userId = await getUser();
+
+    const rows = await prisma.$queryRaw<FastingSessionRow[]>`
+        SELECT * FROM "FastingSession"
+        WHERE "userId" = ${userId} AND "endedAt" IS NOT NULL
+        ORDER BY "startedAt" DESC
+        LIMIT ${limit}
+    `;
+
+    return rows.map(s => ({
+        id: s.id,
+        userId: s.userId,
+        startedAt: new Date(s.startedAt).toISOString(),
+        endedAt: new Date(s.endedAt!).toISOString(),
+        targetHours: Number(s.targetHours),
+        notes: s.notes ?? null,
+    }));
+}

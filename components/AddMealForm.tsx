@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Coffee, Sun, Moon, Cookie, Sparkles, Loader2 } from 'lucide-react';
+import { X, Coffee, Sun, Moon, Cookie, Sparkles, Loader2, Camera, Image as ImageIcon } from 'lucide-react';
 
 interface AddMealFormProps {
     defaultMealType?: string;
@@ -38,6 +38,58 @@ export default function AddMealForm({ defaultMealType = 'breakfast', onSubmit, o
     const [aiEstimated, setAiEstimated] = useState(false);
     const [calcError, setCalcError] = useState('');
     const [fromCache, setFromCache] = useState(false);
+    const [scannedImage, setScannedImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [scanning, setScanning] = useState(false);
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setScannedImage(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+
+        // Auto-start scan
+        handleImageScan(file);
+    };
+
+    const handleImageScan = async (file: File) => {
+        setScanning(true);
+        setCalcError('');
+        setAiEstimated(false);
+
+        try {
+            const formData = new FormData();
+            formData.append('image', file);
+
+            const response = await fetch('/api/nutrition-scan', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setCalcError(data.error || 'Failed to scan image');
+                return;
+            }
+
+            setName(data.name);
+            setCalories(String(data.calories));
+            setProtein(String(data.protein));
+            setCarbs(String(data.carbs));
+            setFat(String(data.fat));
+            setAiEstimated(true);
+        } catch {
+            setCalcError('Network error during scanning.');
+        } finally {
+            setScanning(false);
+        }
+    };
 
     const handleCalculateNutrition = async () => {
         if (!name.trim()) return;
@@ -165,9 +217,49 @@ export default function AddMealForm({ defaultMealType = 'breakfast', onSubmit, o
                                 }}
                                 placeholder="e.g., 2 eggs, 1 apple, 1 cup oatmeal"
                                 required
-                                className="w-full bg-zinc-900/50 border border-zinc-700 rounded-xl px-4 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors"
+                                className="w-full bg-zinc-900/50 border border-zinc-700 rounded-xl pl-4 pr-12 py-3 text-white placeholder-zinc-600 focus:outline-none focus:border-orange-500 transition-colors"
                             />
+                            <div className="absolute right-2 top-[34px] flex gap-1">
+                                <label className="p-2 text-zinc-400 hover:text-orange-400 cursor-pointer transition-colors">
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        capture="environment"
+                                        className="hidden"
+                                        onChange={handleImageChange}
+                                    />
+                                    <Camera size={20} />
+                                </label>
+                            </div>
                         </div>
+
+                        {/* Image Preview & Scanning State */}
+                        {(imagePreview || scanning) && (
+                            <div className="relative rounded-xl overflow-hidden bg-zinc-900/30 border border-zinc-800 p-2">
+                                {imagePreview && (
+                                    <div className="relative aspect-video rounded-lg overflow-hidden flex items-center justify-center bg-black/20">
+                                        <img src={imagePreview} alt="Food preview" className="object-cover w-full h-full opacity-60" />
+                                        {scanning && (
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 backdrop-blur-[2px]">
+                                                <div className="relative">
+                                                    <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+                                                    <Sparkles className="absolute -top-1 -right-1 w-4 h-4 text-purple-400 animate-pulse" />
+                                                </div>
+                                                <span className="text-xs font-medium text-white mt-2">AI Scanning Food...</span>
+                                            </div>
+                                        )}
+                                        {!scanning && (
+                                            <button 
+                                                onClick={() => { setImagePreview(null); setScannedImage(null); }}
+                                                className="absolute top-2 right-2 p-1 bg-black/60 rounded-full text-white hover:bg-orange-500 transition-colors"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
 
                         {/* Calculate Nutrition Button */}
                         <div>
