@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { formatWeight, normalizeWeight } from '@/lib/units';
 import {
     BarChart,
     Bar,
@@ -15,9 +16,10 @@ import { WorkoutSet } from '@/lib/types';
 
 interface ActivityChartProps {
     workouts: WorkoutSet[];
+    useImperial: boolean;
 }
 
-export default function ActivityChart({ workouts }: ActivityChartProps) {
+export default function ActivityChart({ workouts, useImperial }: ActivityChartProps) {
     const data = useMemo(() => {
         const last7Days = Array.from({ length: 7 }, (_, i) => {
             const d = subDays(new Date(), 6 - i);
@@ -34,12 +36,14 @@ export default function ActivityChart({ workouts }: ActivityChartProps) {
             const workoutDate = new Date(w.date);
             const dayStat = last7Days.find(d => isSameDay(d.date, workoutDate));
             if (dayStat) {
-                dayStat.volume += w.totalWeight;
+                // Normalize to target unit before summing
+                const normalizedWeight = normalizeWeight(w.totalWeight, w.unit || 'metric', useImperial ? 'imperial' : 'metric');
+                dayStat.volume += normalizedWeight;
             }
         });
 
         return last7Days;
-    }, [workouts]);
+    }, [workouts, useImperial]);
 
     if (workouts.length === 0) {
         return (
@@ -69,7 +73,7 @@ export default function ActivityChart({ workouts }: ActivityChartProps) {
                                     return (
                                         <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl">
                                             <p className="text-slate-400 text-xs mb-1">{payload[0].payload.fullDate}</p>
-                                            <p className="text-white font-bold">{payload[0].value} kg</p>
+                                            <p className="text-white font-bold">{formatWeight(payload[0].value as number, useImperial ? 'imperial' : 'metric')}</p>
                                         </div>
                                     );
                                 }

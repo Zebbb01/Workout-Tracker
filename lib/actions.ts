@@ -1,12 +1,11 @@
 'use server';
 
-import { auth } from "@/auth";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
-
-const prisma = new PrismaClient();
-
+import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import { signOut } from "@/auth";
+
 
 // --- Helpers ---
 async function getUser() {
@@ -59,7 +58,8 @@ export async function getWorkoutsAction() {
     const userId = await getUser();
     const data = await prisma.workoutSet.findMany({
         where: { userId },
-        orderBy: { date: 'desc' }
+        orderBy: { date: 'desc' },
+        take: 50 // Limit to reasonable number for sync
     });
 
     // Convert Dates to strings to match WorkoutSet interface and avoid serialization warnings/errors
@@ -94,16 +94,22 @@ export async function saveWorkoutAction(data: any, id?: string) {
         }
     });
 
+    // Wire Achievementeval
+    const newlyUnlocked = await checkAndUnlockAchievementsAction();
+
     revalidatePath('/history');
     revalidatePath('/log');
     revalidatePath('/calendar');
     revalidatePath('/');
+
+    return { success: true, newlyUnlocked };
 }
+
 
 export async function deleteWorkoutAction(id: string) {
     const userId = await getUser();
-    // Ensure ownership
-    await prisma.workoutSet.delete({
+    // Ensure ownership and idempotency
+    await prisma.workoutSet.deleteMany({
         where: { id, userId }
     });
 
@@ -163,7 +169,8 @@ export async function updateRoutineAction(id: string, name: string, exerciseIds:
 
 export async function deleteRoutineAction(id: string) {
     const userId = await getUser();
-    await prisma.routine.delete({
+    // Use deleteMany for idempotency (no error if already deleted)
+    await prisma.routine.deleteMany({
         where: { id, userId }
     });
     revalidatePath('/routines');
@@ -227,12 +234,12 @@ export async function deleteAccountAction() {
     });
 }
 
-import { signOut } from "@/auth";
-
+// signOut already imported at top
 export async function signOutAction() {
     // This will redirect to /login after signout
     await signOut({ redirect: true, redirectTo: "/login" });
 }
+
 
 // --- TDEE Profile ---
 export interface TDEEProfileData {
@@ -339,9 +346,13 @@ export async function saveWeightEntryAction(weightKg: number, bodyFatPct?: numbe
         data: { weightKg }
     });
 
+    // Wire Achievementeval
+    const newlyUnlocked = await checkAndUnlockAchievementsAction();
+
     revalidatePath('/tdee');
-    return entry;
+    return { entry, newlyUnlocked };
 }
+
 
 // --- Meal Plans ---
 export async function getMealPlansAction(date: Date) {
@@ -372,6 +383,29 @@ export async function getMealPlansAction(date: Date) {
     }));
 }
 
+export async function getRecentMealPlansAction() {
+    const userId = await getUser();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const meals = await prisma.mealPlan.findMany({
+        where: {
+            userId,
+            date: {
+                gte: thirtyDaysAgo
+            }
+        },
+        orderBy: { date: 'desc' }
+    });
+
+    return meals.map(m => ({
+        ...m,
+        date: m.date.toISOString(),
+        createdAt: m.createdAt.toISOString(),
+        updatedAt: m.updatedAt.toISOString()
+    }));
+}
+
 export async function addMealPlanAction(data: {
     name: string;
     mealType: string;
@@ -398,9 +432,13 @@ export async function addMealPlanAction(data: {
         }
     });
 
+    // Wire Achievementeval
+    const newlyUnlocked = await checkAndUnlockAchievementsAction();
+
     revalidatePath('/meals');
-    return meal;
+    return { meal, newlyUnlocked };
 }
+
 
 export async function updateMealPlanAction(id: string, data: {
     name?: string;
@@ -502,93 +540,79 @@ export async function checkAndUnlockAchievementsAction() {
     return newlyUnlocked;
 }
 
-// --- Fasting (raw SQL — Prisma ORM available after DB migration) ---
-
-interface FastingSessionRow {
-    id: string;
-    userId: string;
-    startedAt: Date;
-    endedAt: Date | null;
-    targetHours: number;
-    notes: string | null;
-    createdAt: Date;
-}
-
-function genId() {
-    return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
-
 export async function startFastingAction(targetHours: number = 16) {
     const userId = await getUser();
 
     // End any existing active session first
-    await prisma.$executeRaw`
-        UPDATE "FastingSession"
-        SET "endedAt" = NOW()
-        WHERE "userId" = ${userId} AND "endedAt" IS NULL
-    `;
+    await prisma.fastingSession.updateMany({
+        where: { userId, endedAt: null },
+        data: { endedAt: new Date() }
+    });
 
-    const id = genId();
     const now = new Date();
-
-    await prisma.$executeRaw`
-        INSERT INTO "FastingSession" ("id", "userId", "startedAt", "targetHours", "createdAt")
-        VALUES (${id}, ${userId}, ${now}, ${targetHours}, ${now})
-    `;
+    const session = await prisma.fastingSession.create({
+        data: {
+            userId,
+            startedAt: now,
+            targetHours
+        }
+    });
 
     revalidatePath('/meals');
-    return { id, userId, startedAt: now.toISOString(), endedAt: null, targetHours };
+    return {
+        id: session.id,
+        userId: session.userId,
+        startedAt: session.startedAt.toISOString(),
+        endedAt: null,
+        targetHours: session.targetHours
+    };
 }
 
 export async function stopFastingAction(id: string) {
     const userId = await getUser();
     const now = new Date();
 
-    await prisma.$executeRaw`
-        UPDATE "FastingSession"
-        SET "endedAt" = ${now}
-        WHERE "id" = ${id} AND "userId" = ${userId}
-    `;
+    const session = await prisma.fastingSession.update({
+        where: { id, userId },
+        data: { endedAt: now }
+    });
 
     revalidatePath('/meals');
-    return { id, endedAt: now.toISOString() };
+    return { id: session.id, endedAt: session.endedAt?.toISOString() };
 }
 
 export async function getActiveFastingAction(): Promise<{ id: string; startedAt: string; targetHours: number } | null> {
     const userId = await getUser();
 
-    const rows = await prisma.$queryRaw<FastingSessionRow[]>`
-        SELECT * FROM "FastingSession"
-        WHERE "userId" = ${userId} AND "endedAt" IS NULL
-        ORDER BY "startedAt" DESC
-        LIMIT 1
-    `;
+    const session = await prisma.fastingSession.findFirst({
+        where: { userId, endedAt: null },
+        orderBy: { startedAt: 'desc' }
+    });
 
-    if (!rows.length) return null;
-    const s = rows[0];
+    if (!session) return null;
     return {
-        id: s.id,
-        startedAt: new Date(s.startedAt).toISOString(),
-        targetHours: Number(s.targetHours),
+        id: session.id,
+        startedAt: session.startedAt.toISOString(),
+        targetHours: session.targetHours,
     };
 }
 
 export async function getFastingHistoryAction(limit: number = 7) {
     const userId = await getUser();
 
-    const rows = await prisma.$queryRaw<FastingSessionRow[]>`
-        SELECT * FROM "FastingSession"
-        WHERE "userId" = ${userId} AND "endedAt" IS NOT NULL
-        ORDER BY "startedAt" DESC
-        LIMIT ${limit}
-    `;
+    const sessions = await prisma.fastingSession.findMany({
+        where: { userId, endedAt: { not: null } },
+        orderBy: { startedAt: 'desc' },
+        take: limit
+    });
 
-    return rows.map(s => ({
+    return sessions.map(s => ({
         id: s.id,
         userId: s.userId,
-        startedAt: new Date(s.startedAt).toISOString(),
-        endedAt: new Date(s.endedAt!).toISOString(),
-        targetHours: Number(s.targetHours),
-        notes: s.notes ?? null,
+        startedAt: s.startedAt.toISOString(),
+        endedAt: s.endedAt?.toISOString() || null,
+        targetHours: s.targetHours,
+        notes: s.notes,
     }));
 }
+

@@ -2,27 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import WorkoutCard from '@/components/WorkoutCard';
-import { getWorkoutsAction, deleteWorkoutAction } from '@/lib/actions';
+import { deleteWorkoutAction } from '@/lib/actions';
+import { useWorkouts } from '@/lib/cache';
 import { WorkoutSet } from '@/lib/types';
 import { format } from 'date-fns';
 import { Settings } from 'lucide-react';
 import Link from 'next/link';
 
 export default function HistoryPage() {
-    const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
-
-    const loadWorkouts = async () => {
-        try {
-            const data = await getWorkoutsAction();
-            setWorkouts(data);
-        } catch (e) {
-            console.error("Failed to load history", e);
-        }
-    };
-
-    useEffect(() => {
-        loadWorkouts();
-    }, []);
+    const { workouts, refresh, isLoading } = useWorkouts();
 
     // Group by date
     const groupedWorkouts: { [key: string]: WorkoutSet[] } = {};
@@ -61,7 +49,7 @@ export default function HistoryPage() {
                                         isPR={workout.totalWeight === prMap[workout.exerciseId]}
                                         onDelete={async () => {
                                             await deleteWorkoutAction(workout.id);
-                                            loadWorkouts();
+                                            refresh(true);
                                         }}
                                     />
                                 ))}

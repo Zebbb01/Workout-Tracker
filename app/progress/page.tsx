@@ -2,36 +2,24 @@
 
 import React, { useState, useEffect } from 'react';
 import ProgressChart from '@/components/ProgressChart';
-import { getWorkoutsAction, getUserProfileAction } from '@/lib/actions';
-import { useExercises } from '@/lib/useExercises';
-import { WorkoutSet } from '@/lib/types';
+import { useCachedExercises, useWorkouts, useUserProfile } from '@/lib/cache';
 import { Settings } from 'lucide-react';
 import Link from 'next/link';
 import Select from '@/components/ui/Select';
 
 export default function ProgressPage() {
-    const { exercises } = useExercises();
+    const { exercises } = useCachedExercises();
+    const { workouts } = useWorkouts();
+    const { profile } = useUserProfile();
+    
     const [selectedExerciseId, setSelectedExerciseId] = useState('');
-    const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
-    const [userUnit, setUserUnit] = useState<'metric' | 'imperial'>('metric');
+    const userUnit = profile?.useImperial ? 'imperial' : 'metric';
 
     useEffect(() => {
         if (exercises.length > 0 && !selectedExerciseId) {
             setSelectedExerciseId(exercises[0].id);
         }
-    }, [exercises]);
-
-    useEffect(() => {
-        const load = async () => {
-            const [allWorkouts, profile] = await Promise.all([
-                getWorkoutsAction(),
-                getUserProfileAction()
-            ]);
-            setWorkouts(allWorkouts);
-            setUserUnit(profile?.useImperial ? 'imperial' : 'metric');
-        }
-        load();
-    }, []);
+    }, [exercises, selectedExerciseId]);
 
     const filteredWorkouts = workouts.filter(w => w.exerciseId === selectedExerciseId);
 
@@ -48,6 +36,12 @@ export default function ProgressPage() {
 
     const normalizedWeights = filteredWorkouts.map(w => normalize(w.totalWeight, w.unit));
     const maxWeight = normalizedWeights.length > 0 ? Math.max(...normalizedWeights) : 0;
+
+    const projected1RMs = filteredWorkouts.map(w => {
+        const weight = normalize(w.totalWeight, w.unit);
+        return w.reps > 1 ? weight * (1 + w.reps / 30) : weight;
+    });
+    const max1RM = projected1RMs.length > 0 ? Math.max(...projected1RMs) : 0;
 
     const totalVolume = filteredWorkouts.reduce((acc, curr) => {
         return acc + (normalize(curr.totalWeight, curr.unit) * curr.reps * curr.sets);
@@ -74,21 +68,33 @@ export default function ProgressPage() {
             <div>
                 <div className="flex justify-between items-end mb-2">
                     <h2 className="text-lg font-semibold text-slate-200">Weight Progression</h2>
-                    <span className="text-xs text-slate-400">Past Activity</span>
+                    <span className="text-[10px] text-orange-500 font-bold uppercase tracking-widest animate-pulse">1RM Tracking Active</span>
                 </div>
                 <ProgressChart data={filteredWorkouts} userUnit={userUnit} />
             </div>
 
             {/* Stats for this exercise */}
-            <div className="grid grid-cols-2 gap-4">
-                <div className="glass-card p-4 rounded-xl">
-                    <p className="text-xs text-slate-400">Personal Best</p>
-                    <p className="text-xl font-bold text-white">{maxWeight > 0 ? `${maxWeight.toFixed(1)}${unitLabel}` : '-'}</p>
+            <div className="grid grid-cols-3 gap-3">
+                <div className="glass-card p-3 rounded-xl">
+                    <p className="text-[10px] text-slate-500 uppercase font-bold mb-1">Max Weight</p>
+                    <p className="text-lg font-bold text-white">{maxWeight > 0 ? `${maxWeight.toFixed(1)}${unitLabel}` : '-'}</p>
                 </div>
-                <div className="glass-card p-4 rounded-xl">
-                    <p className="text-xs text-slate-400">Total Volume</p>
-                    <p className="text-xl font-bold text-white">{(totalVolume / 1000).toFixed(1)}k {unitLabel}</p>
+                <div className="glass-card p-3 rounded-xl border-l-2 border-l-orange-600">
+                    <p className="text-[10px] text-orange-500 uppercase font-bold mb-1">Proj. 1RM</p>
+                    <p className="text-lg font-bold text-white">{max1RM > 0 ? `${max1RM.toFixed(1)}${unitLabel}` : '-'}</p>
                 </div>
+                <div className="glass-card p-3 rounded-xl">
+                    <p className="text-[10px] text-slate-500 uppercase font-bold mb-1">Volume</p>
+                    <p className="text-lg font-bold text-white">{(totalVolume / 1000).toFixed(1)}k</p>
+                    <span className="text-[8px] text-zinc-600 uppercase">{unitLabel}</span>
+                </div>
+            </div>
+
+            {/* Strength Tip */}
+            <div className="bg-orange-600/5 border border-orange-500/20 p-3 rounded-lg">
+                <p className="text-[10px] text-orange-400 font-medium">
+                    Tip: 1RM is estimated using the Epley formula. Accuracy is highest when reps are ≤ 10.
+                </p>
             </div>
 
             {/* Recent History Table */}

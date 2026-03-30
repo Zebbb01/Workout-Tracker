@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 import { auth } from '@/auth';
+import { z } from 'zod';
 
-const prisma = new PrismaClient();
+const NutritionResultSchema = z.object({
+    calories: z.coerce.number(),
+    protein: z.coerce.number(),
+    carbs: z.coerce.number(),
+    fat: z.coerce.number()
+});
+
 
 const GITHUB_MODELS_URL = 'https://models.inference.ai.azure.com/chat/completions';
 
@@ -101,7 +108,15 @@ export async function POST(request: NextRequest) {
                 .replace(/```json\s*/gi, '')
                 .replace(/```\s*/g, '')
                 .trim();
-            nutritionData = JSON.parse(cleaned);
+            const raw = JSON.parse(cleaned);
+
+            // Strict Schema Validation
+            const validated = NutritionResultSchema.safeParse(raw);
+            if (!validated.success) {
+                console.error('Invalid nutrition response schema', validated.error);
+                return NextResponse.json({ error: 'AI returned malformed data' }, { status: 502 });
+            }
+            nutritionData = validated.data;
         } catch {
             console.error('Failed to parse AI response:', content);
             return NextResponse.json(
@@ -110,11 +125,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Validate the parsed data
-        const calories = Math.round(Number(nutritionData.calories) || 0);
-        const protein = Math.round((Number(nutritionData.protein) || 0) * 10) / 10;
-        const carbs = Math.round((Number(nutritionData.carbs) || 0) * 10) / 10;
-        const fat = Math.round((Number(nutritionData.fat) || 0) * 10) / 10;
+        // Standardize the parsed data
+        const calories = Math.round(nutritionData.calories || 0);
+        const protein = Math.round((nutritionData.protein || 0) * 10) / 10;
+        const carbs = Math.round((nutritionData.carbs || 0) * 10) / 10;
+        const fat = Math.round((nutritionData.fat || 0) * 10) / 10;
 
         // Save to cache for future lookups
         try {

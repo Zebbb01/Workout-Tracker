@@ -5,6 +5,7 @@ import { WorkoutSet } from '@/lib/types';
 import { Trash2 } from 'lucide-react';
 import ConfirmDialog from './ui/ConfirmDialog';
 import { getExerciseImage, getCategoryColor } from '@/lib/exerciseImages';
+import { formatWeight } from '@/lib/units';
 
 interface WorkoutCardProps {
     workout: WorkoutSet;
@@ -67,7 +68,7 @@ export default function WorkoutCard({ workout, isPR, onDelete, exerciseCategory 
                     </div>
                     <div className="text-sm text-slate-400 mt-1 flex gap-3">
                         <span className={`px-2 py-0.5 rounded ${getTypeColor()}`}>
-                            {workout.totalWeight}kg
+                            {formatWeight(workout.totalWeight, workout.unit || 'metric')}
                         </span>
                         <span>
                             {workout.sets} sets × {workout.reps} reps

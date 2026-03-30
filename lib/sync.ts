@@ -2,7 +2,8 @@ import { db, LocalExercise, LocalRoutine, LocalWorkoutSet } from './db';
 import {
     getExercisesAction, addCustomExerciseAction,
     getRoutinesAction, saveRoutineAction, updateRoutineAction, deleteRoutineAction,
-    getWorkoutsAction, saveWorkoutAction, deleteWorkoutAction
+    getWorkoutsAction, saveWorkoutAction, deleteWorkoutAction,
+    getMealPlansAction, addMealPlanAction, deleteMealPlanAction, getRecentMealPlansAction
 } from './actions';
 
 export async function syncExercises() {
@@ -102,16 +103,81 @@ export async function syncWorkouts() {
             if (w.syncStatus === 'pending_create') {
                 await saveWorkoutAction({
                     ...w,
-                    date: w.date, // Ensure format matches what action expects
+                    date: w.date,
                     unit: w.unit || 'metric'
                 }, w.id);
                 await db.workouts.update(w.id, { syncStatus: 'synced' });
+            } else if (w.syncStatus === 'pending_delete') {
+                await deleteWorkoutAction(w.id);
+                await db.workouts.delete(w.id);
             }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error("Failed to sync workout", e);
+        }
     }
 
-    // Pull (Optional: might be heavy history. Just pull recent?)
-    // For MVp, skip pulling full history to avoid overhead, or just pull last 30 days
+    // 2. Pull
+    try {
+        const serverData = await getWorkoutsAction();
+        await db.transaction('rw', db.workouts, async () => {
+            for (const sw of serverData) {
+                const existing = await db.workouts.get(sw.id);
+                if (!existing || existing.syncStatus === 'synced') {
+                    await db.workouts.put({
+                        ...sw,
+                        syncStatus: 'synced'
+                    } as any);
+                }
+            }
+        });
+    } catch (e) {
+        console.error("Failed to pull workouts", e);
+    }
+}
+
+export async function syncMeals() {
+    // 1. Push
+    const pending = await db.meals.where('syncStatus').notEqual('synced').toArray();
+    for (const m of pending) {
+        try {
+            if (m.syncStatus === 'pending_create') {
+                await addMealPlanAction({
+                    name: m.name,
+                    mealType: m.mealType,
+                    date: new Date(m.date),
+                    calories: m.calories,
+                    protein: m.protein,
+                    carbs: m.carbs,
+                    fat: m.fat,
+                    notes: m.notes
+                });
+                await db.meals.update(m.id, { syncStatus: 'synced' });
+            } else if (m.syncStatus === 'pending_delete') {
+                await deleteMealPlanAction(m.id);
+                await db.meals.delete(m.id);
+            }
+        } catch (e) {
+            console.error("Failed to sync meal", e);
+        }
+    }
+
+    // 2. Pull
+    try {
+        const serverMeals = await getRecentMealPlansAction();
+        await db.transaction('rw', db.meals, async () => {
+            for (const sm of serverMeals) {
+                const existing = await db.meals.get(sm.id);
+                if (!existing || existing.syncStatus === 'synced') {
+                    await db.meals.put({
+                        ...sm,
+                        syncStatus: 'synced'
+                    } as any);
+                }
+            }
+        });
+    } catch (e) {
+        console.error("Failed to pull meals", e);
+    }
 }
 
 export async function syncAll() {
@@ -120,6 +186,7 @@ export async function syncAll() {
     await Promise.all([
         syncExercises(),
         syncRoutines(),
-        syncWorkouts()
+        syncWorkouts(),
+        syncMeals()
     ]);
 }

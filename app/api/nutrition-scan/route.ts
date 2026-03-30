@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
+import { z } from 'zod';
+
+const ScanResultSchema = z.object({
+    name: z.string().optional(),
+    calories: z.coerce.number(),
+    protein: z.coerce.number(),
+    carbs: z.coerce.number(),
+    fat: z.coerce.number()
+});
 
 const GITHUB_MODELS_URL = 'https://models.inference.ai.azure.com/chat/completions';
 
@@ -88,14 +97,25 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'No response from AI' }, { status: 502 });
         }
 
-        const nutritionData = JSON.parse(content);
+        let nutritionData;
+        try {
+            const raw = JSON.parse(content);
+            const validated = ScanResultSchema.safeParse(raw);
+            if (!validated.success) {
+                console.error('Invalid scan response schema', validated.error);
+                return NextResponse.json({ error: 'Malformed AI data' }, { status: 502 });
+            }
+            nutritionData = validated.data;
+        } catch {
+            return NextResponse.json({ error: 'Failed to parse AI' }, { status: 502 });
+        }
         
         return NextResponse.json({
             name: nutritionData.name || 'Analyzed Meal',
-            calories: Math.round(Number(nutritionData.calories) || 0),
-            protein: Math.round((Number(nutritionData.protein) || 0) * 10) / 10,
-            carbs: Math.round((Number(nutritionData.carbs) || 0) * 10) / 10,
-            fat: Math.round((Number(nutritionData.fat) || 0) * 10) / 10
+            calories: Math.round(nutritionData.calories || 0),
+            protein: Math.round((nutritionData.protein || 0) * 10) / 10,
+            carbs: Math.round((nutritionData.carbs || 0) * 10) / 10,
+            fat: Math.round((nutritionData.fat || 0) * 10) / 10
         });
 
     } catch (error) {

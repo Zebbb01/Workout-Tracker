@@ -33,17 +33,33 @@ export interface LocalWorkoutSet {
     syncStatus: 'synced' | 'pending_create' | 'pending_delete';
 }
 
+export interface LocalMealPlan {
+    id: string; // UUID or cuid
+    userId: string;
+    name: string;
+    mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack' | string;
+    date: string; // ISO String
+    calories?: number;
+    protein?: number;
+    carbs?: number;
+    fat?: number;
+    notes?: string;
+    syncStatus: 'synced' | 'pending_create' | 'pending_delete';
+}
+
 export class MyDatabase extends Dexie {
     exercises!: Table<LocalExercise>;
     routines!: Table<LocalRoutine>;
     workouts!: Table<LocalWorkoutSet>;
+    meals!: Table<LocalMealPlan>;
 
     constructor() {
         super('BodyTrackerDB');
-        this.version(1).stores({
+        this.version(2).stores({
             exercises: 'id, name, userId, syncStatus',
             routines: 'id, name, userId, syncStatus',
-            workouts: 'id, exerciseId, date, userId, syncStatus'
+            workouts: 'id, exerciseId, date, userId, syncStatus',
+            meals: 'id, date, userId, syncStatus'
         });
     }
 }

@@ -17,9 +17,40 @@ model User {
   accounts      Account[]
   sessions      Session[]
   
-  workouts      WorkoutSet[]
-  routines      Routine[]
+  workouts        WorkoutSet[]
+  routines        Routine[]
   customExercises Exercise[]
+  profile         UserProfile?
+  weightEntries   WeightEntry[]
+  mealPlans       MealPlan[]
+  achievements    UserAchievement[]
+  fastingSessions FastingSession[]
+}
+
+model UserProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  heightCm      Float?
+  weightKg      Float?
+  age           Int?
+  gender        String?
+  activityLevel String?
+  bodyFatPct    Float?
+  
+  bmr           Float?
+  tdee          Float?
+  targetCalories Float?
+  goal          String?
+  proteinTarget Float?
+  carbsTarget   Float?
+  fatTarget     Float?
+  useImperial   Boolean   @default(false)
+  
+  hasCompletedOnboarding Boolean @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Account {
@@ -80,6 +111,7 @@ model WorkoutSet {
   date          DateTime
   
   type          String   @default("normal")
+  unit          String   @default("metric")
   notes         String?
   restTime      Int?
   
@@ -94,4 +126,56 @@ model Routine {
   name        String
   exerciseIds String
   createdAt   DateTime @default(now())
+}
+
+model MealPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name        String
+  mealType    String
+  calories    Int?
+  protein     Float?
+  carbs       Float?
+  fat         Float?
+  notes       String?
+  date        DateTime @default(now())
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Achievement {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon        String
+  category    String
+  requirement Int
+  
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  
+  unlockedAt    DateTime    @default(now())
+  
+  @@unique([userId, achievementId])
+}
+
+model FastingSession {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startedAt   DateTime
+  endedAt     DateTime?
+  targetHours Int       @default(16)
+  notes       String?
+  createdAt   DateTime  @default(now())
 }

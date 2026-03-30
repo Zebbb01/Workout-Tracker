@@ -1,26 +1,28 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useExercises } from '@/lib/useExercises';
+import { useSession } from 'next-auth/react';
 import { getRoutinesAction, saveRoutineAction, deleteRoutineAction, updateRoutineAction } from '@/lib/actions';
 import { Routine } from '@/lib/types';
+
 import { Plus, Trash2, ChevronRight, Dumbbell, Play, Settings, Edit2, X, Search } from 'lucide-react';
 import Link from 'next/link';
 
 import { db, LocalRoutine } from '@/lib/db';
 import { syncRoutines } from '@/lib/sync';
-import { useLiveQuery } from "dexie-react-hooks";
+import { useRoutines, useCachedExercises } from '@/lib/cache';
 
 export default function RoutinesPage() {
-    const { exercises, isLoading: isLoadingExercises } = useExercises();
+    const { data: session } = useSession();
+    const userId = session?.user?.id || 'current-user';
 
-    // Read from Dexie
-    const routines = useLiveQuery(() => db.routines.toArray()) || [];
-    const isLoadingRoutines = !routines && routines !== undefined; // Quick check
+    const { exercises, isLoading: isLoadingExercises } = useCachedExercises();
+    const { routines, refresh: syncRoutines, isLoading: isLoadingRoutines } = useRoutines();
 
     const [isSaving, setIsSaving] = useState(false);
     const [isCreating, setIsCreating] = useState(false);
     const [editingRoutine, setEditingRoutine] = useState<Routine | null>(null);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     // Expansion State
     const [expandedRoutineId, setExpandedRoutineId] = useState<string | null>(null);
@@ -29,11 +31,6 @@ export default function RoutinesPage() {
     const [routineName, setRoutineName] = useState('');
     const [selectedExIds, setSelectedExIds] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
-
-    useEffect(() => {
-        // Initial sync
-        syncRoutines();
-    }, []);
 
     const startCreating = () => {
         setRoutineName('');
@@ -61,14 +58,15 @@ export default function RoutinesPage() {
                 id,
                 name: routineName,
                 exerciseIds: selectedExIds,
-                userId: 'current-user',
+                userId,
                 syncStatus: (editingRoutine ? 'pending_update' : 'pending_create') as any
             };
+
 
             await db.routines.put(routineData);
 
             // Trigger sync
-            syncRoutines();
+            syncRoutines(true);
 
             // Reset
             setRoutineName('');
@@ -84,15 +82,17 @@ export default function RoutinesPage() {
 
     const handleDelete = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (!confirm('Are you sure you want to delete this routine?')) return;
+        if (deletingId || !confirm('Are you sure you want to delete this routine?')) return;
 
+        setDeletingId(id);
         try {
             await db.routines.update(id, { syncStatus: 'pending_delete' as any });
-            syncRoutines();
-            // Optimistic delete from UI (Dexie liveQuery will handle it)
-            await db.routines.delete(id);
+            // Sequential await to ensure sync completes or fails before unlocking
+            await syncRoutines(true);
         } catch (error) {
             console.error(error);
+        } finally {
+            setDeletingId(null);
         }
     };
 
@@ -215,7 +215,10 @@ export default function RoutinesPage() {
                             ))}
                         </div>
                     ) : (
-                        routines.map(routine => {
+                        routines
+                            .filter(r => r.syncStatus !== 'pending_delete')
+                            .map(routine => {
+
                             const isExpanded = expandedRoutineId === routine.id;
                             const visibleExercises = isExpanded ? routine.exerciseIds : routine.exerciseIds.slice(0, 3);
 

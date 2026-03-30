@@ -24,6 +24,7 @@ model User {
   weightEntries   WeightEntry[]
   mealPlans       MealPlan[]
   achievements    UserAchievement[]
+  fastingSessions FastingSession[]
 }
 
 model UserProfile {
@@ -197,4 +198,15 @@ model NutritionCache {
   carbs        Float
   fat          Float
   createdAt    DateTime @default(now())
+}
+
+model FastingSession {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  startedAt   DateTime
+  endedAt     DateTime?
+  targetHours Int       @default(16)
+  notes       String?
+  createdAt   DateTime  @default(now())
 }

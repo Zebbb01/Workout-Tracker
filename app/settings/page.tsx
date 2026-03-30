@@ -9,43 +9,28 @@ import {
 } from '@/lib/actions';
 import { signOut } from 'next-auth/react';
 import { User, LogOut, Trash2, Save, ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
+import { useUserProfile } from '@/lib/cache';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 export default function SettingsPage() {
-    const router = useRouter();
-    const [profile, setProfile] = useState<{ name?: string | null, email?: string | null, image?: string | null, useImperial?: boolean } | null>(null);
+    const { profile, refresh, isLoading } = useUserProfile();
     const [name, setName] = useState('');
     const [isSaving, setIsSaving] = useState(false);
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     useEffect(() => {
-        const load = async () => {
-            try {
-                const data = await getUserProfileAction();
-                if (!data) {
-                    // User authenticates but record is missing in DB (e.g. after DB switch)
-                    console.warn("User profile not found. Signing out.");
-                    await signOut({ callbackUrl: '/onboarding' });
-                    return;
-                }
-                setProfile(data);
-                if (data?.name) setName(data.name);
-            } catch (e) {
-                console.error("Failed to load profile", e);
-            }
-        };
-        load();
-    }, []);
+        if (profile?.name) setName(profile.name);
+    }, [profile]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSaving(true);
         await updateUserProfileAction(name);
+        refresh(true);
         setIsSaving(false);
-        alert('Profile updated!');
     };
 
     const handleLogout = async () => {
@@ -71,7 +56,12 @@ export default function SettingsPage() {
         await signOut({ callbackUrl: '/onboarding' });
     };
 
-    if (!profile) return <div className="p-8 text-center text-zinc-500">Loading settings...</div>;
+    if (!profile) {
+        if (!isLoading) {
+            signOut({ callbackUrl: '/onboarding' });
+        }
+        return <div className="p-8 text-center text-zinc-500">Loading settings...</div>;
+    }
 
     return (
         <div className="space-y-8 pb-24 animate-in">

@@ -10,6 +10,8 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     calculateComplete,
+    calculateBMR,
+    calculateTDEE,
     lbsToKg,
     feetInchesToCm,
     kgToLbs,
@@ -20,11 +22,10 @@ import {
     TDEEResult,
 } from '@/lib/tdee';
 import {
-    getUserTDEEProfileAction,
     saveUserTDEEProfileAction,
-    getWeightEntriesAction,
     saveWeightEntryAction,
 } from '@/lib/actions';
+import { useTDEE, useWeightEntries, useUserProfile } from '@/lib/cache';
 
 type UnitSystem = 'imperial' | 'metric';
 type Goal = 'cutting' | 'maintenance' | 'bulking';
@@ -77,47 +78,42 @@ export default function TDEEPage() {
     const [showResults, setShowResults] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
-    const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
     const [hasExistingProfile, setHasExistingProfile] = useState(false);
     const [showActivityDropdown, setShowActivityDropdown] = useState(false);
 
-    // Load existing profile on mount
+    const { tdeeProfile: profile, refresh: refreshTDEE } = useTDEE();
+    const { weightEntries: cachedWeightEntries, refresh: refreshWeightEntries } = useWeightEntries();
+    const { profile: userProfile } = useUserProfile();
+
+    // Populate local state when profile is loaded/changed
     useEffect(() => {
-        const loadProfile = async () => {
-            try {
-                const profile = await getUserTDEEProfileAction();
-                if (profile) {
-                    setHasExistingProfile(true);
-                    if (profile.age) setAge(profile.age.toString());
-                    if (profile.gender) setGender(profile.gender as Gender);
-                    if (profile.activityLevel) setActivityLevel(profile.activityLevel as ActivityLevel);
-                    if (profile.goal) setGoal(profile.goal as Goal);
-                    if (profile.useImperial) setUnitSystem('imperial');
-                    if (profile.bodyFatPct) setBodyFatPct(profile.bodyFatPct.toString());
+        if (profile) {
+            setHasExistingProfile(true);
+            if (profile.age) setAge(profile.age.toString());
+            if (profile.gender) setGender(profile.gender as Gender);
+            if (profile.activityLevel) setActivityLevel(profile.activityLevel as ActivityLevel);
+            if (profile.goal) setGoal(profile.goal as Goal);
+            if (profile.useImperial) setUnitSystem('imperial');
+            if (profile.bodyFatPct) setBodyFatPct(profile.bodyFatPct.toString());
 
-                    if (profile.heightCm && profile.weightKg) {
-                        setHeightCm(profile.heightCm.toString());
-                        setWeightKg(profile.weightKg.toString());
+            if (profile.heightCm && profile.weightKg) {
+                setHeightCm(profile.heightCm.toString());
+                setWeightKg(profile.weightKg.toString());
 
-                        if (profile.useImperial) {
-                            const lbs = kgToLbs(profile.weightKg);
-                            const { feet, inches } = cmToFeetInches(profile.heightCm);
-                            setWeightLbs(lbs.toFixed(1));
-                            setHeightFeet(feet.toString());
-                            setHeightInches(inches.toString());
-                        }
-                        setShowResults(true);
-                    }
+                if (profile.useImperial) {
+                    const lbs = kgToLbs(profile.weightKg);
+                    const { feet, inches } = cmToFeetInches(profile.heightCm);
+                    setWeightLbs(lbs.toFixed(1));
+                    setHeightFeet(feet.toString());
+                    setHeightInches(inches.toString());
                 }
-
-                const entries = await getWeightEntriesAction(10);
-                setWeightEntries(entries as WeightEntry[]);
-            } catch (e) {
-                console.error('Failed to load profile', e);
+                setShowResults(true);
             }
-        };
-        loadProfile();
-    }, []);
+        }
+    }, [profile]);
+
+    // Use cached entries
+    const weightEntries = cachedWeightEntries;
 
     // Calculate results
     const results: TDEEResult | null = useMemo(() => {
@@ -232,8 +228,11 @@ export default function TDEEPage() {
                 useImperial: unitSystem === 'imperial',
             });
 
-            // Also save weight entry
-            await saveWeightEntryAction(weight, !isNaN(bf) ? bf : undefined);
+            // Refresh caches
+            await Promise.all([
+                refreshTDEE(),
+                refreshWeightEntries()
+            ]);
 
             setSaveSuccess(true);
             setHasExistingProfile(true);
@@ -800,16 +799,63 @@ export default function TDEEPage() {
                                                 : 'bg-zinc-800/30'
                                             }`}
                                     >
-                                        <span className={`text-sm ${activityLevel === item.level ? 'text-orange-400 font-medium' : 'text-zinc-400'}`}>
-                                            {item.label}
-                                        </span>
-                                        <span className={`font-bold ${activityLevel === item.level ? 'text-orange-400' : 'text-white'}`}>
-                                            {item.value.toLocaleString()} cal
-                                        </span>
+                                        <span className="text-sm text-zinc-300">{item.label}</span>
+                                        <div className="text-right">
+                                            <span className={`text-sm font-bold ${activityLevel === item.level ? 'text-orange-400' : 'text-white'}`}>
+                                                {item.value.toLocaleString()}
+                                            </span>
+                                            <span className="text-[10px] text-zinc-500 ml-1">kcal</span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
+
+                        {/* Recent History Trend */}
+                        {weightEntries.length > 0 && (
+                            <div className="glass-card p-5 rounded-xl">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-xs text-zinc-500 font-medium flex items-center gap-2">
+                                        <Scale size={14} /> WEIGHT & TDEE TREND
+                                    </h3>
+                                    <span className="text-[10px] text-zinc-600 uppercase">Past 10 Entries</span>
+                                </div>
+                                <div className="space-y-3">
+                                    {weightEntries.map((entry) => {
+                                        // Simple reconstruction of TDEE for this entry
+                                        const entryBmr = calculateBMR(
+                                            entry.weightKg, 
+                                            parseFloat(heightCm) || 170, // Fallback height
+                                            parseInt(age) || 25,         // Fallback age
+                                            gender
+                                        );
+                                        const entryTdee = Math.round(calculateTDEE(entryBmr, activityLevel));
+                                        return (
+                                            <div key={entry.id} className="flex justify-between items-center bg-zinc-900/50 p-3 rounded-lg border border-zinc-800/50 group">
+                                                <div className="flex flex-col">
+                                                    <span className="text-xs text-zinc-400 font-mono">
+                                                        {new Date(entry.date).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                                                    </span>
+                                                    <span className="text-sm font-bold text-white">
+                                                        {unitSystem === 'metric' 
+                                                            ? entry.weightKg.toFixed(1) 
+                                                            : kgToLbs(entry.weightKg).toFixed(1)
+                                                        } {unitSystem === 'metric' ? 'kg' : 'lbs'}
+                                                    </span>
+                                                </div>
+                                                <div className="text-right">
+                                                    <span className="text-[10px] text-zinc-500 block uppercase">Calc TDEE</span>
+                                                    <span className="text-sm font-bold text-orange-500 group-hover:scale-110 transition-transform inline-block">
+                                                        {entryTdee.toLocaleString()}
+                                                    </span>
+                                                    <span className="text-[10px] text-zinc-600 ml-1">kcal</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Info Section */}
                         <div className="bg-zinc-900/30 p-4 rounded-xl border border-zinc-800">

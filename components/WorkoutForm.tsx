@@ -1,13 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useExercises } from '@/lib/useExercises';
-import { saveWorkoutAction, getUserProfileAction, updateUnitPreferenceAction, getRoutinesAction } from '@/lib/actions';
+import { useSession } from 'next-auth/react';
+import { saveWorkoutAction, updateUnitPreferenceAction } from '@/lib/actions';
 import { WorkoutSet, Routine } from '@/lib/types';
-import { Plus, Save, Clock, FileText, Dumbbell, ListChecks, CheckCircle2 } from 'lucide-react';
+
+import { Plus, Save, Clock, FileText, Dumbbell, ListChecks, CheckCircle2, Award, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { formatWeight } from '@/lib/units';
 import CreateExercise from './CreateExercise';
 import Select from './ui/Select';
 import { getExerciseImage, getCategoryColor } from '@/lib/exerciseImages';
+import { useCachedExercises, useUserProfile, useWorkouts } from '@/lib/cache';
 
 interface WorkoutFormProps {
     selectedDate: Date | null;
@@ -16,10 +20,15 @@ interface WorkoutFormProps {
 }
 
 import { db } from '@/lib/db';
-import { syncWorkouts } from '@/lib/sync';
 
 export default function WorkoutForm({ selectedDate, routineId, onSuccess }: WorkoutFormProps) {
-    const { exercises, isLoading: isLoadingExercises, addCustomExercise } = useExercises();
+    const { data: session } = useSession();
+    const userId = session?.user?.id || 'current-user';
+
+    const { exercises, isLoading: isLoadingExercises, addCustomExercise } = useCachedExercises();
+    const { refresh: refreshWorkouts } = useWorkouts();
+    const { profile, userUnit: profileUnit } = useUserProfile();
+
     const [isCreatingExercise, setIsCreatingExercise] = useState(false);
     const [routine, setRoutine] = useState<Routine | null>(null);
     const [isLoadingInitial, setIsLoadingInitial] = useState(true);
@@ -32,10 +41,7 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
     const [sets, setSets] = useState('');
     const [notes, setNotes] = useState('');
     const [setType, setSetType] = useState<WorkoutSet['type']>('normal');
-
-    // Unit Preference & Logging Unit
-    const [profileUnit, setProfileUnit] = useState<string>('metric'); // User's general preference
-    const [logUnit, setLogUnit] = useState<string>('metric'); // Specific unit for this log (togglable)
+    const [logUnit, setLogUnit] = useState<string>('metric');
 
     // Session History (for batch logging)
     const [sessionWorkouts, setSessionWorkouts] = useState<any[]>([]);
@@ -49,6 +55,7 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
         setType: WorkoutSet['type'];
         logUnit: string;
     }>>({});
+    const [newlyUnlocked, setNewlyUnlocked] = useState<any[]>([]);
 
     // Helper to save current form state to drafts
     const saveDraft = (exId: string) => {
@@ -117,20 +124,20 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
         const load = async () => {
             setIsLoadingInitial(true);
             try {
-                const profile = await getUserProfileAction();
-                const pref = profile?.useImperial ? 'imperial' : 'metric';
-                setProfileUnit(pref);
-                setLogUnit(pref); // Default log unit to profile preference
+                // Initialize unit from profile cache
+                if (profileUnit) {
+                    setLogUnit(profileUnit);
+                }
 
                 if (routineId) {
                     const found = await db.routines.get(routineId);
                     if (found) {
                         setRoutine(found as any);
-                        if (found.exerciseIds.length > 0) {
+                        if (found.exerciseIds && found.exerciseIds.length > 0) {
                             setExerciseId(found.exerciseIds[0]);
                         }
                     }
-                } else if (exercises.length > 0 && !exerciseId) {
+                } else if (exercises && exercises.length > 0 && !exerciseId) {
                     // Default to first exercise if not in routine mode
                     setExerciseId(exercises[0].id);
                 }
@@ -139,7 +146,7 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
             }
         };
         load();
-    }, [routineId, exercises.length]); // Dependencies need care to avoid loops
+    }, [routineId, exercises.length, profileUnit]); 
 
     // 2. Handle Exercise Change: Save old draft, load new draft/prefill
     useEffect(() => {
@@ -226,12 +233,13 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                 notes: `${weightPerSide} ${logUnit === 'metric' ? 'kg' : 'lbs'}, ${reps} reps, ${sets} sets${notes ? ' - ' + notes : ''}`,
                 type: setType || 'normal',
                 unit: logUnit as 'metric' | 'imperial',
-                userId: 'current-user',
+                userId,
                 syncStatus: 'pending_create' as const
             };
 
-            await db.workouts.add(newWorkout);
-            syncWorkouts();
+
+            const res = await saveWorkoutAction(newWorkout, workoutId);
+            refreshWorkouts(true);
 
             // Handle Batch Mode vs Single Mode
             if (routineId) {
@@ -250,8 +258,13 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                 // Reset specific fields but keep others potentially (like sets/reps if useful? No, usually different)
                 // setWeightPerSide(''); // actually, changing exerciseId triggers pre-fill, which handles this
             } else {
-                // Single Mode: Redirect
-                onSuccess();
+                // Single Mode: Show achievements if any, then redirect after delay
+                if (res?.newlyUnlocked?.length) {
+                    setNewlyUnlocked(res.newlyUnlocked);
+                    setTimeout(() => onSuccess(), 3000);
+                } else {
+                    onSuccess();
+                }
             }
 
         } catch (error: any) {
@@ -280,7 +293,36 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
     }
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 relative">
+            {/* Achievement Notification Overlay */}
+            <AnimatePresence>
+                {newlyUnlocked.length > 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: -50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -50 }}
+                        className="fixed inset-x-4 top-20 z-[100] pointer-events-none"
+                    >
+                        {newlyUnlocked.map((achievement, idx) => (
+                            <div key={achievement.id} className="bg-amber-600 text-white p-4 rounded-xl shadow-2xl border border-amber-400 mb-2 flex items-center gap-3 animate-bounce max-w-sm mx-auto">
+                                <div className="bg-black/20 p-2 rounded-lg">
+                                    <Award size={24} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-[10px] uppercase font-bold opacity-80">Achievement Unlocked!</p>
+                                    <p className="font-bold">{achievement.title}</p>
+                                </div>
+                                <button 
+                                    onClick={() => setNewlyUnlocked(prev => prev.filter((_, i) => i !== idx))}
+                                    className="pointer-events-auto bg-black/20 hover:bg-black/40 p-1 rounded-full transition-colors"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
             {routine && (
                 <div className="glass-card p-4 rounded-xl border-orange-500/20">
                     <div className="flex justify-between items-center mb-4">
@@ -288,12 +330,23 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                             <ListChecks size={20} />
                             <h3 className="font-bold text-sm tracking-wide uppercase">{routine.name}</h3>
                         </div>
-                        <button
-                            onClick={onSuccess} // Finish Workout
-                            className="text-xs bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-1.5 rounded-lg border border-zinc-700 transition-colors"
-                        >
-                            Finish Workout
-                        </button>
+                        {(() => {
+                            const allDone = routine.exerciseIds.every(id => 
+                                sessionWorkouts.some(w => w.exerciseId === id)
+                            );
+                            return (
+                                <button
+                                    onClick={onSuccess} // Finish Workout
+                                    className={`text-xs px-3 py-1.5 rounded-lg border transition-all ${
+                                        allDone 
+                                            ? 'bg-orange-600 text-white border-orange-500 shadow-lg shadow-orange-600/20' 
+                                            : 'bg-zinc-800 hover:bg-zinc-700 text-white border-zinc-700'
+                                    }`}
+                                >
+                                    Finish Workout
+                                </button>
+                            );
+                        })()}
                     </div>
 
                     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -317,7 +370,9 @@ export default function WorkoutForm({ selectedDate, routineId, onSuccess }: Work
                                 >
                                     <div className="flex items-center gap-2">
                                         <span className="text-[10px] opacity-60 font-mono">0{index + 1}</span>
-                                        <span className="text-xs font-bold whitespace-nowrap">{ex?.name || 'Loading...'}</span>
+                                         <span className="text-xs font-bold whitespace-nowrap">
+                                            {ex?.name || (isLoadingExercises ? 'Loading...' : 'Unknown')}
+                                        </span>
                                         {isDone && !isActive && <CheckCircle2 size={12} className="text-green-500" />}
                                         {isActive && <div className="h-2 w-2 rounded-full bg-white animate-pulse" />}
                                     </div>

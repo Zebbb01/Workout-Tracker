@@ -13,6 +13,7 @@ import AddMealForm from '@/components/AddMealForm';
 import FastingWidget from '@/components/FastingWidget';
 import CalorieBanner from '@/components/CalorieBanner';
 import MacroHalfPie from '@/components/MacroHalfPie';
+import { useMeals, useTDEE } from '@/lib/cache';
 
 interface Meal {
     id: string;
@@ -82,49 +83,23 @@ function ProgressRing({ value, max, color, size = 52 }: { value: number; max: nu
 }
 
 export default function MealsPage() {
+    const { meals, refresh: refreshMeals, isLoading: isMealsLoading } = useMeals();
+    const { tdeeProfile: profile, refresh: refreshTDEE, isLoading: isTDEELoading } = useTDEE();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [meals, setMeals] = useState<Meal[]>([]);
-    const [loading, setLoading] = useState(true);
     const [showAddForm, setShowAddForm] = useState(false);
     const [selectedMealType, setSelectedMealType] = useState<string>('breakfast');
-    const [tdeeTargets, setTdeeTargets] = useState<TDEETargets | null>(null);
 
     useEffect(() => {
-        loadMeals();
-    }, [selectedDate]);
+        refreshMeals(false);
+    }, [refreshMeals]);
 
-    useEffect(() => {
-        loadTDEETargets();
-    }, []);
-
-    const loadTDEETargets = async () => {
-        try {
-            const profile = await getUserTDEEProfileAction();
-            if (profile && profile.targetCalories && profile.proteinTarget && profile.carbsTarget && profile.fatTarget) {
-                setTdeeTargets({
-                    targetCalories: profile.targetCalories,
-                    proteinTarget: profile.proteinTarget,
-                    carbsTarget: profile.carbsTarget,
-                    fatTarget: profile.fatTarget,
-                    goal: profile.goal || 'maintenance',
-                });
-            }
-        } catch (error) {
-            console.error('Failed to load TDEE targets:', error);
-        }
-    };
-
-    const loadMeals = async () => {
-        setLoading(true);
-        try {
-            const data = await getMealPlansAction(selectedDate);
-            setMeals(data);
-        } catch (error) {
-            console.error('Failed to load meals:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const tdeeTargets = profile && profile.targetCalories ? {
+        targetCalories: profile.targetCalories,
+        proteinTarget: profile.proteinTarget,
+        carbsTarget: profile.carbsTarget,
+        fatTarget: profile.fatTarget,
+        goal: profile.goal || 'maintenance',
+    } : null;
 
     const handleAddMeal = async (mealData: {
         name: string;
@@ -141,7 +116,7 @@ export default function MealsPage() {
                 date: selectedDate,
             });
             setShowAddForm(false);
-            loadMeals();
+            refreshMeals(true);
         } catch (error) {
             console.error('Failed to add meal:', error);
         }
@@ -150,7 +125,7 @@ export default function MealsPage() {
     const handleDeleteMeal = async (id: string) => {
         try {
             await deleteMealPlanAction(id);
-            loadMeals();
+            refreshMeals(true);
         } catch (error) {
             console.error('Failed to delete meal:', error);
         }
@@ -180,8 +155,14 @@ export default function MealsPage() {
         });
     };
 
+    // Filter meals by selected date locally
+    const filteredMeals = meals.filter(m => {
+        const mealDate = new Date(m.date);
+        return mealDate.toDateString() === selectedDate.toDateString();
+    });
+
     // Calculate daily totals
-    const totals = meals.reduce(
+    const totals = filteredMeals.reduce(
         (acc, meal) => ({
             calories: acc.calories + (meal.calories || 0),
             protein: acc.protein + (meal.protein || 0),
@@ -191,7 +172,7 @@ export default function MealsPage() {
         { calories: 0, protein: 0, carbs: 0, fat: 0 }
     );
 
-    const getMealsByType = (type: string) => meals.filter((m) => m.mealType === type);
+    const getMealsByType = (type: string) => filteredMeals.filter((m) => m.mealType === type);
 
     return (
         <div className="pb-24 animate-in">
@@ -305,7 +286,7 @@ export default function MealsPage() {
             )}
 
             {/* Meal Sections */}
-            {loading ? (
+            {isMealsLoading && meals.length === 0 ? (
                 <div className="flex items-center justify-center py-12">
                     <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
                 </div>

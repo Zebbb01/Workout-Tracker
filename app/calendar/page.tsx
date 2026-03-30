@@ -3,25 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import Calendar from '@/components/Calendar';
 import WorkoutCard from '@/components/WorkoutCard';
-import { getWorkoutsAction, deleteWorkoutAction } from '@/lib/actions';
+import { deleteWorkoutAction } from '@/lib/actions';
+import { useWorkouts } from '@/lib/cache';
 import { WorkoutSet } from '@/lib/types';
 import { isSameDay, format } from 'date-fns';
 import { Plus, Settings } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CalendarPage() {
+    const { workouts, refresh, isLoading } = useWorkouts();
     const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
-    const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
     const [selectedDayWorkouts, setSelectedDayWorkouts] = useState<WorkoutSet[]>([]);
-
-    const loadWorkouts = async () => {
-        const data = await getWorkoutsAction();
-        setWorkouts(data);
-    };
-
-    useEffect(() => {
-        loadWorkouts();
-    }, []);
 
     useEffect(() => {
         if (selectedDate) {
@@ -61,7 +53,7 @@ export default function CalendarPage() {
                                 workout={workout}
                                 onDelete={async () => {
                                     await deleteWorkoutAction(workout.id);
-                                    loadWorkouts();
+                                    refresh(true);
                                 }}
                             />
                         ))}

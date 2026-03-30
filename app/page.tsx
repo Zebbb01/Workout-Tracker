@@ -1,17 +1,17 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { getWorkoutsAction, getUserTDEEProfileAction, getWeightEntriesAction, getMealPlansAction } from '@/lib/actions';
 import { WorkoutSet } from '@/lib/types';
 import { format, differenceInDays, startOfDay, subDays } from 'date-fns';
 import {
     TrendingUp, Dumbbell, Zap, ChevronRight, Settings as SettingsIcon,
-    Flame, Target, Utensils, Scale, Activity, TrendingDown, Award, CalendarDays
+    Flame, Target, Utensils, Scale, Activity, TrendingDown, Award, CalendarDays, X
 } from 'lucide-react';
 import Link from 'next/link';
 import ActivityChart from '@/components/ActivityChart';
 import BeginnerTips from '@/components/BeginnerTips';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { formatWeight, normalizeWeight } from '@/lib/units';
 
 interface TDEEProfile {
     tdee: number | null;
@@ -21,6 +21,7 @@ interface TDEEProfile {
     proteinTarget: number | null;
     weightKg: number | null;
     activityLevel: string | null;
+    useImperial?: boolean;
 }
 
 interface WeightEntry {
@@ -28,82 +29,57 @@ interface WeightEntry {
     date: string;
 }
 
+import { useWorkouts, useTDEE, useWeightEntries, useMeals } from '@/lib/cache';
+
 export default function Home() {
-    const [workouts, setWorkouts] = useState<WorkoutSet[]>([]);
-    const [tdeeProfile, setTdeeProfile] = useState<TDEEProfile | null>(null);
-    const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
-    const [hasMeals, setHasMeals] = useState(false);
-    const [stats, setStats] = useState({
-        totalWorkouts: 0,
-        totalWeight: 0,
-        thisWeekCount: 0,
-        streak: 0
-    });
+    const { workouts } = useWorkouts();
+    const { tdeeProfile } = useTDEE();
+    const { weightEntries } = useWeightEntries();
+    const { meals } = useMeals();
+    const [newlyUnlocked, setNewlyUnlocked] = useState<any[]>([]);
 
-    useEffect(() => {
-        const load = async () => {
-            try {
-                // Load workouts
-                const data = await getWorkoutsAction();
-                setWorkouts(data);
+    const hasMeals = meals.length > 0;
 
-                // Calculate streak
-                const sortedWorkouts = [...data].sort((a, b) =>
-                    new Date(b.date).getTime() - new Date(a.date).getTime()
-                );
+    // Calculate stats using useMemo or just on render since it's cheap
+    const stats = React.useMemo(() => {
+        const sortedWorkouts = [...workouts].sort((a, b) =>
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
 
-                let streak = 0;
-                let currentDate = startOfDay(new Date());
-                const workoutDates = new Set(
-                    sortedWorkouts.map(w => startOfDay(new Date(w.date)).toISOString())
-                );
+        let streak = 0;
+        const workoutDates = new Set(
+            sortedWorkouts.map(w => startOfDay(new Date(w.date)).toISOString())
+        );
 
-                // Check if worked out today or yesterday to start streak
-                const today = startOfDay(new Date()).toISOString();
-                const yesterday = startOfDay(subDays(new Date(), 1)).toISOString();
+        const today = startOfDay(new Date()).toISOString();
+        const yesterday = startOfDay(subDays(new Date(), 1)).toISOString();
 
-                if (workoutDates.has(today) || workoutDates.has(yesterday)) {
-                    for (let i = 0; i < 365; i++) {
-                        const checkDate = startOfDay(subDays(new Date(), i)).toISOString();
-                        if (workoutDates.has(checkDate)) {
-                            streak++;
-                        } else if (i > 0) {
-                            break;
-                        }
-                    }
+        if (workoutDates.has(today) || workoutDates.has(yesterday)) {
+            for (let i = 0; i < 365; i++) {
+                const checkDate = startOfDay(subDays(new Date(), i)).toISOString();
+                if (workoutDates.has(checkDate)) {
+                    streak++;
+                } else if (i > 0) {
+                    break;
                 }
-
-                setStats({
-                    totalWorkouts: data.length,
-                    totalWeight: data.reduce((acc, curr) => acc + curr.totalWeight, 0),
-                    thisWeekCount: data.filter(w => {
-                        const d = new Date(w.date);
-                        const now = new Date();
-                        const diff = now.getTime() - d.getTime();
-                        return diff < 7 * 24 * 60 * 60 * 1000;
-                    }).length,
-                    streak
-                });
-
-                // Load TDEE profile
-                const profile = await getUserTDEEProfileAction();
-                if (profile) {
-                    setTdeeProfile(profile);
-                }
-
-                // Load weight entries
-                const weights = await getWeightEntriesAction(7);
-                setWeightEntries(weights as WeightEntry[]);
-
-                // Check if user has any meals
-                const todayMeals = await getMealPlansAction(new Date());
-                setHasMeals(todayMeals.length > 0);
-            } catch (e) {
-                console.error('Failed to load dashboard data', e);
             }
+        }
+
+        return {
+            totalWorkouts: workouts.length,
+            totalWeight: workouts.reduce((acc, curr) => {
+                const weight = normalizeWeight(curr.totalWeight, curr.unit || 'metric', tdeeProfile?.useImperial ? 'imperial' : 'metric');
+                return acc + weight;
+            }, 0),
+            thisWeekCount: workouts.filter(w => {
+                const d = new Date(w.date);
+                const now = new Date();
+                const diff = now.getTime() - d.getTime();
+                return diff < 7 * 24 * 60 * 60 * 1000;
+            }).length,
+            streak
         };
-        load();
-    }, []);
+    }, [workouts, tdeeProfile?.useImperial]);
 
     const todayStr = format(new Date(), 'MMM do, yyyy');
 
@@ -131,6 +107,36 @@ export default function Home() {
                     <p className="text-zinc-500 text-xs font-medium">{todayStr}</p>
                 </div>
             </header>
+            
+            {/* Achievement Notification Overlay */}
+            <AnimatePresence>
+                {newlyUnlocked.length > 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: -50 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -50 }}
+                        className="fixed top-20 left-4 right-4 z-50 pointer-events-none"
+                    >
+                        {newlyUnlocked.map((achievement, idx) => (
+                            <div key={achievement.id} className="bg-amber-600 text-white p-4 rounded-xl shadow-2xl border border-amber-400 mb-2 flex items-center gap-3 animate-bounce">
+                                <div className="bg-black/20 p-2 rounded-lg">
+                                    <Award size={24} />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-[10px] uppercase font-bold opacity-80">Achievement Unlocked!</p>
+                                    <p className="font-bold">{achievement.title}</p>
+                                </div>
+                                <button 
+                                    onClick={() => setNewlyUnlocked(prev => prev.filter((_, i) => i !== idx))}
+                                    className="pointer-events-auto bg-black/20 hover:bg-black/40 p-1 rounded-full transition-colors"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Beginner Tips - Show for new users */}
             <BeginnerTips
@@ -200,7 +206,7 @@ export default function Home() {
                         <TrendingUp size={40} />
                     </div>
                     <div>
-                        <p className="text-xs text-zinc-400 font-medium">Volume (kg)</p>
+                        <p className="text-xs text-zinc-400 font-medium">Volume ({tdeeProfile?.useImperial ? 'lbs' : 'kg'})</p>
                         <span className="text-3xl font-black text-white">{(stats.totalWeight / 1000).toFixed(1)}k</span>
                     </div>
                 </div>
@@ -242,7 +248,12 @@ export default function Home() {
                     </div>
                     <div className="flex items-end gap-4">
                         <div>
-                            <p className="text-3xl font-black text-white">{weightEntries[0].weightKg.toFixed(1)} <span className="text-sm font-normal text-zinc-500">kg</span></p>
+                            <p className="text-3xl font-black text-white">
+                                {formatWeight(
+                                    normalizeWeight(weightEntries[0].weightKg, 'metric', tdeeProfile?.useImperial ? 'imperial' : 'metric'),
+                                    tdeeProfile?.useImperial ? 'imperial' : 'metric'
+                                )}
+                            </p>
                             <p className="text-[10px] text-zinc-500">{format(new Date(weightEntries[0].date), 'MMM d')}</p>
                         </div>
                         {weightChange !== null && (
@@ -253,7 +264,10 @@ export default function Home() {
                                     : 'bg-zinc-800 text-zinc-400'
                                 }`}>
                                 {weightChange < 0 ? <TrendingDown size={12} /> : weightChange > 0 ? <TrendingUp size={12} /> : null}
-                                {weightChange !== 0 ? `${Math.abs(weightChange).toFixed(1)} kg` : 'No change'}
+                                {weightChange !== 0 ? formatWeight(
+                                    Math.abs(normalizeWeight(weightChange, 'metric', tdeeProfile?.useImperial ? 'imperial' : 'metric')),
+                                    tdeeProfile?.useImperial ? 'imperial' : 'metric'
+                                ) : 'No change'}
                             </div>
                         )}
                     </div>
@@ -300,7 +314,7 @@ export default function Home() {
                     <span className="text-[10px] text-zinc-500 bg-zinc-800/50 px-2 py-0.5 rounded">Last 7 Days</span>
                 </div>
                 <div className="-ml-2">
-                    <ActivityChart workouts={workouts} />
+                    <ActivityChart workouts={workouts} useImperial={!!tdeeProfile?.useImperial} />
                 </div>
             </div>
 
@@ -372,7 +386,12 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="text-right">
-                                <span className="block text-sm font-bold text-white">{workout.totalWeight}kg</span>
+                                <span className="block text-sm font-bold text-white">
+                                    {formatWeight(
+                                        normalizeWeight(workout.totalWeight, workout.unit || 'metric', tdeeProfile?.useImperial ? 'imperial' : 'metric'),
+                                        tdeeProfile?.useImperial ? 'imperial' : 'metric'
+                                    )}
+                                </span>
                                 <span className="text-[10px] text-zinc-500">{workout.sets} x {workout.reps}</span>
                             </div>
                         </div>

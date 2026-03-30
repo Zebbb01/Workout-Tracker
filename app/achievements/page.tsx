@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Lock, Dumbbell, Utensils, Scale, Flame, Star, Target, Medal, Award } from 'lucide-react';
-import { getAllAchievementsAction, getUserAchievementsAction } from '@/lib/actions';
+import { useAchievements } from '@/lib/cache';
 
 interface Achievement {
     id: string;
@@ -36,39 +36,17 @@ const categoryConfig = {
 };
 
 export default function AchievementsPage() {
-    const [allAchievements, setAllAchievements] = useState<Achievement[]>([]);
-    const [unlockedAchievements, setUnlockedAchievements] = useState<Achievement[]>([]);
+    const { achievements, userAchievements, isLoading: loading } = useAchievements();
     const [selectedCategory, setSelectedCategory] = useState('all');
-    const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadAchievements();
-    }, []);
+    const unlockedIds = new Set(userAchievements.map((a: any) => a.id));
 
-    const loadAchievements = async () => {
-        setLoading(true);
-        try {
-            const [all, unlocked] = await Promise.all([
-                getAllAchievementsAction(),
-                getUserAchievementsAction()
-            ]);
-            setAllAchievements(all);
-            setUnlockedAchievements(unlocked);
-        } catch (error) {
-            console.error('Failed to load achievements:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const unlockedIds = new Set(unlockedAchievements.map(a => a.id));
-
-    const filteredAchievements = allAchievements.filter(
-        a => selectedCategory === 'all' || a.category === selectedCategory
+    const filteredAchievements = achievements.filter(
+        (a: any) => selectedCategory === 'all' || a.category === selectedCategory
     );
 
     const getUnlockDate = (id: string) => {
-        const unlocked = unlockedAchievements.find(a => a.id === id);
+        const unlocked = userAchievements.find((a: any) => a.id === id);
         return unlocked?.unlockedAt;
     };
 
@@ -87,7 +65,7 @@ export default function AchievementsPage() {
                     <div>
                         <h1 className="text-2xl font-bold text-white">Achievements</h1>
                         <p className="text-sm text-zinc-500">
-                            {unlockedAchievements.length}/{allAchievements.length} unlocked
+                            {userAchievements.length}/{achievements.length} unlocked
                         </p>
                     </div>
                 </div>
@@ -115,7 +93,7 @@ export default function AchievementsPage() {
             </motion.div>
 
             {/* Achievements Grid */}
-            {loading ? (
+            {loading && achievements.length === 0 ? (
                 <div className="flex items-center justify-center py-12">
                     <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
                 </div>
@@ -132,7 +110,7 @@ export default function AchievementsPage() {
             ) : (
                 <div className="grid grid-cols-2 gap-3">
                     <AnimatePresence mode="popLayout">
-                        {filteredAchievements.map((achievement, index) => {
+                        {filteredAchievements.map((achievement: any, index: number) => {
                             const isUnlocked = unlockedIds.has(achievement.id);
                             const IconComponent = iconMap[achievement.icon] || Trophy;
                             const unlockDate = getUnlockDate(achievement.id);
