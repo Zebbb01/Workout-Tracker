@@ -3,6 +3,7 @@
 import React from 'react';
 import { WorkoutSet } from '@/lib/types';
 import { format } from 'date-fns';
+import { TrendingUp } from 'lucide-react';
 
 interface ProgressChartProps {
     data: WorkoutSet[];
@@ -12,8 +13,12 @@ interface ProgressChartProps {
 export default function ProgressChart({ data, userUnit }: ProgressChartProps) {
     if (!data || data.length === 0) {
         return (
-            <div className="glass-card p-8 rounded-xl text-center text-slate-500">
-                No data available for this exercise yet.
+            <div className="glass-card p-12 rounded-xl text-center border-dashed border-zinc-800">
+                <div className="bg-zinc-900/50 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 text-zinc-600">
+                    <TrendingUp size={24} />
+                </div>
+                <p className="text-zinc-500 text-sm font-medium">No data available for this exercise yet.</p>
+                <p className="text-[10px] text-zinc-600 mt-1 max-w-[180px] mx-auto">Log more workouts to see your strength progression over time.</p>
             </div>
         );
     }

@@ -1,13 +1,27 @@
-export const KG_TO_LBS = 2.20462;
-export const LBS_TO_KG = 0.453592;
+export const KG_TO_LBS = 2.20462262;
+export const LBS_TO_KG = 0.45359237;
+
+/**
+ * Converts pounds to kilograms.
+ */
+export function lbsToKg(lbs: number): number {
+    return lbs * LBS_TO_KG;
+}
+
+/**
+ * Converts kilograms to pounds.
+ */
+export function kgToLbs(kg: number): number {
+    return kg * KG_TO_LBS;
+}
 
 /**
  * Normalizes weight to the target unit for comparison or aggregation.
  */
 export function normalizeWeight(weight: number, fromUnit: 'metric' | 'imperial', toUnit: 'metric' | 'imperial'): number {
     if (fromUnit === toUnit) return weight;
-    if (fromUnit === 'metric' && toUnit === 'imperial') return weight * KG_TO_LBS;
-    if (fromUnit === 'imperial' && toUnit === 'metric') return weight * LBS_TO_KG;
+    if (fromUnit === 'metric' && toUnit === 'imperial') return kgToLbs(weight);
+    if (fromUnit === 'imperial' && toUnit === 'metric') return lbsToKg(weight);
     return weight;
 }
 
