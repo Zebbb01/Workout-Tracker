@@ -23,6 +23,16 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # A throwaway Supabase built from supabase/migrations, for the RLS tests.
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 2.122.0
+      - run: supabase start
+      - name: Point the tests at the local Supabase
+        run: |
+          eval "$(supabase status -o env)"
+          echo "RLS_TEST_SUPABASE_URL=$API_URL" >> "$GITHUB_ENV"
+          echo "RLS_TEST_SUPABASE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}" >> "$GITHUB_ENV"
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
