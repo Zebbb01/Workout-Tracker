@@ -48,40 +48,6 @@ const goalLabels: Record<string, { label: string; color: string }> = {
     bulking: { label: 'Bulking', color: 'text-amber-400' },
 };
 
-function ProgressRing({ value, max, color, size = 52 }: { value: number; max: number; color: string; size?: number }) {
-    const strokeWidth = 4;
-    const radius = (size - strokeWidth) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const percentage = Math.min(value / max, 1);
-    const strokeDashoffset = circumference - percentage * circumference;
-    const isOver = value > max;
-
-    return (
-        <svg width={size} height={size} className="transform -rotate-90">
-            <circle
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                fill="none"
-                stroke="rgba(255,255,255,0.05)"
-                strokeWidth={strokeWidth}
-            />
-            <circle
-                cx={size / 2}
-                cy={size / 2}
-                r={radius}
-                fill="none"
-                stroke={isOver ? '#ef4444' : color}
-                strokeWidth={strokeWidth}
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                strokeLinecap="round"
-                className="transition-all duration-700 ease-out"
-            />
-        </svg>
-    );
-}
-
 export default function MealsPage() {
     const { meals, refresh: refreshMeals, isLoading: isMealsLoading } = useMeals();
     const { tdeeProfile: profile, refresh: refreshTDEE, isLoading: isTDEELoading } = useTDEE();
@@ -89,9 +55,8 @@ export default function MealsPage() {
     const [showAddForm, setShowAddForm] = useState(false);
     const [selectedMealType, setSelectedMealType] = useState<string>('breakfast');
 
-    useEffect(() => {
-        refreshMeals(false);
-    }, [refreshMeals]);
+    // Trust local-first cache; background sync handles updates.
+    // Mount-triggered refresh removed to eliminate navigation render pressure.
 
     const tdeeTargets = profile && profile.targetCalories ? {
         targetCalories: profile.targetCalories,
@@ -292,6 +257,24 @@ export default function MealsPage() {
                 </div>
             ) : (
                 <div className="space-y-6">
+                    {filteredMeals.length === 0 && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-orange-600/5 border border-orange-500/20 p-4 rounded-xl mb-2 flex items-start gap-3"
+                        >
+                            <div className="bg-orange-500/20 p-2 rounded-lg text-orange-500 mt-0.5">
+                                <Target size={16} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-white mb-1">Track your nutrition</p>
+                                <p className="text-xs text-zinc-500 leading-relaxed">
+                                     Logging your daily meals helps you stay within your {tdeeTargets?.targetCalories?.toLocaleString() || 'caloric'} calorie limit and hit your protein targets for better recovery.
+                                </p>
+                            </div>
+                        </motion.div>
+                    )}
+
                     {Object.entries(mealTypeConfig).map(([type, config], index) => {
                         const Icon = config.icon;
                         const typeMeals = getMealsByType(type);

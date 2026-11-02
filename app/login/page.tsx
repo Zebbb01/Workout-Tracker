@@ -1,5 +1,6 @@
 import { signIn } from "@/auth"
 import { Dumbbell } from "lucide-react"
+import InstallApp from "@/components/InstallApp"
 
 export default function LoginPage() {
     return (
@@ -13,7 +14,7 @@ export default function LoginPage() {
                     <div className="bg-gradient-to-br from-orange-500 to-red-600 p-4 rounded-2xl shadow-lg shadow-orange-500/20 inline-block">
                         <Dumbbell size={40} className="text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">Body Tracker <span className="text-orange-500">Pro</span></h1>
+                    <h1 className="text-3xl font-bold text-white tracking-tight">Body Tracker</h1>
                     <p className="text-zinc-500 text-sm">Sign in to sync your workouts, track progress, and crush your goals.</p>
                 </div>
 
@@ -55,6 +56,8 @@ export default function LoginPage() {
                 <p className="text-xs text-zinc-600">
                     By continuing, you verify that you are authorized to access this device.
                 </p>
+
+                <InstallApp />
             </div>
         </div>
     )

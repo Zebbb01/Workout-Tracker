@@ -202,8 +202,10 @@ export function CacheProvider({ children }: { children: ReactNode }) {
     const refreshForPage = useCallback(async (path: string, force = false) => {
         const promises = [];
         // Determine what is critical for the current page
-        if (path === '/' || path === '/history' || path === '/calendar') {
+        if (path === '/') {
             promises.push(refreshWorkouts(force), refreshMeals(force), refreshTDEE(force), refreshWeightEntries(force), refreshUserProfile(force));
+        } else if (path === '/history' || path === '/calendar') {
+            promises.push(refreshWorkouts(force), refreshUserProfile(force));
         } else if (path === '/routines') {
             promises.push(refreshExercises(force), refreshRoutines(force));
         } else if (path === '/progress') {

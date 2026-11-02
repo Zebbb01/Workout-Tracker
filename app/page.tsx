@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 import ActivityChart from '@/components/ActivityChart';
 import BeginnerTips from '@/components/BeginnerTips';
+import SmartInsights from '@/components/SmartInsights';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatWeight, normalizeWeight } from '@/lib/units';
 
@@ -273,6 +274,14 @@ export default function Home() {
                     </div>
                 </div>
             )}
+
+            {/* Smart Insights */}
+            <SmartInsights
+                workouts={workouts}
+                meals={meals}
+                tdeeProfile={tdeeProfile}
+                weightEntries={weightEntries}
+            />
 
             {/* Quick Action - Start Workout */}
             <Link href="/log" className="block relative rounded-xl overflow-hidden group">
