@@ -1,19 +1,23 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/Sidebar';
 import Providers from './providers';
 import { Analytics } from '@vercel/analytics/next';
+import { RegisterServiceWorker } from '@/components/InstallApp';
 
 const inter = Inter({ subsets: ['latin'] });
 
+// Icons come from app/icon.svg and app/apple-icon.png; the manifest from app/manifest.ts.
 export const metadata: Metadata = {
-    title: 'Gym Tracker',
-    description: 'Track your workouts and progress',
-    icons: {
-        icon: '/icon-512x512.png',
-        apple: '/icon-512x512.png',
-    },
+    title: 'Body Tracker',
+    description: 'Log workouts, meals and weight in a few taps, even offline.',
+    appleWebApp: { capable: true, title: 'Body Tracker', statusBarStyle: 'black-translucent' },
+};
+
+export const viewport: Viewport = {
+    themeColor: '#0C0A09',
+    viewportFit: 'cover',
 };
 
 export default function RootLayout({
@@ -30,6 +34,7 @@ export default function RootLayout({
                         {children}
                     </main>
                 </Providers>
+                <RegisterServiceWorker />
                 <Analytics />
             </body>
         </html>
