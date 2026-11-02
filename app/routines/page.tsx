@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { db, LocalRoutine } from '@/lib/db';
 import { syncRoutines } from '@/lib/sync';
 import { useRoutines, useCachedExercises } from '@/lib/cache';
+import { motion } from 'framer-motion';
 
 export default function RoutinesPage() {
     const { data: session } = useSession();
@@ -276,15 +277,26 @@ export default function RoutinesPage() {
                     )}
 
                     {routines.length === 0 && (
-                        <div className="text-center py-12 border border-dashed border-zinc-800 rounded-xl">
-                            <div className="bg-zinc-900 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-zinc-600">
-                                <Dumbbell size={20} />
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="flex flex-col items-center justify-center py-20 px-6 glass-card rounded-xl border-dashed border-zinc-800"
+                        >
+                            <div className="bg-zinc-900/50 w-16 h-16 rounded-full flex items-center justify-center mb-4 text-zinc-700">
+                                <Dumbbell size={32} />
                             </div>
-                            <p className="text-zinc-500 text-sm">No routines created yet.</p>
-                            <button onClick={startCreating} className="text-orange-500 text-xs font-bold mt-2 hover:underline">
-                                Create your first routine
+                            <h3 className="text-white font-bold mb-2">No routines yet</h3>
+                            <p className="text-zinc-500 text-sm text-center max-w-xs mb-6">
+                                Create a routine to quickly log your common workouts without selecting exercises every time.
+                            </p>
+                            <button 
+                                onClick={startCreating} 
+                                className="bg-orange-600/10 hover:bg-orange-600 text-orange-500 hover:text-white font-bold py-2 px-6 rounded-lg border border-orange-600/30 transition-all flex items-center gap-2"
+                            >
+                                <Plus size={18} />
+                                Create First Routine
                             </button>
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             )}
