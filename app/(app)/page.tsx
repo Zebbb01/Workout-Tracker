@@ -72,10 +72,10 @@ export default function TodayPage() {
                 <dd className="tabular font-semibold">
                   {Math.round(value)}
                   <span className="font-normal text-muted-foreground"> / {goal} g</span>
+                  <div className="mt-1">
+                    <Meter value={value} max={goal} label={`${name} eaten`} />
+                  </div>
                 </dd>
-                <div className="mt-1">
-                  <Meter value={value} max={goal} label={`${name} eaten`} />
-                </div>
               </div>
             ))}
           </dl>
