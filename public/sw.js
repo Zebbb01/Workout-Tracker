@@ -15,7 +15,7 @@
  * Never delete it: a browser whose update check gets a 404 keeps the old
  * worker. proxy.ts must keep letting /sw.js through for the same reason.
  */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE = `shell-${VERSION}`;
 const OFFLINE = '/offline.html';
 const PRECACHE = [OFFLINE, '/icon-192.png', '/icon-512.png'];

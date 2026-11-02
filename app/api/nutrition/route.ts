@@ -1,164 +1,53 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
-import { auth } from '@/auth';
-import { z } from 'zod';
+import { NextResponse } from 'next/server';
+import { serverSupabase } from '@/lib/supabase/server';
+import { ENDPOINT, IMAGE_TYPES, MAX_IMAGE_BYTES, geminiRequest, readEstimate, type EstimateInput } from '@/lib/nutrition';
 
-const NutritionResultSchema = z.object({
-    calories: z.coerce.number(),
-    protein: z.coerce.number(),
-    carbs: z.coerce.number(),
-    fat: z.coerce.number()
-});
+export const maxDuration = 30;
 
+const fail = (status: number, error: string) => NextResponse.json({ error }, { status });
 
-const GITHUB_MODELS_URL = 'https://models.inference.ai.azure.com/chat/completions';
+/**
+ * Estimates a meal from a photo (multipart, field "image") or a description
+ * (JSON {"text"}). Only fills the form: the person checks the numbers and
+ * saves. Photos are passed to Gemini and never stored or logged here.
+ */
+export async function POST(request: Request) {
+  const supabase = await serverSupabase();
+  const { data: auth } = await supabase.auth.getClaims();
+  if (!auth?.claims) return fail(401, 'Sign in to get estimates.');
 
-const SYSTEM_PROMPT = `You are a precise nutrition calculator. Given a meal description, estimate the total nutritional values as accurately as possible.
+  let input: EstimateInput;
+  if ((request.headers.get('content-type') ?? '').startsWith('multipart/form-data')) {
+    const image = (await request.formData().catch(() => null))?.get('image');
+    if (!(image instanceof File) || !IMAGE_TYPES.includes(image.type)) return fail(400, 'Send a JPEG, PNG or WebP photo.');
+    if (image.size > MAX_IMAGE_BYTES) return fail(413, 'That photo is too large. Try another one.');
+    input = { image: { mimeType: image.type, base64: Buffer.from(await image.arrayBuffer()).toString('base64') } };
+  } else {
+    const body = await request.json().catch(() => null);
+    const text = typeof body?.text === 'string' ? body.text.trim() : '';
+    if (!text || text.length > 300) return fail(400, 'Describe the meal in a few words.');
+    input = { text };
+  }
 
-Rules:
-- Return ONLY a valid JSON object with exactly these keys: calories (integer), protein (float), carbs (float), fat (float)
-- calories should be in kcal
-- protein, carbs, fat should be in grams
-- If multiple food items are listed, SUM all their nutrition values together
-- Use standard serving sizes when portions aren't specified (e.g., "eggs" = 1 large egg ~50g, "rice" = 1 cup cooked ~158g, "chicken breast" = 1 medium ~170g)
-- Be as accurate as possible based on USDA food composition data
-- Do NOT include any explanation, markdown, or extra text — ONLY the JSON object
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return fail(503, 'Estimates are not set up yet. Enter the numbers yourself for now.');
 
-Example input: "2 eggs, 1 apple"
-Example output: {"calories":237,"protein":13.6,"carbs":25.1,"fat":10.0}`;
+  const { data: allowed, error } = await supabase.rpc('use_ai_estimate');
+  if (error) return fail(500, 'Something went wrong. Enter the numbers yourself for now.');
+  if (!allowed) return fail(429, "You've used today's estimates. Enter the numbers yourself, or try again tomorrow.");
 
-export async function POST(request: NextRequest) {
-    try {
-        // Verify user is authenticated
-        const session = await auth();
-        if (!session?.user?.id) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+  const response = await fetch(ENDPOINT, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+    body: JSON.stringify(geminiRequest(input)),
+    signal: AbortSignal.timeout(25_000),
+  }).catch(() => null);
+  if (!response?.ok) {
+    console.error('Gemini estimate failed with status', response?.status ?? 'network error');
+    return fail(502, 'The estimate service is busy. Try again in a minute, or enter the numbers yourself.');
+  }
 
-        const { mealName } = await request.json();
-
-        if (!mealName || typeof mealName !== 'string' || !mealName.trim()) {
-            return NextResponse.json({ error: 'Meal name is required' }, { status: 400 });
-        }
-
-        // Normalize the query key for consistent caching
-        const queryKey = mealName.toLowerCase().trim().replace(/\s+/g, ' ');
-
-        // Check cache first
-        const cached = await prisma.nutritionCache.findUnique({
-            where: { queryKey },
-        });
-
-        if (cached) {
-            return NextResponse.json({
-                calories: cached.calories,
-                protein: cached.protein,
-                carbs: cached.carbs,
-                fat: cached.fat,
-                fromCache: true,
-            });
-        }
-
-        // Call GitHub Models API (gpt-4.1-mini)
-        const githubToken = process.env.GITHUB_TOKEN;
-        if (!githubToken) {
-            return NextResponse.json({ error: 'GitHub token not configured' }, { status: 500 });
-        }
-
-        const aiResponse = await fetch(GITHUB_MODELS_URL, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${githubToken}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                model: 'gpt-4.1-mini',
-                messages: [
-                    { role: 'system', content: SYSTEM_PROMPT },
-                    { role: 'user', content: queryKey },
-                ],
-                temperature: 0.1, // Low temperature for consistent, accurate results
-            }),
-        });
-
-        if (!aiResponse.ok) {
-            const errorText = await aiResponse.text();
-            console.error('GitHub Models API error:', aiResponse.status, errorText);
-            return NextResponse.json(
-                { error: 'Failed to calculate nutrition. Please try again.' },
-                { status: 502 }
-            );
-        }
-
-        const aiData = await aiResponse.json();
-        const content = aiData.choices?.[0]?.message?.content;
-
-        if (!content) {
-            return NextResponse.json(
-                { error: 'No response from AI model' },
-                { status: 502 }
-            );
-        }
-
-        // Parse the AI response - handle potential markdown code blocks
-        let nutritionData;
-        try {
-            // Strip markdown code fences if present
-            const cleaned = content
-                .replace(/```json\s*/gi, '')
-                .replace(/```\s*/g, '')
-                .trim();
-            const raw = JSON.parse(cleaned);
-
-            // Strict Schema Validation
-            const validated = NutritionResultSchema.safeParse(raw);
-            if (!validated.success) {
-                console.error('Invalid nutrition response schema', validated.error);
-                return NextResponse.json({ error: 'AI returned malformed data' }, { status: 502 });
-            }
-            nutritionData = validated.data;
-        } catch {
-            console.error('Failed to parse AI response:', content);
-            return NextResponse.json(
-                { error: 'Failed to parse nutrition data from AI' },
-                { status: 502 }
-            );
-        }
-
-        // Standardize the parsed data
-        const calories = Math.round(nutritionData.calories || 0);
-        const protein = Math.round((nutritionData.protein || 0) * 10) / 10;
-        const carbs = Math.round((nutritionData.carbs || 0) * 10) / 10;
-        const fat = Math.round((nutritionData.fat || 0) * 10) / 10;
-
-        // Save to cache for future lookups
-        try {
-            await prisma.nutritionCache.create({
-                data: {
-                    queryKey,
-                    calories,
-                    protein,
-                    carbs,
-                    fat,
-                },
-            });
-        } catch (cacheError) {
-            // If cache save fails (e.g., race condition duplicate), that's okay
-            console.warn('Failed to save to nutrition cache:', cacheError);
-        }
-
-        return NextResponse.json({
-            calories,
-            protein,
-            carbs,
-            fat,
-            fromCache: false,
-        });
-    } catch (error) {
-        console.error('Nutrition calculation error:', error);
-        return NextResponse.json(
-            { error: 'An unexpected error occurred' },
-            { status: 500 }
-        );
-    }
+  const estimate = readEstimate(await response.json().catch(() => null));
+  if (!estimate) return fail(422, "Couldn't find a meal to estimate. Try another photo, or describe it.");
+  return NextResponse.json(estimate);
 }

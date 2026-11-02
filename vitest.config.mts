@@ -6,7 +6,5 @@ export default defineConfig({
   test: {
     include: ['**/*.test.ts'],
     exclude: ['node_modules/**', '.next/**', 'e2e/**'],
-    // next-auth imports 'next/server' without an extension, which only a bundler resolves.
-    server: { deps: { inline: ['next-auth'] } },
   },
 });

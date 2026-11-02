@@ -17,6 +17,5 @@ export default defineConfig({
     url: `http://localhost:${port}/offline.html`,
     reuseExistingServer: !process.env.CI,
     timeout: 240_000,
-    env: { AUTH_TRUST_HOST: 'true' },
   },
 });

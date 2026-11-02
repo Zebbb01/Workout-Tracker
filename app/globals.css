@@ -2,126 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Colour tokens. Light by default, dark when the phone is dark, and either one
+ * when chosen in More (data-theme on <html>). Text pairs meet 4.5:1 and input
+ * borders 3:1 in both themes. Orange is the brand and only marks actions.
+ */
 :root {
-  --background: 0 0% 0%;
-  /* Pure Black */
-  --foreground: 0 0% 95%;
-
-  --card: 0 0% 7%;
-  /* Dark Grey for contrast */
-  --card-foreground: 0 0% 95%;
-
-  --popover: 0 0% 5%;
-  --popover-foreground: 0 0% 95%;
-
-  --primary: 24 95% 50%;
-  /* Vibrant Orange #FA5505 approx */
+  color-scheme: light;
+  --background: 60 9% 98%;
+  --foreground: 24 10% 10%;
+  --card: 0 0% 100%;
+  --muted: 60 5% 96%;
+  --muted-foreground: 33 5% 32%;
+  --border: 20 6% 90%;
+  --input: 25 5% 45%;
+  --primary: 17 88% 40%;
   --primary-foreground: 0 0% 100%;
+  --accent: 17 88% 40%;
+  --positive: 142 72% 29%;
+  --negative: 0 74% 42%;
+  --ring: 17 88% 40%;
+  /* Chart marks: checked for 3:1 on the card and for the dark lightness band. */
+  --chart: 17 88% 40%;
+}
 
-  --secondary: 0 0% 12%;
-  --secondary-foreground: 0 0% 95%;
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --background: 20 14% 4%;
+    --foreground: 60 9% 98%;
+    --card: 24 10% 10%;
+    --muted: 12 6% 15%;
+    --muted-foreground: 30 6% 63%;
+    --border: 12 6% 17%;
+    --input: 24 5% 45%;
+    --accent: 27 96% 61%;
+    --positive: 142 69% 58%;
+    --negative: 0 91% 71%;
+    --ring: 27 96% 61%;
+    --chart: 21 90% 48%;
+  }
+}
 
-  --muted: 0 0% 12%;
-  --muted-foreground: 0 0% 60%;
-
-  --accent: 24 90% 50%;
-  /* Orange Accent */
-  --accent-foreground: 0 0% 10%;
-
-  --destructive: 0 60% 40%;
-  --destructive-foreground: 0 0% 98%;
-
-  --border: 0 0% 15%;
-  --input: 0 0% 15%;
-  --ring: 24 95% 50%;
-
-  --radius: 0.5rem;
-  /* Slightly sharper corners for "sporty" look */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --background: 20 14% 4%;
+  --foreground: 60 9% 98%;
+  --card: 24 10% 10%;
+  --muted: 12 6% 15%;
+  --muted-foreground: 30 6% 63%;
+  --border: 12 6% 17%;
+  --input: 24 5% 45%;
+  --accent: 27 96% 61%;
+  --positive: 142 69% 58%;
+  --negative: 0 91% 71%;
+  --ring: 27 96% 61%;
+  --chart: 21 90% 48%;
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground antialiased selection:bg-orange-500/30 selection:text-orange-200;
-    background-image:
-      radial-gradient(circle at 50% 0%, rgba(255, 85, 0, 0.08), transparent 40%),
-      radial-gradient(circle at 100% 100%, rgba(255, 85, 0, 0.05), transparent 40%);
-    background-attachment: fixed;
+    @apply bg-background text-foreground antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Numbers that get compared line up. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-@layer utilities {
-  .glass-card {
-    @apply bg-zinc-900/40 border border-white/5 rounded-xl;
-  }
-
-  .glass-button {
-    @apply bg-zinc-800/30 hover:bg-zinc-800/80 border border-white/5 transition-all duration-200 active:scale-95;
-  }
-
-  .text-glow {
-    text-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
-  }
-
-  .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-red-500;
-  }
-
-  .animate-in {
-    animation: animate-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-  }
-
-  @keyframes animate-in {
-    from {
-      opacity: 0;
-      transform: translateY(8px) scale(0.99);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* Compact Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 3px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-
-  /* Achievement shine animation */
-  @keyframes shine {
-    0% {
-      transform: translateX(-100%);
-    }
-
-    100% {
-      transform: translateX(100%);
-    }
-  }
-
-  .animate-shine {
-    animation: shine 2s ease-in-out infinite;
-  }
-
-  /* Hide scrollbar but keep functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

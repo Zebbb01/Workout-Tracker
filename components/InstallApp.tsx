@@ -36,17 +36,20 @@ function subscribe(notify: () => void) {
   };
 }
 
-const noop = () => () => {};
-
 /** iPhone or iPad in a browser tab, where only Safari's Share menu can install. */
 function needsIosSteps() {
   const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   const installed = matchMedia('(display-mode: standalone)').matches || (navigator as { standalone?: boolean }).standalone;
-  return ios && !installed;
+  return Boolean(ios && !installed);
 }
 
-export function useCanInstallApp(): boolean {
-  return useSyncExternalStore(subscribe, () => held !== null, () => false);
+/** 'prompt' where the browser offers Install, 'ios' for the Share steps, null when there is nothing to offer. */
+export function useInstall(): 'prompt' | 'ios' | null {
+  return useSyncExternalStore(
+    subscribe,
+    () => (held ? 'prompt' : needsIosSteps() ? 'ios' : null),
+    () => null,
+  );
 }
 
 export async function installApp(): Promise<void> {
@@ -59,25 +62,23 @@ export async function installApp(): Promise<void> {
 
 /** The Install button where the browser allows it, iPhone steps on iOS, nothing elsewhere. */
 export default function InstallApp() {
-  const canInstall = useCanInstallApp();
-  const iosSteps = useSyncExternalStore(noop, needsIosSteps, () => false);
-
-  if (canInstall) {
+  const install = useInstall();
+  if (install === 'prompt') {
     return (
       <button
         type="button"
         onClick={installApp}
-        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/10 px-4 text-sm font-semibold text-white hover:bg-white/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-400"
+        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-input bg-card px-4 text-sm font-semibold hover:bg-muted"
       >
         <Download size={18} aria-hidden />
         Install app
       </button>
     );
   }
-  if (iosSteps) {
+  if (install === 'ios') {
     return (
-      <p className="text-sm text-zinc-300">
-        Install on iPhone: tap <Share size={16} aria-label="Share" className="inline -mt-1" /> Share, then{' '}
+      <p className="text-sm">
+        Install on iPhone: tap <Share size={16} aria-hidden className="-mt-1 inline" /> <strong>Share</strong>, then{' '}
         <strong>Add to Home Screen</strong>.
       </p>
     );

@@ -6,6 +6,15 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   // Override default ignores of eslint-config-next.
+  {
+    rules: {
+      // `const { dirty, ...row } = local` drops a field on purpose.
+      "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true, argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
+      // The only images are the app icon and the person's own meal photo (a blob URL);
+      // next/image would spend Vercel's image-optimization allowance on neither.
+      "@next/next/no-img-element": "off",
+    },
+  },
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
@@ -14,15 +23,6 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     "playwright-report/**",
     "test-results/**",
-  ]),
-  // ponytail: the March 2026 screens fail the React 19 lint rules. Phase 2
-  // replaces every one of them; delete this block with them.
-  globalIgnores([
-    "app/achievements/**", "app/calendar/**", "app/history/**", "app/page.tsx",
-    "app/progress/**", "app/routines/**", "app/settings/**", "app/tdee/**",
-    "auth.ts", "components/FastingWidget.tsx", "components/RestTimer.tsx",
-    "components/Sidebar.tsx", "components/SmartInsights.tsx", "components/WorkoutForm.tsx",
-    "lib/actions.ts", "lib/cache.tsx", "lib/sync.ts",
   ]),
 ]);
 
