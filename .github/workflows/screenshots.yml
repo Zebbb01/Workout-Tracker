@@ -1,0 +1,44 @@
+name: Screenshots
+
+# Captures the README and portfolio images from the real app against a local
+# Supabase with a fictional demo account (screenshots/capture.ts). Download the
+# artifact and commit it to docs/screenshots.
+on:
+  workflow_dispatch:
+  # Manual runs need this file on main; until then, pushes to this branch run it.
+  push:
+    branches: ['feature/screenshots']
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 2.122.0
+      - run: supabase start
+      - name: Point the app at the local Supabase
+        run: |
+          eval "$(supabase status -o env)"
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}"
+          } >> "$GITHUB_ENV"
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run screenshots
+        env:
+          CI: 'true'
+          TZ: Asia/Manila
+      - uses: actions/upload-artifact@v7
+        with:
+          name: screenshots
+          path: docs/screenshots
+          retention-days: 14
