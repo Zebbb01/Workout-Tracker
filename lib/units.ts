@@ -1,5 +1,5 @@
-export const KG_TO_LBS = 2.20462262;
-export const LBS_TO_KG = 0.45359237;
+export const LBS_TO_KG = 0.45359237; // exact, by definition of the pound
+export const KG_TO_LBS = 1 / LBS_TO_KG;
 
 /**
  * Converts pounds to kilograms.
