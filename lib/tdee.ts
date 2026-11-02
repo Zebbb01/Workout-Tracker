@@ -1,3 +1,5 @@
+import { lbsToKg, kgToLbs } from '@/lib/units';
+
 // TDEE Calculator Utilities
 // Using Mifflin-St Jeor Formula (most accurate for modern populations)
 
@@ -138,13 +140,7 @@ export function calculateComplete(input: TDEEInput): TDEEResult {
 }
 
 // Unit conversion helpers
-export function lbsToKg(lbs: number): number {
-    return lbs * 0.453592;
-}
-
-export function kgToLbs(kg: number): number {
-    return kg / 0.453592;
-}
+export { lbsToKg, kgToLbs };
 
 export function feetInchesToCm(feet: number, inches: number): number {
     return (feet * 30.48) + (inches * 2.54);

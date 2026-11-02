@@ -4,7 +4,7 @@ import React from 'react';
 import { WorkoutSet } from '@/lib/types';
 import { Trash2 } from 'lucide-react';
 import ConfirmDialog from './ui/ConfirmDialog';
-import { getExerciseImage, getCategoryColor } from '@/lib/exerciseImages';
+import { getCategoryColor } from '@/lib/exerciseImages';
 import { formatWeight } from '@/lib/units';
 
 interface WorkoutCardProps {
@@ -35,7 +35,6 @@ export default function WorkoutCard({ workout, isPR, onDelete, exerciseCategory 
         }
     };
 
-    const categoryImage = exerciseCategory ? getExerciseImage(exerciseCategory) : null;
     const categoryColor = exerciseCategory ? getCategoryColor(exerciseCategory) : '#f97316';
 
     return (
@@ -44,17 +43,6 @@ export default function WorkoutCard({ workout, isPR, onDelete, exerciseCategory 
                 className={`glass-card overflow-hidden flex items-stretch ${isPR ? 'bg-amber-500/5 border-amber-900/30' : ''}`}
                 style={{ borderLeft: `3px solid ${categoryColor}40` }}
             >
-                {/* Category image strip */}
-                {categoryImage && (
-                    <div className="w-12 shrink-0 relative overflow-hidden">
-                        <img
-                            src={categoryImage}
-                            alt={exerciseCategory}
-                            className="absolute inset-0 w-full h-full object-cover opacity-40"
-                        />
-                        <div className="absolute inset-0" style={{ background: `linear-gradient(to right, ${categoryColor}30, transparent)` }} />
-                    </div>
-                )}
                 <div className="flex items-center justify-between flex-1 p-4">
                 <div>
                     <div className="flex items-center gap-2 mb-1">

@@ -7,8 +7,9 @@ import { deleteWorkoutAction } from '@/lib/actions';
 import { useWorkouts } from '@/lib/cache';
 import { WorkoutSet } from '@/lib/types';
 import { isSameDay, format } from 'date-fns';
-import { Plus, Settings } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function CalendarPage() {
     const { workouts, refresh, isLoading } = useWorkouts();
@@ -23,22 +24,28 @@ export default function CalendarPage() {
     }, [selectedDate, workouts]);
 
     return (
-        <div className="space-y-6 pb-20 animate-in">
-            <header className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-white">Calendar</h1>
+        <div className="space-y-6 pb-24 animate-in">
+            <header className="flex justify-between items-center border-b border-white/5 pb-4">
+                <h1 className="text-2xl font-bold text-white tracking-tight">Calendar</h1>
             </header>
 
-            <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="glass-card overflow-hidden rounded-xl"
+            >
+                <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
+            </motion.div>
 
             <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                    <h2 className="text-lg font-semibold text-slate-200">
-                        {selectedDate ? format(selectedDate, 'MMM do') : 'Select a date'}
+                <div className="flex justify-between items-center px-1">
+                    <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">
+                        {selectedDate ? format(selectedDate, 'MMM do, yyyy') : 'Select a date'}
                     </h2>
                     {selectedDate && (
                         <Link
                             href={`/log?date=${selectedDate.toISOString()}`}
-                            className="text-sm bg-orange-600/20 text-orange-400 px-3 py-1 rounded-full flex items-center gap-1 hover:bg-orange-600/30 transition-colors"
+                            className="text-xs font-bold text-orange-500 hover:text-orange-400 px-3 py-1.5 rounded-lg bg-orange-600/10 border border-orange-600/20 flex items-center gap-1.5 transition-all"
                         >
                             <Plus size={14} /> Add Log
                         </Link>
@@ -46,7 +53,11 @@ export default function CalendarPage() {
                 </div>
 
                 {selectedDayWorkouts.length > 0 ? (
-                    <div className="space-y-3">
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="space-y-3"
+                    >
                         {selectedDayWorkouts.map(workout => (
                             <WorkoutCard
                                 key={workout.id}
@@ -57,11 +68,24 @@ export default function CalendarPage() {
                                 }}
                             />
                         ))}
-                    </div>
+                    </motion.div>
                 ) : (
-                    <div className="text-center py-8 text-slate-500 glass-card rounded-xl border border-dashed border-slate-700">
-                        <p>No workouts logged for this day.</p>
-                    </div>
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="flex flex-col items-center justify-center py-12 px-6 glass-card rounded-xl border-dashed border-zinc-800 text-center"
+                    >
+                        <div className="bg-zinc-900/50 w-12 h-12 rounded-full flex items-center justify-center mb-3 text-zinc-700">
+                             <Plus size={20} className="rotate-45" />
+                        </div>
+                        <p className="text-zinc-500 text-sm font-medium">No activity for this day.</p>
+                        <Link
+                            href={`/log?date=${selectedDate?.toISOString()}`}
+                            className="text-orange-500 text-[10px] font-bold uppercase mt-2 hover:underline"
+                        >
+                            Log a workout
+                        </Link>
+                    </motion.div>
                 )}
             </div>
         </div>

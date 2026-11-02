@@ -2,16 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-    getUserProfileAction,
     updateUserProfileAction,
-    updateUnitPreferenceAction,
     deleteAccountAction,
 } from '@/lib/actions';
 import { signOut } from 'next-auth/react';
-import { User, LogOut, Trash2, Save, ArrowLeft, Settings as SettingsIcon } from 'lucide-react';
+import { User, LogOut, Trash2, Save, ArrowLeft } from 'lucide-react';
 import { useUserProfile } from '@/lib/cache';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 export default function SettingsPage() {
@@ -37,9 +34,12 @@ export default function SettingsPage() {
         // Clear local database cache on logout
         try {
             const { db } = await import('@/lib/db');
-            await db.workouts.clear();
-            await db.routines.clear();
-            await db.exercises.clear();
+            await Promise.all([
+                db.workouts.clear(),
+                db.routines.clear(),
+                db.exercises.clear(),
+                db.meals.clear()
+            ]);
         } catch (e) {
             console.warn('Failed to clear local cache:', e);
         }
