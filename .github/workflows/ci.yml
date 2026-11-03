@@ -12,10 +12,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      # Placeholders so next-auth can start; no real secret is used in CI.
-      AUTH_SECRET: ci-placeholder-not-a-secret
-      AUTH_TRUST_HOST: 'true'
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -23,6 +19,21 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # A throwaway Supabase built from supabase/migrations, for the RLS and browser tests.
+      - uses: supabase/setup-cli@v3
+        with:
+          version: 2.122.0
+      - run: supabase start
+      - name: Point the app and the tests at the local Supabase
+        run: |
+          eval "$(supabase status -o env)"
+          KEY="${PUBLISHABLE_KEY:-$ANON_KEY}"
+          {
+            echo "RLS_TEST_SUPABASE_URL=$API_URL"
+            echo "RLS_TEST_SUPABASE_KEY=$KEY"
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=$KEY"
+          } >> "$GITHUB_ENV"
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test

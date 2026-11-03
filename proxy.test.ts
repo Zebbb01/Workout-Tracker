@@ -11,13 +11,14 @@ describe('proxy matcher', () => {
     }
   });
 
-  it('leaves API routes and Next assets alone', () => {
+  it('leaves API routes, the sign-in callback and Next assets alone', () => {
     expect(runs('/api/nutrition')).toBe(false);
+    expect(runs('/auth/callback')).toBe(false);
     expect(runs('/_next/static/chunks/app.js')).toBe(false);
   });
 
-  it('guards app pages', () => {
-    for (const path of ['/', '/log', '/meals', '/settings']) {
+  it('guards app pages and the welcome screen', () => {
+    for (const path of ['/', '/log', '/meals', '/progress', '/more', '/onboarding', '/welcome']) {
       expect(runs(path), path).toBe(true);
     }
   });

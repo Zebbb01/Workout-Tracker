@@ -10,7 +10,7 @@
 import { test, expect, chromium, type Page } from '@playwright/test';
 
 async function withServiceWorker(page: Page) {
-  await page.goto('/login');
+  await page.goto('/welcome');
   await page.evaluate(async () => {
     await navigator.serviceWorker.register('/sw.js');
     await navigator.serviceWorker.ready;

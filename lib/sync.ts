@@ -1,192 +1,102 @@
-import { db, LocalExercise, LocalRoutine, LocalWorkoutSet } from './db';
-import {
-    getExercisesAction, addCustomExerciseAction,
-    getRoutinesAction, saveRoutineAction, updateRoutineAction, deleteRoutineAction,
-    getWorkoutsAction, saveWorkoutAction, deleteWorkoutAction,
-    getMealPlansAction, addMealPlanAction, deleteMealPlanAction, getRecentMealPlansAction
-} from './actions';
+import type { SupabaseClient } from '@supabase/supabase-js';
+import type { LocalDB } from './db';
 
-export async function syncExercises() {
-    // 1. Push Local Changes
-    const pending = await db.exercises.where('syncStatus').notEqual('synced').toArray();
+/**
+ * Two-way sync between the phone (Dexie) and Supabase, one table at a time.
+ *
+ * Push: every row marked dirty is upserted. A row edited again while the push
+ * was in flight keeps its mark for the next round. A pushed delete (a row with
+ * deleted_at) is then removed from the phone; the server keeps the tombstone
+ * so the person's other devices learn about it.
+ *
+ * Pull: rows the server changed since the last pull. A row still dirty on the
+ * phone wins until it has been pushed: last write wins, per row.
+ */
+export const TABLES = [
+  { local: 'profile', remote: 'profiles', key: 'user_id' },
+  { local: 'exercises', remote: 'exercises', key: 'id' },
+  { local: 'sets', remote: 'workout_sets', key: 'id' },
+  { local: 'meals', remote: 'meals', key: 'id' },
+  { local: 'weights', remote: 'weight_entries', key: 'id' },
+  { local: 'fasts', remote: 'fasts', key: 'id' },
+] as const;
 
-    for (const ex of pending) {
-        if (ex.syncStatus === 'pending_create') {
-            try {
-                // We use the action but we might need to handle ID mapping if the server assigns a different ID
-                // For now, let's assume the server respects the ID or we handle duplication by name
-                // Pass the local ID to the server action to ensure consistency
-                const result = await addCustomExerciseAction(ex.name, ex.category, ex.id);
+type Spec = (typeof TABLES)[number];
+type Row = Record<string, unknown> & { updated_at: string; deleted_at: string | null; dirty?: 0 | 1 };
 
-                // If server returns a different ID, we'd need to update local. 
-                // But simplified: Mark as synced.
-                await db.exercises.update(ex.id, { syncStatus: 'synced' });
-            } catch (e) {
-                console.error("Failed to sync exercise", ex, e);
-            }
-        }
-        // pending_delete logic if needed
-    }
+const PAGE = 1000;
+// ponytail: transactions that commit out of order can carry slightly older
+// updated_at stamps; re-reading two minutes behind the mark catches them.
+const OVERLAP_MS = 2 * 60_000;
 
-    // 2. Pull Server Data
-    try {
-        const serverData = await getExercisesAction();
-        // Upsert into local
-        await db.transaction('rw', db.exercises, async () => {
-            for (const sEx of serverData) {
-                const existing = await db.exercises.get(sEx.id);
-                if (!existing) {
-                    await db.exercises.add({
-                        id: sEx.id,
-                        name: sEx.name,
-                        category: sEx.category,
-                        isCustom: sEx.isCustom,
-                        userId: sEx.userId || '',
-                        syncStatus: 'synced'
-                    });
-                }
-            }
-        });
-    } catch (e) {
-        console.error("Failed to pull exercises", e);
-    }
+export async function syncAll(db: LocalDB, supabase: SupabaseClient) {
+  await Promise.all(TABLES.map(async (spec) => {
+    await push(db, supabase, spec);
+    await pull(db, supabase, spec);
+  }));
 }
 
-export async function syncRoutines() {
-    // 1. Push
-    const pending = await db.routines.where('syncStatus').notEqual('synced').toArray();
-    for (const r of pending) {
-        try {
-            if (r.syncStatus === 'pending_create') {
-                await saveRoutineAction(r.name, r.exerciseIds, r.id);
-            } else if (r.syncStatus === 'pending_update') {
-                await updateRoutineAction(r.id, r.name, r.exerciseIds);
-            } else if (r.syncStatus === 'pending_delete') {
-                await deleteRoutineAction(r.id);
-                // Remove from local DB entirely after sync
-                await db.routines.delete(r.id);
-                continue;
-            }
-            await db.routines.update(r.id, { syncStatus: 'synced' });
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    // 2. Pull
-    try {
-        const serverRoutines = await getRoutinesAction();
-        await db.transaction('rw', db.routines, async () => {
-            // Simple strategy: Clear synced ones and re-add to avoid zombie data? 
-            // Or careful diff. Let's do upsert.
-            for (const r of serverRoutines) {
-                const existing = await db.routines.get(r.id);
-                // Only overwrite if local is 'synced' (meaning no local pending changes)
-                if (!existing || existing.syncStatus === 'synced') {
-                    await db.routines.put({
-                        id: r.id,
-                        name: r.name,
-                        exerciseIds: r.exerciseIds,
-                        userId: r.userId,
-                        syncStatus: 'synced'
-                    });
-                }
-            }
-        });
-    } catch (e) { console.error(e); }
+/** Postgres writes "+00:00"; the phone writes "Z". One format keeps string order equal to time order. */
+function normalize(row: Row): Row {
+  const out: Row = { ...row };
+  for (const [k, v] of Object.entries(out)) if (k.endsWith('_at') && typeof v === 'string') out[k] = new Date(v).toISOString();
+  return out;
 }
 
-export async function syncWorkouts() {
-    const pending = await db.workouts.where('syncStatus').notEqual('synced').toArray();
-    for (const w of pending) {
-        try {
-            if (w.syncStatus === 'pending_create') {
-                await saveWorkoutAction({
-                    ...w,
-                    date: w.date,
-                    unit: w.unit || 'metric'
-                }, w.id);
-                await db.workouts.update(w.id, { syncStatus: 'synced' });
-            } else if (w.syncStatus === 'pending_delete') {
-                await deleteWorkoutAction(w.id);
-                await db.workouts.delete(w.id);
-            }
-        } catch (e) {
-            console.error("Failed to sync workout", e);
-        }
-    }
-
-    // 2. Pull
-    try {
-        const serverData = await getWorkoutsAction();
-        await db.transaction('rw', db.workouts, async () => {
-            for (const sw of serverData) {
-                const existing = await db.workouts.get(sw.id);
-                if (!existing || existing.syncStatus === 'synced') {
-                    await db.workouts.put({
-                        ...sw,
-                        syncStatus: 'synced'
-                    } as any);
-                }
-            }
-        });
-    } catch (e) {
-        console.error("Failed to pull workouts", e);
-    }
+export async function pendingCount(db: LocalDB) {
+  const counts = await Promise.all(TABLES.map((t) => db.table(t.local).where('dirty').equals(1).count()));
+  return counts.reduce((a, b) => a + b, 0);
 }
 
-export async function syncMeals() {
-    // 1. Push
-    const pending = await db.meals.where('syncStatus').notEqual('synced').toArray();
-    for (const m of pending) {
-        try {
-            if (m.syncStatus === 'pending_create') {
-                await addMealPlanAction({
-                    name: m.name,
-                    mealType: m.mealType,
-                    date: new Date(m.date),
-                    calories: m.calories,
-                    protein: m.protein,
-                    carbs: m.carbs,
-                    fat: m.fat,
-                    notes: m.notes
-                });
-                await db.meals.update(m.id, { syncStatus: 'synced' });
-            } else if (m.syncStatus === 'pending_delete') {
-                await deleteMealPlanAction(m.id);
-                await db.meals.delete(m.id);
-            }
-        } catch (e) {
-            console.error("Failed to sync meal", e);
-        }
-    }
+async function push(db: LocalDB, supabase: SupabaseClient, { local, remote, key }: Spec) {
+  const table = db.table<Row, string>(local);
+  const dirty = await table.where('dirty').equals(1).toArray();
+  if (!dirty.length) return;
 
-    // 2. Pull
-    try {
-        const serverMeals = await getRecentMealPlansAction();
-        await db.transaction('rw', db.meals, async () => {
-            for (const sm of serverMeals) {
-                const existing = await db.meals.get(sm.id);
-                if (!existing || existing.syncStatus === 'synced') {
-                    await db.meals.put({
-                        ...sm,
-                        syncStatus: 'synced'
-                    } as any);
-                }
-            }
-        });
-    } catch (e) {
-        console.error("Failed to pull meals", e);
+  // The server stamps updated_at itself, and `dirty` only exists here.
+  const rows = dirty.map(({ dirty: _dirty, updated_at: _stamp, ...row }) => row);
+  const { error } = await supabase.from(remote).upsert(rows, { onConflict: key });
+  if (error) throw error;
+
+  await db.transaction('rw', table, async () => {
+    for (const row of dirty) {
+      const id = row[key] as string;
+      const current = await table.get(id);
+      if (!current || current.updated_at !== row.updated_at) continue;
+      if (row.deleted_at) await table.delete(id);
+      else await table.update(id, { dirty: 0 });
     }
+  });
 }
 
-export async function syncAll() {
-    if (typeof navigator !== 'undefined' && !navigator.onLine) return;
+async function pull(db: LocalDB, supabase: SupabaseClient, { local, remote, key }: Spec) {
+  const table = db.table<Row, string>(local);
+  const mark = `pulled:${remote}`;
+  const since = (await db.meta.get(mark))?.value;
+  const from = since ? new Date(Date.parse(since) - OVERLAP_MS).toISOString() : '1970-01-01T00:00:00Z';
 
-    await Promise.all([
-        syncExercises(),
-        syncRoutines(),
-        syncWorkouts(),
-        syncMeals()
-    ]);
+  let latest = since;
+  for (let offset = 0; ; offset += PAGE) {
+    const { data, error } = await supabase
+      .from(remote)
+      .select('*')
+      .gte('updated_at', from)
+      .order('updated_at')
+      .order(key)
+      .range(offset, offset + PAGE - 1);
+    if (error) throw error;
+    const rows = (data as Row[]).map(normalize);
+
+    await db.transaction('rw', table, async () => {
+      for (const row of rows) {
+        const id = row[key] as string;
+        if ((await table.get(id))?.dirty) continue;
+        if (row.deleted_at) await table.delete(id);
+        else await table.put({ ...row, dirty: 0 });
+      }
+    });
+    if (rows.length) latest = rows[rows.length - 1].updated_at;
+    if (rows.length < PAGE) break;
+  }
+  if (latest && latest !== since) await db.meta.put({ key: mark, value: latest });
 }
