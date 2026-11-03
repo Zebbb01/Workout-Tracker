@@ -1,8 +1,9 @@
 name: Database migrations
 
 # Applies supabase/migrations to the production Supabase project when a
-# release lands on main. Needs three repository secrets: SUPABASE_ACCESS_TOKEN,
-# SUPABASE_DB_PASSWORD and SUPABASE_PROJECT_ID.
+# release lands on main. Needs two repository secrets, SUPABASE_ACCESS_TOKEN
+# and SUPABASE_PROJECT_ID; the CLI signs in to the database with a temporary
+# role, so no database password is stored anywhere.
 on:
   push:
     branches: [main]
@@ -19,7 +20,6 @@ jobs:
     timeout-minutes: 10
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     steps:
       - uses: actions/checkout@v7
       - uses: supabase/setup-cli@v3
