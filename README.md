@@ -82,6 +82,7 @@ npm test             # Vitest: calculations, AI reply parsing, the sync engine
 npm run test:e2e     # Playwright against a production build (port 3100)
 npm run lint && npm run typecheck
 npm run check:ai -- "2 eggs and toast"   # one real Gemini call with your key
+E2E_SUPABASE=1 npm run test:live         # the browser tests against the deployed site
 ```
 
 GitHub Actions runs everything on every push against a throwaway local
@@ -89,6 +90,10 @@ Supabase built from the migrations, including a test that proves one person
 can't read or change another's rows, and axe accessibility checks of every
 screen in both themes. Specs that need sign-in skip locally unless you set
 `E2E_SUPABASE=1` with a project that allows anonymous sign-ins.
+
+Measured on the live site on 3 November 2026: all 16 browser tests pass
+against production, and Lighthouse (mobile) scores the welcome screen 94 for
+performance and 100 for accessibility, best practices and SEO.
 
 ## Free-tier notes
 
