@@ -108,7 +108,8 @@ async function seedDemoAccount() {
       },
     },
   });
-  const { data, error } = await supabase.auth.signUp({ email: `demo-${Date.now()}@example.com`, password: randomUUID() });
+  // CI's Supabase is new on every run, so one fixed, fictional address is enough.
+  const { data, error } = await supabase.auth.signUp({ email: 'demo@example.com', password: randomUUID() });
   if (error || !data.user) throw error ?? new Error('No user');
   const userId = data.user.id;
 
@@ -158,6 +159,8 @@ async function settle(page: Page, path: string, heading: string) {
   await expect(page.getByRole('heading', { name: heading, level: 1 })).toBeVisible();
   await expect(page.getByRole('status').filter({ hasText: 'Synced' }).first()).toBeVisible({ timeout: 20_000 });
   await page.mouse.move(0, 0);
+  // Rings and bars animate to their values once the data arrives.
+  await page.waitForTimeout(1200);
 }
 
 test('capture the README and portfolio screenshots', async ({ browser, baseURL }) => {
@@ -176,6 +179,12 @@ test('capture the README and portfolio screenshots', async ({ browser, baseURL }
 
     await settle(page, '/progress', 'Progress');
     await saveWebp(page, `progress-${size}`);
+
+    await settle(page, '/meals', 'Meals');
+    await saveWebp(page, `meals-${size}`);
+
+    await settle(page, '/more', 'More');
+    await saveWebp(page, `more-${size}`);
 
     if (existsSync(MEAL_PHOTO)) {
       await settle(page, '/meals', 'Meals');

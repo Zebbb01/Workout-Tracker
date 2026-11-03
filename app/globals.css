@@ -73,7 +73,6 @@
 @layer base {
   body {
     @apply bg-background text-base text-foreground antialiased;
-    font-feature-settings: 'ss01';
   }
 
   :focus-visible {

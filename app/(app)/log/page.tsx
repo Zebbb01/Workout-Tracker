@@ -100,7 +100,7 @@ function LogScreen() {
       )}
 
       <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
-        <Panel aria-label="Add a set" className="p-4">
+        <Panel aria-label="Add a set" className="min-w-0 p-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="eyebrow">Exercise</h2>
             <Button variant="ghost" size="sm" onClick={() => setPicking(true)}>
@@ -147,7 +147,7 @@ function LogScreen() {
           )}
         </Panel>
 
-        <section aria-labelledby="today-sets">
+        <section aria-labelledby="today-sets" className="min-w-0">
           <h2 id="today-sets" className="eyebrow mb-2 lg:mt-0">Today</h2>
           {todaysSets.length === 0 ? (
             <Empty title="No sets yet">They appear here as you add them.</Empty>

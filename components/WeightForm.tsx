@@ -8,7 +8,7 @@ import type { Units, WeightEntry } from '@/lib/types';
 import { Button, NumberInput, useToast } from './ui';
 
 /** Today's weight in one field and one tap; once saved, a quiet line with a Change button. */
-export function WeightForm({ units, today }: { units: Units; today?: WeightEntry }) {
+export function WeightForm({ units, today, latestKg }: { units: Units; today?: WeightEntry; latestKg?: number }) {
   const actions = useActions();
   const toast = useToast();
   const [editing, setEditing] = useState(!today);
@@ -47,7 +47,7 @@ export function WeightForm({ units, today }: { units: Units; today?: WeightEntry
     >
       <label className="min-w-0 flex-1">
         <span className="mb-1.5 block text-sm font-medium">Today&apos;s weight ({unitLabel(units)})</span>
-        <NumberInput value={value} onChange={setValue} placeholder={units === 'metric' ? '72.5' : '160'} aria-invalid={Boolean(error)} />
+        <NumberInput value={value} onChange={setValue} placeholder={latestKg ? String(Math.round(fromKg(latestKg, units) * 10) / 10) : units === 'metric' ? '72.5' : '160'} aria-invalid={Boolean(error)} />
       </label>
       <Button type="submit">Save</Button>
       {error && (
