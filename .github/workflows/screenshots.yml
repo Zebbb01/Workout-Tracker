@@ -5,9 +5,6 @@ name: Screenshots
 # artifact and commit it to docs/screenshots.
 on:
   workflow_dispatch:
-  # Manual runs need this file on main; until then, pushes to this branch run it.
-  push:
-    branches: ['feature/screenshots']
 
 jobs:
   capture:
