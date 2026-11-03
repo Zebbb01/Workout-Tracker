@@ -15,7 +15,7 @@ export interface Point {
 }
 
 const HEIGHT = 168;
-const PAD = { top: 16, right: 52, bottom: 24, left: 40 };
+const PAD = { top: 16, right: 64, bottom: 24, left: 40 };
 
 function useWidth() {
   const ref = useRef<HTMLDivElement>(null);
@@ -133,7 +133,7 @@ export function TrendChart({ title, points, format, axisFormat = format }: {
             <path d={line} fill="none" className="stroke-chart" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
             {active !== null && <line x1={x(active)} x2={x(active)} y1={PAD.top} y2={PAD.top + plotH} className="stroke-muted-foreground" strokeWidth={1} />}
             <circle cx={x(active ?? last)} cy={y(points[active ?? last].value)} r={5} className="fill-chart stroke-card" strokeWidth={2} />
-            <text x={x(last) + 9} y={y(points[last].value)} dy="0.32em" className="fill-foreground text-xs font-semibold tabular">{axisFormat(points[last].value)}</text>
+            <text x={x(last) + 9} y={y(points[last].value)} dy="0.32em" className="fill-foreground text-xs font-semibold tabular">{format(points[last].value)}</text>
           </svg>
         )}
         {active !== null && width > 0 && <Tooltip x={x(active)} width={width} point={points[active]} format={format} />}
@@ -200,5 +200,25 @@ export function ColumnChart({ title, points, format, axisFormat = format }: {
       </div>
       <Table caption={title} points={points} format={format} />
     </div>
+  );
+}
+
+/**
+ * A small trend beside a headline number: no axes, the latest point marked.
+ * Decorative; the full chart and its table are on Progress.
+ */
+export function Sparkline({ values, width = 120, height = 36 }: { values: number[]; width?: number; height?: number }) {
+  if (values.length < 2) return null;
+  const lo = Math.min(...values);
+  const hi = Math.max(...values);
+  const x = (i: number) => 4 + (i / (values.length - 1)) * (width - 8);
+  const y = (v: number) => 4 + (hi === lo ? 0.5 : 1 - (v - lo) / (hi - lo)) * (height - 8);
+  const d = values.map((v, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join('');
+  const last = values.length - 1;
+  return (
+    <svg width={width} height={height} aria-hidden className="block shrink-0 overflow-visible">
+      <path d={d} fill="none" className="stroke-muted-foreground" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={x(last)} cy={y(values[last])} r={4} className="fill-chart stroke-card" strokeWidth={2} />
+    </svg>
   );
 }

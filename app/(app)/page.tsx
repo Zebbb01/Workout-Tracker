@@ -3,15 +3,17 @@
 import Link from 'next/link';
 import { Dumbbell, Repeat, Scale, Utensils } from 'lucide-react';
 import { useData, useFasts, useMeals, useProfile, useSets, useWeights } from '@/lib/data';
-import { byExercise, formatWeight, lastWorkout, localDay, totals, weightSeries, weightTrend } from '@/lib/calc';
+import { addDays, byExercise, formatWeight, lastWorkout, localDay, totals, weightSeries, weightTrend } from '@/lib/calc';
 import { ButtonLink, Card, Loading, Meter, PageHeader } from '@/components/ui';
 import { SyncBadge } from '@/components/Shell';
 import { WeightForm } from '@/components/WeightForm';
 import { FastingCard } from '@/components/Fasting';
 import InstallApp, { useInstall } from '@/components/InstallApp';
+import { Sparkline } from '@/components/charts';
 
 const dayName = (day: string) =>
   new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' });
+const short = (day: string) => new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 
 /** "How am I doing today?" at a glance: food left, today's training, weight trend, a running fast. */
 export default function TodayPage() {
@@ -27,11 +29,13 @@ export default function TodayPage() {
 
   const today = localDay(new Date());
   const units = profile.units;
-  const eaten = totals(meals.filter((m) => localDay(m.eaten_at) === today));
+  const todaysMeals = meals.filter((m) => localDay(m.eaten_at) === today);
+  const eaten = totals(todaysMeals);
   const target = { calories: profile.calories ?? 2000, protein_g: profile.protein_g ?? 0, carbs_g: profile.carbs_g ?? 0, fat_g: profile.fat_g ?? 0 };
   const left = target.calories - eaten.calories;
   const todaysSets = sets.filter((s) => localDay(s.performed_at) === today);
   const last = lastWorkout(sets, today);
+  const series = weightSeries(weights, addDays(today, -30));
   const trend = weightTrend(weightSeries(weights));
   const todaysWeight = [...weights].reverse().find((w) => w.measured_on === today);
   const fast = fasts.find((f) => !f.ended_at);
@@ -79,6 +83,16 @@ export default function TodayPage() {
               </div>
             ))}
           </dl>
+          {todaysMeals.length > 0 && (
+            <ul className="mt-4 divide-y divide-border border-t border-border text-sm" aria-label="Eaten today">
+              {todaysMeals.map((m) => (
+                <li key={m.id} className="flex justify-between gap-3 py-2">
+                  <span className="truncate">{m.name}</span>
+                  <span className="tabular shrink-0 text-muted-foreground">{m.calories.toLocaleString()} kcal</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </Card>
 
         <Card aria-labelledby="workout-title">
@@ -118,15 +132,18 @@ export default function TodayPage() {
             <Scale size={16} aria-hidden /> Weight
           </h2>
           {trend ? (
-            <p className="mt-1">
-              <span className="tabular text-xl font-bold">{formatWeight(trend.latest.kg, units)}</span>
-              {trend.change !== null && (
-                <span className="tabular ml-2 text-sm text-muted-foreground">
-                  {trend.change > 0 ? '+' : trend.change < 0 ? '−' : '±'}
-                  {formatWeight(Math.abs(trend.change), units)} in a week or more
-                </span>
-              )}
-            </p>
+            <div className="mt-1 flex items-center justify-between gap-3">
+              <p>
+                <span className="tabular block text-xl font-bold">{formatWeight(trend.latest.kg, units)}</span>
+                {trend.change !== null && trend.since && (
+                  <span className="tabular text-sm text-muted-foreground">
+                    {trend.change > 0 ? '+' : trend.change < 0 ? '−' : '±'}
+                    {formatWeight(Math.abs(trend.change), units)} since {short(trend.since)}
+                  </span>
+                )}
+              </p>
+              <Sparkline values={series.map((p) => p.kg)} />
+            </div>
           ) : (
             <p className="mt-1 text-sm text-muted-foreground">Weigh in to start your trend.</p>
           )}

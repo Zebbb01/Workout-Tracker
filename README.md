@@ -5,7 +5,15 @@ no signal at the gym, and see how you're trending.
 
 **Live:** https://body-tracker-iota.vercel.app · tap **Try it without an account**, no email needed.
 
-<!-- screenshots -->
+<p>
+  <img src="docs/screenshots/today-phone.webp" width="200" alt="Today on a phone: 1,340 kcal left, protein, carbs and fat, five sets logged and the weight trend">
+  <img src="docs/screenshots/log-phone.webp" width="200" alt="Log on a phone: recent exercises, weight and reps steppers prefilled from the last set, and Add set">
+  <img src="docs/screenshots/progress-phone.webp" width="200" alt="Progress on a phone: weight over 90 days and the best estimated one-rep max for overhead press">
+</p>
+
+![Today on a desktop, with the sidebar, food, workout and weight cards](docs/screenshots/today-desktop.webp)
+
+Real screenshots of the app, taken by [`screenshots/capture.ts`](screenshots/capture.ts) (`npm run screenshots`) with a fictional demo account.
 
 ## What it does
 

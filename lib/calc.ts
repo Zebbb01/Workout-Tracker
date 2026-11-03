@@ -181,12 +181,12 @@ export function weightSeries(entries: WeightEntry[], since = '0000-00-00'): { da
 }
 
 /** Latest weight and its change since the last weigh-in at least a week earlier (or the first one). */
-export function weightTrend(series: { day: string; kg: number }[]): { latest: { day: string; kg: number }; change: number | null } | null {
+export function weightTrend(series: { day: string; kg: number }[]): { latest: { day: string; kg: number }; change: number | null; since: string | null } | null {
   if (!series.length) return null;
   const latest = series[series.length - 1];
   const weekBefore = addDays(latest.day, -7);
   const earlier = [...series].reverse().find((p) => p.day <= weekBefore) ?? (series.length > 1 ? series[0] : null);
-  return { latest, change: earlier ? Math.round((latest.kg - earlier.kg) * 100) / 100 : null };
+  return { latest, change: earlier ? Math.round((latest.kg - earlier.kg) * 100) / 100 : null, since: earlier?.day ?? null };
 }
 
 // --- Fasting -------------------------------------------------------------------
