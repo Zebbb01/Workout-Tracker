@@ -11,10 +11,11 @@ export const needsSupabase = !process.env.CI && !process.env.E2E_SUPABASE;
 export async function startTrial(page: Page, { skipSetup = true } = {}) {
   await page.goto('/welcome');
   await page.getByRole('button', { name: 'Try it without an account' }).click();
-  await expect(page).toHaveURL(/\/onboarding$/);
+  // A remote project can take a few seconds to create the account.
+  await expect(page).toHaveURL(/\/onboarding$/, { timeout: 20_000 });
   if (skipSetup) {
     await page.getByRole('button', { name: 'Skip setup' }).click();
-    await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible({ timeout: 20_000 });
   }
 }
 

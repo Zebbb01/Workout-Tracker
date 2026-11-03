@@ -66,10 +66,12 @@ npm run dev            # http://localhost:3000
    publishable key (Project Settings → API) into `.env`.
 2. Apply the schema: `npx supabase login`, `npx supabase link --project-ref <your-ref>`,
    then `npx supabase db push`. In this repo the
-   [Database migrations](.github/workflows/migrate.yml) workflow does it on every release.
+   [Database migrations](.github/workflows/migrate.yml) workflow does it on every
+   release, with two repository secrets: `SUPABASE_ACCESS_TOKEN` and `SUPABASE_PROJECT_ID`.
 3. Authentication → Sign In / Providers: turn on **Allow anonymous sign-ins**
    and **Allow manual linking**, and enable **Google** with a Google Cloud OAuth
-   client whose authorized redirect URI is the callback URL shown there.
+   client whose authorized redirect URI is the callback URL shown there. Email
+   sign-up can stay off; the app doesn't use it.
 4. Authentication → URL Configuration: set the Site URL to your deployment and
    add `http://localhost:3000/**` to the redirect URLs.
 
