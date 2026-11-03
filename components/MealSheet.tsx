@@ -126,25 +126,41 @@ export function MealSheet({ open, onClose, day }: { open: boolean; onClose: () =
 
   const set = (key: keyof Form) => (v: string) => setForm((f) => ({ ...f, [key]: v }));
 
+  const OPTIONS = [
+    { icon: Camera, title: 'Take a photo', hint: 'AI fills in the numbers', onClick: () => fileInput.current?.click() },
+    { icon: MessageSquareText, title: 'Describe it', hint: 'e.g. “2 eggs and toast”', onClick: () => setStage('describe') },
+    { icon: Keyboard, title: 'Enter numbers', hint: 'Type them yourself', onClick: () => setStage('review') },
+  ];
+
   return (
     <Sheet open={open} onClose={close} title="Add a meal">
       <input ref={fileInput} type="file" accept="image/*" capture="environment" className="sr-only" tabIndex={-1} aria-hidden onChange={(e) => onPhoto(e.target.files?.[0])} />
 
       {stage === 'choose' && (
-        <div className="space-y-3">
-          <Button size="lg" block onClick={() => fileInput.current?.click()}>
-            <Camera size={20} aria-hidden /> Take a photo
-          </Button>
-          <Button size="lg" block variant="secondary" onClick={() => setStage('describe')}>
-            <MessageSquareText size={20} aria-hidden /> Describe it
-          </Button>
-          <Button size="lg" block variant="secondary" onClick={() => setStage('review')}>
-            <Keyboard size={20} aria-hidden /> Enter it myself
-          </Button>
-          <p className="text-sm text-muted-foreground">
-            Photos and descriptions go to Google&apos;s Gemini to estimate the nutrition, and aren&apos;t stored by Body Tracker. On Gemini&apos;s free tier Google may use them to improve its products, so photograph only food.
+        <>
+          <ul className="grid gap-2">
+            {OPTIONS.map(({ icon: Icon, title, hint, onClick }) => (
+              <li key={title}>
+                <button
+                  type="button"
+                  onClick={onClick}
+                  className="flex w-full items-center gap-3 rounded-xl border border-border p-3 text-left transition hover:bg-muted/60 active:scale-[0.99]"
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-accent">
+                    <Icon size={20} aria-hidden />
+                  </span>
+                  <span>
+                    <span className="block font-semibold">{title}</span>
+                    <span className="block text-sm text-muted-foreground">{hint}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Photos and descriptions go to Google Gemini for the estimate and aren&apos;t stored. Free-tier inputs may help Google improve its models, so photograph only food.
           </p>
-        </div>
+        </>
       )}
 
       {stage === 'describe' && (
@@ -155,11 +171,11 @@ export function MealSheet({ open, onClose, day }: { open: boolean; onClose: () =
             if (description.trim()) estimate(JSON.stringify({ text: description.trim() }), 'text');
           }}
         >
-          <Field label="What did you eat?" hint="Amounts help, e.g. “2 eggs, 2 slices of toast with butter”.">
-            <textarea className={`${inputClass} min-h-24 py-2`} value={description} onChange={(e) => setDescription(e.target.value)} maxLength={300} autoFocus />
+          <Field label="What did you eat?">
+            <textarea className={`${inputClass} h-auto min-h-24 py-2`} value={description} onChange={(e) => setDescription(e.target.value)} maxLength={300} placeholder="2 eggs, 2 slices of toast with butter" autoFocus />
           </Field>
           <Button type="submit" size="lg" block disabled={!description.trim()}>
-            <Sparkles size={20} aria-hidden /> Estimate
+            <Sparkles size={18} aria-hidden /> Estimate
           </Button>
         </form>
       )}
@@ -172,24 +188,29 @@ export function MealSheet({ open, onClose, day }: { open: boolean; onClose: () =
             save();
           }}
         >
-          {photo && <img src={photo} alt="Your meal photo" className="max-h-48 w-full rounded-2xl object-cover" />}
-          {estimating && (
-            <p role="status" className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 size={18} className="animate-spin" aria-hidden /> Estimating…
-            </p>
+          {(photo || estimating || source !== 'manual') && (
+            <div className="flex items-center gap-3 rounded-xl bg-muted/60 p-2">
+              {photo && <img src={photo} alt="Your meal photo" className="size-14 shrink-0 rounded-lg object-cover" />}
+              {estimating ? (
+                <p role="status" className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 size={16} className="animate-spin" aria-hidden /> Estimating…
+                </p>
+              ) : (
+                source !== 'manual' && (
+                  <p className="flex items-start gap-1.5 text-sm">
+                    <Sparkles size={15} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+                    AI estimate. Check the numbers, then save.
+                  </p>
+                )
+              )}
+            </div>
           )}
           {problem && (
-            <p role="alert" className="rounded-xl bg-muted p-3 text-sm">
+            <p role="alert" className="rounded-lg bg-negative/10 px-3 py-2 text-sm text-negative">
               {problem}
             </p>
           )}
-          {source !== 'manual' && !estimating && (
-            <p className="flex items-start gap-2 rounded-xl bg-muted p-3 text-sm">
-              <Sparkles size={16} className="mt-0.5 shrink-0" aria-hidden />
-              AI estimate. Check the numbers and fix anything that looks off, then save.
-            </p>
-          )}
-          <fieldset disabled={estimating} className="space-y-4">
+          <fieldset disabled={estimating} className={estimating ? 'space-y-4 animate-pulse' : 'space-y-4'}>
             <Field label="Meal name">
               <input className={inputClass} value={form.name} onChange={(e) => set('name')(e.target.value)} maxLength={120} autoComplete="off" />
             </Field>
@@ -210,9 +231,9 @@ export function MealSheet({ open, onClose, day }: { open: boolean; onClose: () =
             </div>
           </fieldset>
           {form.name && invalid && <p className="text-sm text-negative">{invalid}</p>}
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <Button variant="secondary" size="lg" onClick={reset} disabled={saving}>
-              Start over
+              Back
             </Button>
             <Button type="submit" size="lg" block busy={saving} disabled={estimating || Boolean(invalid)}>
               Save meal

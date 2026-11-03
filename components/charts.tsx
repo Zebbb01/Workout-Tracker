@@ -31,11 +31,12 @@ function useWidth() {
 }
 
 /** About three round-number ticks that cover the data. */
-export function niceTicks(min: number, max: number, count = 3): number[] {
+export function niceTicks(min: number, max: number, count = 3, minStep = 1): number[] {
   if (min === max) [min, max] = [min - 1, max + 1];
-  const raw = (max - min) / count;
+  const raw = Math.max(minStep, (max - min) / count);
   const power = 10 ** Math.floor(Math.log10(raw));
-  const step = [1, 2, 2.5, 5, 10].map((m) => m * power).find((s) => s >= raw)!;
+  // Whole steps of 1, 2, 5 or 10 times a power of ten, never finer than minStep.
+  const step = [1, 2, 5, 10].map((m) => m * power).find((s) => s >= raw)!;
   const ticks = [];
   for (let t = Math.floor(min / step) * step; t <= max + step / 2; t += step) ticks.push(Math.round(t * 1000) / 1000);
   if (ticks[ticks.length - 1] < max) ticks.push(ticks[ticks.length - 1] + step);

@@ -29,7 +29,7 @@ test('try it, set up, log a set, a meal from a photo and a weight, then see prog
 
   // Today: the weight typed during setup is today's weigh-in.
   await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
-  await expect(page.getByText('Today: 82 kg')).toBeVisible();
+  await expect(page.getByText('Logged today: 82 kg')).toBeVisible();
   await expect(page.getByText('No sets yet today')).toBeVisible();
 
   // A set in three taps: Log a set, an exercise, Add set.
@@ -53,12 +53,12 @@ test('try it, set up, log a set, a meal from a photo and a weight, then see prog
   // Nothing is saved until the person says so.
   await page.getByLabel('Calories (kcal)').fill('600');
   await page.getByRole('button', { name: 'Save meal' }).click();
-  await expect(page.getByText('600 kcal · P 42')).toBeVisible();
+  await expect(page.getByRole('listitem').filter({ hasText: estimate.name })).toContainText('600 kcal');
 
   // Progress shows the weigh-in and the milestones reached.
   await page.getByRole('link', { name: 'Progress' }).click();
-  await expect(page.getByRole('heading', { name: 'Weight, last 90 days' })).toBeVisible();
-  await expect(page.getByRole('group', { name: /Weight, last 90 days/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Weight' })).toBeVisible();
+  await expect(page.getByText('One more weigh-in and your trend starts.')).toBeVisible();
   for (const name of ['First set logged', 'First meal logged', 'First weigh-in']) {
     await expect(page.getByRole('listitem').filter({ hasText: name })).toContainText('Reached');
   }
@@ -66,7 +66,7 @@ test('try it, set up, log a set, a meal from a photo and a weight, then see prog
   // And Today adds it all up.
   await page.getByRole('link', { name: 'Today' }).click();
   await expect(page.getByText('2 sets today')).toBeVisible();
-  await expect(page.getByText(/600 of [\d,]+ eaten/)).toBeVisible();
+  await expect(page.getByText(/600 of [\d,]+ kcal eaten/)).toBeVisible();
 });
 
 test('repeat the last workout in two taps', async ({ page }) => {

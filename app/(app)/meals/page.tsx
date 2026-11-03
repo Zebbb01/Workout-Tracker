@@ -6,8 +6,7 @@ import { Camera, ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react';
 import { useActions, useFasts, useMeals, useProfile } from '@/lib/data';
 import { addDays, localDay, totals } from '@/lib/calc';
 import type { Meal, MealType } from '@/lib/types';
-import { Button, Card, Empty, IconButton, Loading, Meter, PageHeader, useToast } from '@/components/ui';
-import { SyncBadge } from '@/components/Shell';
+import { Button, Empty, IconButton, Meter, PageHeader, Panel, Ring, ScreenSkeleton, useToast } from '@/components/ui';
 import { MealSheet } from '@/components/MealSheet';
 import { FastingCard } from '@/components/Fasting';
 
@@ -32,7 +31,7 @@ function MealsScreen() {
   const [day, setDay] = useState(today);
   const [adding, setAdding] = useState(params.get('add') === '1');
 
-  if (!profile || !meals || !fasts) return <Loading />;
+  if (!profile || !meals || !fasts) return <ScreenSkeleton />;
 
   const dayMeals = meals.filter((m) => localDay(m.eaten_at) === day);
   const eaten = totals(dayMeals);
@@ -43,74 +42,108 @@ function MealsScreen() {
     toast({ message: `${meal.name} removed`, undo: () => actions.restore('meals', meal.id) });
   }
 
+  const switcher = (
+    <div className="flex items-center rounded-lg bg-muted p-0.5">
+      <IconButton label="Previous day" onClick={() => setDay(addDays(day, -1))} className="size-9 lg:size-8">
+        <ChevronLeft size={18} />
+      </IconButton>
+      <h2 className="min-w-24 text-center text-sm font-semibold" aria-live="polite">{dayTitle(day, today)}</h2>
+      <IconButton label="Next day" onClick={() => setDay(addDays(day, 1))} disabled={day >= today} className="size-9 lg:size-8">
+        <ChevronRight size={18} />
+      </IconButton>
+    </div>
+  );
+
   return (
     <>
-      <PageHeader title="Meals" action={<SyncBadge />} />
+      <PageHeader title="Meals" action={switcher} />
 
-      <div className="mb-4 flex items-center justify-between rounded-2xl border border-border bg-card p-1">
-        <IconButton label="Previous day" onClick={() => setDay(addDays(day, -1))}>
-          <ChevronLeft size={20} />
-        </IconButton>
-        <h2 className="font-semibold" aria-live="polite">{dayTitle(day, today)}</h2>
-        <IconButton label="Next day" onClick={() => setDay(addDays(day, 1))} disabled={day >= today} className="disabled:opacity-30">
-          <ChevronRight size={20} />
-        </IconButton>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card aria-label="Day total" className="lg:col-span-2">
-          <p className="tabular text-2xl font-bold">
-            {eaten.calories.toLocaleString()} <span className="text-base font-normal text-muted-foreground">of {target.toLocaleString()} kcal</span>
-          </p>
-          <div className="mt-2">
-            <Meter value={eaten.calories} max={target} label="Calories eaten" tone={eaten.calories > target ? 'negative' : 'primary'} />
-          </div>
-          <p className="tabular mt-3 text-sm text-muted-foreground">
-            Protein {Math.round(eaten.protein_g)} / {profile.protein_g ?? 0} g · Carbs {Math.round(eaten.carbs_g)} / {profile.carbs_g ?? 0} g · Fat {Math.round(eaten.fat_g)} / {profile.fat_g ?? 0} g
-          </p>
-          <Button size="lg" block className="mt-4" onClick={() => setAdding(true)}>
-            <Plus size={20} aria-hidden /> Add meal
-          </Button>
-        </Card>
-
-        <section aria-label="Meals eaten" className="space-y-3 lg:col-span-2">
-          {dayMeals.length === 0 ? (
-            <Empty title={`Nothing logged ${day === today ? 'today' : 'this day'}`}>Add a meal by photo, a short description or the numbers.</Empty>
-          ) : (
-            ORDER.filter((t) => dayMeals.some((m) => m.meal_type === t)).map((type) => (
-              <Card key={type} className="p-0">
-                <h3 className="px-4 pt-3 font-semibold">{TITLES[type]}</h3>
-                <ul className="divide-y divide-border">
-                  {dayMeals
-                    .filter((m) => m.meal_type === type)
-                    .map((m) => (
-                      <li key={m.id} className="flex items-center justify-between gap-2 py-2 pl-4 pr-1">
-                        <div className="min-w-0">
-                          <p className="truncate font-medium">{m.name}</p>
-                          <p className="tabular text-sm text-muted-foreground">
-                            {m.calories} kcal · P {Math.round(m.protein_g)} · C {Math.round(m.carbs_g)} · F {Math.round(m.fat_g)}
-                            {m.source === 'photo' && (
-                              <span className="ml-2 inline-flex items-center gap-1">
-                                <Camera size={14} aria-hidden />
-                                <span className="sr-only">From a photo</span>
-                              </span>
-                            )}
-                          </p>
+      <div className="grid gap-4 lg:grid-cols-5 lg:items-start">
+        <div className="space-y-4 lg:col-span-2">
+          <Panel aria-label="Day total" className="p-4">
+            <div className="flex items-center gap-4">
+              <Ring value={eaten.calories} max={target} size={84} stroke={8} tone={eaten.calories > target ? 'negative' : 'brand'} label="Calories eaten">
+                <span className="font-display tabular text-lg font-bold leading-none">{eaten.calories.toLocaleString()}</span>
+                <span className="text-[11px] text-muted-foreground">kcal</span>
+              </Ring>
+              <div className="flex-1">
+                <p className="tabular text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">{Math.max(0, target - eaten.calories).toLocaleString()}</span> of {target.toLocaleString()} kcal left
+                </p>
+                <dl className="mt-2 grid grid-cols-3 gap-3">
+                  {(
+                    [
+                      ['Protein', eaten.protein_g, profile.protein_g ?? 0, 'protein'],
+                      ['Carbs', eaten.carbs_g, profile.carbs_g ?? 0, 'carbs'],
+                      ['Fat', eaten.fat_g, profile.fat_g ?? 0, 'fat'],
+                    ] as const
+                  ).map(([name, value, goal, tone]) => (
+                    <div key={name}>
+                      <dt className="text-xs text-muted-foreground">{name}</dt>
+                      <dd className="tabular text-sm font-semibold">
+                        {Math.round(value)}
+                        <span className="font-normal text-muted-foreground">/{goal}g</span>
+                        <div className="mt-1">
+                          <Meter value={value} max={goal} label={`${name} eaten`} tone={tone} />
                         </div>
-                        <IconButton label={`Remove ${m.name}`} onClick={() => remove(m)}>
-                          <Trash2 size={18} />
-                        </IconButton>
-                      </li>
-                    ))}
-                </ul>
-              </Card>
-            ))
-          )}
-        </section>
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            </div>
+            <Button block className="mt-4" onClick={() => setAdding(true)}>
+              <Plus size={18} aria-hidden /> Add meal
+            </Button>
+          </Panel>
 
-        <div className="lg:col-span-2">
           <FastingCard fast={fasts.find((f) => !f.ended_at)} canStart />
         </div>
+
+        <section aria-label="Meals eaten" className="lg:col-span-3">
+          {dayMeals.length === 0 ? (
+            <Empty title={`Nothing logged ${day === today ? 'today' : 'this day'}`}>Snap a photo, describe it, or type the numbers.</Empty>
+          ) : (
+            <Panel className="divide-y divide-border">
+              {ORDER.filter((t) => dayMeals.some((m) => m.meal_type === t)).map((type) => (
+                <div key={type} className="py-2">
+                  <div className="flex items-baseline justify-between px-4 pb-1 pt-1">
+                    <h3 className="eyebrow">{TITLES[type]}</h3>
+                    <span className="tabular text-xs text-muted-foreground">
+                      {totals(dayMeals.filter((m) => m.meal_type === type)).calories.toLocaleString()} kcal
+                    </span>
+                  </div>
+                  <ul>
+                    {dayMeals
+                      .filter((m) => m.meal_type === type)
+                      .map((m) => (
+                        <li key={m.id} className="flex items-center gap-3 py-1.5 pl-4 pr-1">
+                          <div className="min-w-0 flex-1">
+                            <p className="flex items-center gap-1.5 truncate font-medium">
+                              {m.name}
+                              {m.source === 'photo' && (
+                                <>
+                                  <Camera size={13} className="shrink-0 text-muted-foreground" aria-hidden />
+                                  <span className="sr-only">From a photo</span>
+                                </>
+                              )}
+                            </p>
+                            <p className="tabular text-xs text-muted-foreground">
+                              P {Math.round(m.protein_g)} · C {Math.round(m.carbs_g)} · F {Math.round(m.fat_g)}
+                            </p>
+                          </div>
+                          <span className="tabular text-sm font-semibold">{m.calories} kcal</span>
+                          <IconButton label={`Remove ${m.name}`} onClick={() => remove(m)}>
+                            <Trash2 size={16} />
+                          </IconButton>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              ))}
+            </Panel>
+          )}
+        </section>
       </div>
 
       <MealSheet
@@ -127,7 +160,7 @@ function MealsScreen() {
 
 export default function MealsPage() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<ScreenSkeleton />}>
       <MealsScreen />
     </Suspense>
   );

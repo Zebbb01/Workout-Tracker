@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useData, useProfile } from '@/lib/data';
 import { Nav, OfflineBanner } from '@/components/Shell';
-import { Loading, ToastProvider } from '@/components/ui';
+import { ScreenSkeleton, ToastProvider } from '@/components/ui';
 
 /**
  * The signed-in app. The proxy already sent signed-out visitors to /welcome
@@ -26,10 +26,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
       <Nav />
-      <div className="lg:pl-60">
-        <main className="mx-auto w-full max-w-lg px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-4 lg:max-w-5xl lg:px-8 lg:pb-10 lg:pt-8">
+      <div className="lg:pl-56">
+        <main className="mx-auto w-full max-w-lg px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom))] pt-5 sm:max-w-2xl lg:max-w-5xl lg:px-10 lg:pb-12 lg:pt-8">
           <OfflineBanner />
-          {ready && user ? children : <Loading />}
+          {ready && user ? children : <ScreenSkeleton />}
         </main>
       </div>
     </ToastProvider>

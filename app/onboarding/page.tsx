@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useActions, useData, useProfile } from '@/lib/data';
 import { cmToFeetInches, computeTargets, feetInchesToCm, fromKg, toKg, unitLabel } from '@/lib/calc';
 import type { Activity, Goal, Sex, Targets, Units } from '@/lib/types';
-import { Button, Field, Loading, NumberInput, Segmented, inputClass } from '@/components/ui';
+import { Button, Field, NumberInput, ScreenSkeleton, Segmented, Select } from '@/components/ui';
 
 const GOALS: { value: Goal; label: string; detail: string }[] = [
   { value: 'lose', label: 'Lose fat', detail: 'About 0.5 kg (1 lb) a week' },
@@ -85,7 +85,7 @@ export default function OnboardingPage() {
     router.replace('/');
   }
 
-  if (!ready || !user || profile === undefined) return <Loading />;
+  if (!ready || !user || profile === undefined) return <main className="mx-auto max-w-md px-4 py-5"><ScreenSkeleton /></main>;
 
   const next = () => {
     if (step === 1) setTargets({ calories: String(computed.calories), protein_g: String(computed.protein_g), carbs_g: String(computed.carbs_g), fat_g: String(computed.fat_g) });
@@ -93,23 +93,23 @@ export default function OnboardingPage() {
   };
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 py-6">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">Step {step + 1} of 3</p>
-        <Button variant="ghost" onClick={() => finish(true)} disabled={saving}>
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-4 py-5">
+      <div className="flex items-center gap-3">
+        <div className="flex flex-1 gap-1" aria-hidden>
+          {[0, 1, 2].map((i) => (
+            <span key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= step ? 'bg-primary' : 'bg-muted'}`} />
+          ))}
+        </div>
+        <span className="tabular text-xs text-muted-foreground">Step {step + 1} of 3</span>
+        <Button variant="ghost" size="sm" onClick={() => finish(true)} disabled={saving}>
           Skip setup
         </Button>
       </div>
-      <div className="mt-2 flex gap-1" aria-hidden>
-        {[0, 1, 2].map((i) => (
-          <span key={i} className={`h-1 flex-1 rounded-full ${i <= step ? 'bg-primary' : 'bg-muted'}`} />
-        ))}
-      </div>
 
-      <div className="mt-8 flex-1 space-y-5">
+      <div key={step} className="mt-8 flex-1 animate-rise-in space-y-5">
         {step === 0 && (
           <>
-            <h1 className="text-2xl font-bold">What&apos;s your goal?</h1>
+            <h1 className="font-display text-3xl font-bold">What&apos;s your goal?</h1>
             <div className="space-y-2" role="radiogroup" aria-label="Goal">
               {GOALS.map((g) => (
                 <button
@@ -118,10 +118,13 @@ export default function OnboardingPage() {
                   role="radio"
                   aria-checked={goal === g.value}
                   onClick={() => setGoal(g.value)}
-                  className={`block min-h-14 w-full rounded-2xl border p-4 text-left ${goal === g.value ? 'border-primary bg-primary/10' : 'border-input bg-card'}`}
+                  className={`flex w-full items-center gap-3 rounded-xl border p-3.5 text-left transition ${goal === g.value ? 'border-primary bg-primary/5' : 'border-border bg-card hover:bg-muted/50'}`}
                 >
-                  <span className="block font-semibold">{g.label}</span>
-                  <span className="block text-sm text-muted-foreground">{g.detail}</span>
+                  <span className="flex-1">
+                    <span className="block font-semibold">{g.label}</span>
+                    <span className="block text-sm text-muted-foreground">{g.detail}</span>
+                  </span>
+                  <span className={`size-5 shrink-0 rounded-full border-2 ${goal === g.value ? 'border-[6px] border-primary' : 'border-input'}`} aria-hidden />
                 </button>
               ))}
             </div>
@@ -131,16 +134,19 @@ export default function OnboardingPage() {
         {step === 1 && (
           <>
             <div>
-              <h1 className="text-2xl font-bold">About you</h1>
-              <p className="text-muted-foreground">Used only to work out your daily calories.</p>
+              <h1 className="font-display text-3xl font-bold">About you</h1>
+              <p className="text-sm text-muted-foreground">For your daily calories only.</p>
             </div>
-            <Segmented label="Units" value={units} onChange={switchUnits} options={[{ value: 'metric', label: 'kg, cm' }, { value: 'imperial', label: 'lb, ft' }]} />
-            <Segmented
-              label="Sex (for the calorie formula)"
-              value={sex ?? 'unset'}
-              onChange={(v) => setSex(v === 'unset' ? null : (v as Sex))}
-              options={[{ value: 'female', label: 'Female' }, { value: 'male', label: 'Male' }, { value: 'unset', label: 'Skip' }]}
-            />
+            <div className="flex flex-wrap gap-4">
+              <Segmented label="Units" fit value={units} onChange={switchUnits} options={[{ value: 'metric', label: 'kg, cm' }, { value: 'imperial', label: 'lb, ft' }]} />
+              <Segmented
+                label="Sex"
+                fit
+                value={sex ?? 'unset'}
+                onChange={(v) => setSex(v === 'unset' ? null : (v as Sex))}
+                options={[{ value: 'female', label: 'Female' }, { value: 'male', label: 'Male' }, { value: 'unset', label: 'Skip' }]}
+              />
+            </div>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Age">
                 <NumberInput value={age} onChange={setAge} inputMode="numeric" />
@@ -163,21 +169,15 @@ export default function OnboardingPage() {
                 </Field>
               </div>
             )}
-            <Field label="How active are you?">
-              <select className={inputClass} value={activity} onChange={(e) => setActivity(e.target.value as Activity)}>
-                {ACTIVITY.map((a) => (
-                  <option key={a.value} value={a.value}>{a.label}</option>
-                ))}
-              </select>
-            </Field>
+            <Select label="How active are you?" value={activity} onChange={setActivity} options={ACTIVITY.map((a) => ({ value: a.value, label: a.label }))} />
           </>
         )}
 
         {step === 2 && targets && (
           <>
             <div>
-              <h1 className="text-2xl font-bold">Your daily targets</h1>
-              <p className="text-muted-foreground">A starting point. Change any number now or later in More.</p>
+              <h1 className="font-display text-3xl font-bold">Your daily targets</h1>
+              <p className="text-sm text-muted-foreground">A starting point. Change them any time in More.</p>
             </div>
             <Field label="Calories (kcal)">
               <NumberInput value={targets.calories} onChange={(v) => setTargets({ ...targets, calories: v })} inputMode="numeric" />
@@ -197,7 +197,7 @@ export default function OnboardingPage() {
         )}
       </div>
 
-      <div className="mt-8 flex gap-3">
+      <div className="mt-8 flex gap-2 pb-safe">
         {step > 0 && (
           <Button size="lg" variant="secondary" onClick={() => setStep(step - 1)} disabled={saving}>
             Back

@@ -14,8 +14,7 @@ test('a set logged offline is saved on the phone and syncs when back online', as
   await expect(page.getByRole('status').filter({ hasText: 'Synced' })).toBeVisible();
 
   await context.setOffline(true);
-  await expect(page.getByText("You're offline.")).toBeVisible();
-  await expect(page.getByText('Everything you log is saved on this phone')).toBeVisible();
+  await expect(page.getByText('Offline. What you log stays on this phone and syncs later.')).toBeVisible();
 
   await page.getByRole('radio', { name: 'Deadlift' }).click();
   await page.getByRole('button', { name: 'Add set' }).click();
@@ -23,7 +22,7 @@ test('a set logged offline is saved on the phone and syncs when back online', as
   await expect(page.getByRole('heading', { name: 'Deadlift' })).toBeVisible();
 
   await context.setOffline(false);
-  await expect(page.getByText("You're offline.")).toBeHidden();
+  await expect(page.getByText('Offline. What you log stays on this phone')).toBeHidden();
   await expect(page.getByRole('status').filter({ hasText: 'Synced' })).toBeVisible({ timeout: 15_000 });
 });
 
@@ -39,6 +38,6 @@ test('pages already opened still open with no connection', async ({ page, contex
   await context.setOffline(true);
   await page.goto('/log');
   await expect(page.getByRole('heading', { name: 'Log' })).toBeVisible();
-  await expect(page.getByText("You're offline.")).toBeVisible();
+  await expect(page.getByText('Offline. What you log stays on this phone')).toBeVisible();
   await context.setOffline(false);
 });

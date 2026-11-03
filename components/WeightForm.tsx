@@ -1,12 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { Check } from 'lucide-react';
 import { useActions } from '@/lib/data';
 import { formatWeight, fromKg, toKg, unitLabel } from '@/lib/calc';
 import type { Units, WeightEntry } from '@/lib/types';
 import { Button, NumberInput, useToast } from './ui';
 
-/** Today's weight in one field and one tap; once saved, it shows with a Change button. */
+/** Today's weight in one field and one tap; once saved, a quiet line with a Change button. */
 export function WeightForm({ units, today }: { units: Units; today?: WeightEntry }) {
   const actions = useActions();
   const toast = useToast();
@@ -16,11 +17,12 @@ export function WeightForm({ units, today }: { units: Units; today?: WeightEntry
 
   if (today && !editing) {
     return (
-      <div className="flex items-center justify-between gap-3">
-        <p>
-          Today: <strong className="tabular">{formatWeight(today.weight_kg, units)}</strong>
+      <div className="flex items-center justify-between gap-3 rounded-lg bg-muted/60 py-1 pl-3 pr-1 text-sm">
+        <p className="flex items-center gap-1.5">
+          <Check size={15} className="text-positive" aria-hidden />
+          Logged today: <span className="tabular font-semibold">{formatWeight(today.weight_kg, units)}</span>
         </p>
-        <Button variant="ghost" onClick={() => setEditing(true)}>
+        <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
           Change
         </Button>
       </div>
@@ -43,9 +45,9 @@ export function WeightForm({ units, today }: { units: Units; today?: WeightEntry
         toast({ message: `Weight saved: ${formatWeight(kg, units)}` });
       }}
     >
-      <label className="flex-1">
-        <span className="mb-1 block text-sm font-medium">Today&apos;s weight ({unitLabel(units)})</span>
-        <NumberInput value={value} onChange={setValue} placeholder={units === 'metric' ? 'e.g. 72.5' : 'e.g. 160'} aria-invalid={Boolean(error)} />
+      <label className="min-w-0 flex-1">
+        <span className="mb-1.5 block text-sm font-medium">Today&apos;s weight ({unitLabel(units)})</span>
+        <NumberInput value={value} onChange={setValue} placeholder={units === 'metric' ? '72.5' : '160'} aria-invalid={Boolean(error)} />
       </label>
       <Button type="submit">Save</Button>
       {error && (

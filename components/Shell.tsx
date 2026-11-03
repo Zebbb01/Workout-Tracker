@@ -17,35 +17,55 @@ const TABS = [
 /** Bottom tabs on phones and tablets; a sidebar once the screen is wide enough to keep one open. */
 export function Nav() {
   const path = usePathname();
-  const links = TABS.map(({ href, label, icon: Icon }) => {
-    const current = href === '/' ? path === '/' : path.startsWith(href);
-    return (
-      <Link
-        key={href}
-        href={href}
-        aria-current={current ? 'page' : undefined}
-        className={cx(
-          'flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl text-xs font-medium lg:flex-none lg:flex-row lg:justify-start lg:gap-3 lg:px-3 lg:text-sm',
-          current ? 'text-accent lg:bg-muted' : 'text-muted-foreground hover:text-foreground',
-        )}
-      >
-        <Icon size={22} strokeWidth={current ? 2.4 : 1.8} aria-hidden />
-        {label}
-      </Link>
-    );
-  });
+  const { user } = useData();
+  const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 
   return (
     <>
-      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 pb-safe backdrop-blur lg:hidden">
-        <div className="mx-auto flex max-w-lg px-2 py-1">{links}</div>
+      <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/90 pb-safe backdrop-blur-lg lg:hidden">
+        <div className="mx-auto flex max-w-lg">
+          {TABS.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              aria-current={isCurrent(href) ? 'page' : undefined}
+              className={cx(
+                'flex h-14 flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors',
+                isCurrent(href) ? 'text-accent' : 'text-muted-foreground hover:text-foreground',
+              )}
+            >
+              <Icon size={21} strokeWidth={isCurrent(href) ? 2.3 : 1.8} aria-hidden />
+              {label}
+            </Link>
+          ))}
+        </div>
       </nav>
-      <nav aria-label="Main" className="fixed inset-y-0 left-0 z-40 hidden w-60 flex-col gap-1 border-r border-border bg-card p-4 lg:flex">
-        <Link href="/" className="mb-4 flex items-center gap-2 px-3 py-2 text-lg font-bold">
-          <img src="/icon-192.png" alt="" width={28} height={28} className="rounded-lg" />
-          Body Tracker
+
+      <nav aria-label="Main" className="fixed inset-y-0 left-0 z-40 hidden w-56 flex-col border-r border-border bg-card px-3 py-4 lg:flex">
+        <Link href="/" className="mb-6 flex items-center gap-2.5 px-2">
+          <img src="/icon-192.png" alt="" width={28} height={28} className="rounded-md" />
+          <span className="font-display text-lg font-bold">Body Tracker</span>
         </Link>
-        {links}
+        <div className="flex flex-col gap-0.5">
+          {TABS.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              aria-current={isCurrent(href) ? 'page' : undefined}
+              className={cx(
+                'flex h-9 items-center gap-3 rounded-lg px-2.5 text-sm font-medium transition-colors',
+                isCurrent(href) ? 'bg-muted text-foreground' : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground',
+              )}
+            >
+              <Icon size={18} strokeWidth={isCurrent(href) ? 2.2 : 1.8} className={isCurrent(href) ? 'text-accent' : undefined} aria-hidden />
+              {label}
+            </Link>
+          ))}
+        </div>
+        <div className="mt-auto space-y-3 px-2">
+          <SyncBadge />
+          {user && <p className="truncate text-xs text-muted-foreground">{user.is_anonymous ? 'Guest' : user.email}</p>}
+        </div>
       </nav>
     </>
   );
@@ -54,31 +74,22 @@ export function Nav() {
 /** Says plainly where the person's entries are when the connection drops. */
 export function OfflineBanner() {
   const { online, pending, syncError, firstSyncDone } = useData();
-  if (!online) {
-    return (
-      <div role="status" className="mb-4 flex items-start gap-3 rounded-2xl bg-muted p-3 text-sm">
-        <WifiOff size={18} className="mt-0.5 shrink-0" aria-hidden />
-        <p>
-          <strong>You&apos;re offline.</strong> Everything you log is saved on this phone and will sync when you&apos;re back online.
-        </p>
-      </div>
-    );
-  }
-  if (syncError && pending > 0 && firstSyncDone) {
-    return (
-      <div role="status" className="mb-4 flex items-start gap-3 rounded-2xl bg-muted p-3 text-sm">
-        <CloudOff size={18} className="mt-0.5 shrink-0" aria-hidden />
-        <p>
-          <strong>Not synced yet.</strong> {pending} {pending === 1 ? 'entry is' : 'entries are'} saved on this phone and will sync on the next try.
-        </p>
-      </div>
-    );
-  }
-  return null;
+  const message = !online
+    ? "Offline. What you log stays on this phone and syncs later."
+    : syncError && pending > 0 && firstSyncDone
+      ? `${pending} ${pending === 1 ? 'entry' : 'entries'} saved on this phone, not synced yet.`
+      : null;
+  if (!message) return null;
+  return (
+    <div role="status" className="mb-4 flex items-center gap-2.5 rounded-lg bg-muted px-3 py-2 text-sm animate-fade-in">
+      {online ? <CloudOff size={16} className="shrink-0" aria-hidden /> : <WifiOff size={16} className="shrink-0" aria-hidden />}
+      <p>{message}</p>
+    </div>
+  );
 }
 
-/** The small sync state next to a page title. */
-export function SyncBadge() {
+/** The sync state, small, next to a page title on phones and in the sidebar on desktops. */
+export function SyncBadge({ className }: { className?: string }) {
   const { online, pending, syncing } = useData();
   const [Icon, text] = !online
     ? [CloudOff, 'Offline']
@@ -88,8 +99,8 @@ export function SyncBadge() {
         ? [CloudUpload, 'Saved on this phone']
         : [CloudCheck, 'Synced'];
   return (
-    <span role="status" className="inline-flex min-h-11 items-center gap-1.5 text-sm text-muted-foreground">
-      <Icon size={16} className={cx(syncing && online && 'animate-spin')} aria-hidden />
+    <span role="status" className={cx('inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground', className)}>
+      <Icon size={14} className={cx(syncing && online && 'animate-spin')} aria-hidden />
       {text}
     </span>
   );
