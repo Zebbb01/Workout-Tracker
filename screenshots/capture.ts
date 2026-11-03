@@ -57,25 +57,27 @@ function sixWeeks(userId: string, today: string) {
   const meals: Record<string, unknown>[] = [];
   const weights: Record<string, unknown>[] = [];
   let session = 0;
+  const working = new Map<string, number>();
 
   for (let back = 42; back >= 0; back--) {
     const day = addDays(today, -back);
     const weekday = new Date(`${day}T12:00:00`).getDay();
-    const week = Math.floor((42 - back) / 7);
 
     if (back > 0 && random() > 0.15) weights.push({ id: randomUUID(), user_id: userId, weight_kg: jitter(84.6 - (42 - back) * 0.064, 0.5), measured_on: day });
 
-    // Monday, Wednesday and Friday, rotating push, pull and legs, a little heavier each week.
+    // Monday, Wednesday and Friday, rotating push, pull and legs. A lift goes up
+    // when the last session went well, so progress comes in steps, not a ramp.
     if ([1, 3, 5].includes(weekday) || back === 0) {
       const plan = WORKOUTS[session++ % 3];
       let minute = 0;
       plan.forEach(([id, name, start, reps], i) => {
-        const today_ = back === 0;
-        const count = today_ ? (i === 0 ? 3 : i === 1 ? 2 : 0) : 3;
+        const weight = (working.get(id) ?? start) + (working.has(id) && random() > 0.45 ? (i < 2 ? 2.5 : 1.25) : 0);
+        working.set(id, weight);
+        const count = back === 0 ? [3, 2, 0][i] : 3;
         for (let s = 0; s < count; s++) {
           sets.push({
             id: randomUUID(), user_id: userId, exercise_id: id, exercise_name: name,
-            weight_kg: start + (i < 2 ? week * 2.5 : week * 1.25), reps: s === 2 && random() > 0.6 ? reps - 1 : reps,
+            weight_kg: weight, reps: s === 2 && random() > 0.5 ? reps - 1 - Math.floor(random() * 2) : reps,
             performed_at: at(day, 18, (minute += 3)),
           });
         }

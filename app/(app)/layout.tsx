@@ -27,7 +27,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <ToastProvider>
       <Nav />
       <div className="lg:pl-60">
-        <main className="mx-auto w-full max-w-lg px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-4 lg:max-w-3xl lg:px-8 lg:pb-10 lg:pt-8">
+        <main className="mx-auto w-full max-w-lg px-4 pb-[calc(6rem+env(safe-area-inset-bottom))] pt-4 lg:max-w-5xl lg:px-8 lg:pb-10 lg:pt-8">
           <OfflineBanner />
           {ready && user ? children : <Loading />}
         </main>

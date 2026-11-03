@@ -125,9 +125,9 @@ describe('weight', () => {
   });
 
   it('compares with the weigh-in a week or more before', () => {
-    expect(weightTrend(weightSeries(entries))).toEqual({ latest: { day: '2026-11-02', kg: 78.6 }, change: -0.8 });
+    expect(weightTrend(weightSeries(entries))).toEqual({ latest: { day: '2026-11-02', kg: 78.6 }, change: -0.8, since: '2026-10-26' });
     expect(weightTrend(weightSeries(entries.slice(1)))!.change).toBeCloseTo(-0.8, 5);
-    expect(weightTrend(weightSeries(entries.slice(3)))).toEqual({ latest: { day: '2026-11-02', kg: 78.6 }, change: null });
+    expect(weightTrend(weightSeries(entries.slice(3)))).toEqual({ latest: { day: '2026-11-02', kg: 78.6 }, change: null, since: null });
     expect(weightTrend([])).toBeNull();
   });
 });
