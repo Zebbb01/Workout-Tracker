@@ -8,10 +8,10 @@ import { Button } from '@/components/ui';
 import InstallApp from '@/components/InstallApp';
 
 const POINTS = [
-  { icon: Dumbbell, text: 'Log a set in two taps, or repeat your last workout.' },
-  { icon: Camera, text: 'Photograph a meal: AI fills in the numbers, you check them.' },
-  { icon: TrendingUp, text: 'See your weight and your lifts trend over time.' },
-  { icon: WifiOff, text: 'Works with no signal. It syncs when you are back online.' },
+  { icon: Dumbbell, text: 'Log a set in two taps' },
+  { icon: Camera, text: 'Snap a meal, check the numbers' },
+  { icon: TrendingUp, text: 'Watch your weight and lifts trend' },
+  { icon: WifiOff, text: 'Works with no signal at the gym' },
 ];
 
 function Welcome() {
@@ -43,27 +43,25 @@ function Welcome() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-4 py-10">
-      <img src="/icon-192.png" alt="" width={64} height={64} className="rounded-2xl" />
-      <h1 className="mt-4 text-3xl font-bold tracking-tight">Body Tracker</h1>
-      <p className="mt-1 text-lg text-muted-foreground">Your workouts, meals and weight, in a few taps.</p>
+    <main className="mx-auto flex min-h-dvh w-full max-w-sm flex-col justify-center px-5 py-10">
+      <img src="/icon-192.png" alt="" width={52} height={52} className="rounded-xl" />
+      <h1 className="font-display mt-5 text-4xl font-bold">Body Tracker</h1>
+      <p className="mt-1 text-lg text-muted-foreground">Workouts, meals and weight in a few taps.</p>
 
-      <ul className="mt-6 space-y-3">
+      <ul className="mt-6 grid grid-cols-2 gap-x-3 gap-y-2.5 text-sm">
         {POINTS.map(({ icon: Icon, text }) => (
-          <li key={text} className="flex gap-3">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-muted text-accent">
-              <Icon size={18} aria-hidden />
-            </span>
-            <span className="pt-1.5">{text}</span>
+          <li key={text} className="flex items-start gap-2">
+            <Icon size={16} className="mt-0.5 shrink-0 text-accent" aria-hidden />
+            <span>{text}</span>
           </li>
         ))}
       </ul>
 
-      <div className="mt-8 space-y-3">
+      <div className="mt-8 space-y-2.5">
         <Button size="lg" block onClick={tryIt} busy={busy === 'try'} disabled={busy !== null}>
           Try it without an account
         </Button>
-        <Button size="lg" block variant="secondary" onClick={google} busy={busy === 'google'} disabled={busy !== null}>
+        <Button size="lg" block variant="outline" onClick={google} busy={busy === 'google'} disabled={busy !== null}>
           <svg aria-hidden width="18" height="18" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.24 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
@@ -77,12 +75,10 @@ function Welcome() {
             {error}
           </p>
         )}
-        <p className="text-sm text-muted-foreground">
-          Trying it needs no email. Entries are kept for 30 days; save them with Google any time to keep them.
-        </p>
+        <p className="pt-1 text-center text-xs text-muted-foreground">No email needed. Save with Google any time to keep your entries.</p>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 flex justify-center">
         <InstallApp />
       </div>
     </main>

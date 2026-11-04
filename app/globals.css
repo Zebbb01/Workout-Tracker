@@ -5,16 +5,18 @@
 /*
  * Colour tokens. Light by default, dark when the phone is dark, and either one
  * when chosen in More (data-theme on <html>). Text pairs meet 4.5:1 and input
- * borders 3:1 in both themes. Orange is the brand and only marks actions.
+ * borders 3:1 in both themes. Orange is the brand and marks actions and calories;
+ * protein, carbs and fat keep one colour each, checked with the dataviz
+ * validator and always shown beside their name.
  */
 :root {
   color-scheme: light;
-  --background: 60 9% 98%;
+  --background: 40 14% 97%;
   --foreground: 24 10% 10%;
   --card: 0 0% 100%;
-  --muted: 60 5% 96%;
-  --muted-foreground: 33 5% 32%;
-  --border: 20 6% 90%;
+  --muted: 40 9% 93%;
+  --muted-foreground: 30 5% 34%;
+  --border: 30 8% 88%;
   --input: 25 5% 45%;
   --primary: 17 88% 40%;
   --primary-foreground: 0 0% 100%;
@@ -22,47 +24,55 @@
   --positive: 142 72% 29%;
   --negative: 0 74% 42%;
   --ring: 17 88% 40%;
-  /* Chart marks: checked for 3:1 on the card and for the dark lightness band. */
   --chart: 17 88% 40%;
+  --protein: 213 68% 50%;
+  --carbs: 40 100% 46%;
+  --fat: 339 60% 58%;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --background: 20 14% 4%;
-    --foreground: 60 9% 98%;
-    --card: 24 10% 10%;
-    --muted: 12 6% 15%;
-    --muted-foreground: 30 6% 63%;
-    --border: 12 6% 17%;
+    --background: 24 12% 5%;
+    --foreground: 40 20% 96%;
+    --card: 24 9% 9%;
+    --muted: 24 7% 14%;
+    --muted-foreground: 32 7% 64%;
+    --border: 24 6% 16%;
     --input: 24 5% 45%;
     --accent: 27 96% 61%;
     --positive: 142 69% 58%;
     --negative: 0 91% 71%;
     --ring: 27 96% 61%;
     --chart: 21 90% 48%;
+    --protein: 213 77% 56%;
+    --carbs: 40 100% 39%;
+    --fat: 339 60% 58%;
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --background: 20 14% 4%;
-  --foreground: 60 9% 98%;
-  --card: 24 10% 10%;
-  --muted: 12 6% 15%;
-  --muted-foreground: 30 6% 63%;
-  --border: 12 6% 17%;
+  --background: 24 12% 5%;
+  --foreground: 40 20% 96%;
+  --card: 24 9% 9%;
+  --muted: 24 7% 14%;
+  --muted-foreground: 32 7% 64%;
+  --border: 24 6% 16%;
   --input: 24 5% 45%;
   --accent: 27 96% 61%;
   --positive: 142 69% 58%;
   --negative: 0 91% 71%;
   --ring: 27 96% 61%;
   --chart: 21 90% 48%;
+  --protein: 213 77% 56%;
+  --carbs: 40 100% 39%;
+  --fat: 339 60% 58%;
 }
 
 @layer base {
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-base text-foreground antialiased;
   }
 
   :focus-visible {
@@ -73,6 +83,11 @@
   /* Numbers that get compared line up. */
   .tabular {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* A small label over a group, the way a printed form would set it. */
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground;
   }
 }
 

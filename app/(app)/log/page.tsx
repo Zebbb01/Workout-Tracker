@@ -7,12 +7,12 @@ import { useActions, useCustomExercises, useProfile, useSets } from '@/lib/data'
 import { byExercise, formatWeight, fromKg, lastSetOf, lastWorkout, localDay, recentExercises, toKg, unitLabel } from '@/lib/calc';
 import { CATEGORIES, EXERCISES } from '@/lib/exercises';
 import type { Units, WorkoutSet } from '@/lib/types';
-import { Button, Card, Empty, Field, IconButton, Loading, PageHeader, Sheet, Stepper, cx, inputClass, useToast } from '@/components/ui';
+import { Button, Empty, IconButton, PageHeader, Panel, ScreenSkeleton, Select, Sheet, Stepper, cx, inputClass, useToast } from '@/components/ui';
 import { SyncBadge } from '@/components/Shell';
 
 const STARTERS = ['bench-press', 'squat', 'deadlift', 'overhead-press', 'pull-up', 'barbell-row'];
 const roundTo = (value: number, step: number) => Math.round(value / step) * step;
-const dayName = (day: string) => new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' });
+const weekday = (day: string) => new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { weekday: 'long' });
 
 function LogScreen() {
   const router = useRouter();
@@ -34,9 +34,10 @@ function LogScreen() {
   const nameOf = (id: string) => allExercises.find((e) => e.id === id)?.name ?? sets?.find((s) => s.exercise_id === id)?.exercise_name ?? id;
 
   const recent = useMemo(() => (sets ? recentExercises(sets) : []), [sets]);
-  const chips = recent.length ? recent : STARTERS.map((id) => ({ id, name: nameOf(id) }));
+  // Recent exercises first, then the common lifts, so one set logged never empties the row.
+  const chips = [...recent, ...STARTERS.filter((id) => !recent.some((r) => r.id === id)).map((id) => ({ id, name: nameOf(id) }))].slice(0, 8);
 
-  if (!profile || !sets || !custom) return <Loading />;
+  if (!profile || !sets || !custom) return <ScreenSkeleton />;
 
   /** The next set of an exercise starts as a copy of its last one; a new exercise starts with an empty bar. */
   const startFor = (id: string) => {
@@ -48,12 +49,13 @@ function LogScreen() {
     };
   };
   const current = draft ?? (recent[0] ? startFor(recent[0].id) : null);
-  const exerciseId = current?.id ?? null;
+  const previous = current ? lastSetOf(sets, current.id) : null;
   const choose = (id: string) => setDraft(startFor(id));
 
   const today = localDay(new Date());
   const todaysSets = sets.filter((s) => localDay(s.performed_at) === today);
   const last = lastWorkout(sets, today);
+  const shownChips = current && !chips.some((c) => c.id === current.id) ? [{ id: current.id, name: nameOf(current.id) }, ...chips] : chips;
 
   async function addSet() {
     if (!current || current.reps < 1) return;
@@ -71,100 +73,120 @@ function LogScreen() {
     await actions.addSets(last.sets.map((s) => ({ exercise_id: s.exercise_id, exercise_name: s.exercise_name, weight_kg: s.weight_kg, reps: s.reps })));
     setRepeating(false);
     router.replace('/log');
-    toast({ message: `${last.sets.length} ${last.sets.length === 1 ? 'set' : 'sets'} logged from ${dayName(last.day)}` });
+    toast({ message: `${last.sets.length} ${last.sets.length === 1 ? 'set' : 'sets'} logged from ${weekday(last.day)}` });
   }
 
   async function remove(set: WorkoutSet) {
     await actions.remove('sets', set.id);
-    toast({ message: `Set removed`, undo: () => actions.restore('sets', set.id) });
+    toast({ message: 'Set removed', undo: () => actions.restore('sets', set.id) });
   }
 
   return (
     <>
-      <PageHeader title="Log" subtitle="Add sets as you go" action={<SyncBadge />} />
+      <PageHeader title="Log" action={<SyncBadge className="lg:hidden" />} />
 
       {last && !todaysSets.length && (
-        <Button variant="secondary" size="lg" block className="mb-4" onClick={() => setRepeating(true)}>
-          <Repeat size={18} aria-hidden /> Repeat {dayName(last.day)}
-        </Button>
+        <Panel className="mb-4 flex items-center gap-3 p-3 pl-4">
+          <Repeat size={18} className="shrink-0 text-accent" aria-hidden />
+          <div className="min-w-0 flex-1">
+            <p className="font-medium">{weekday(last.day)}&apos;s workout</p>
+            <p className="truncate text-sm text-muted-foreground">
+              {last.sets.length} sets · {byExercise(last.sets).map((g) => g.exercise_name).join(', ')}
+            </p>
+          </div>
+          <Button size="sm" onClick={() => setRepeating(true)}>
+            Repeat {weekday(last.day)}
+          </Button>
+        </Panel>
       )}
 
-      <Card aria-labelledby="add-set-title">
-        <h2 id="add-set-title" className="mb-2 font-semibold">Add a set</h2>
-        <div className="-mx-1 flex flex-wrap gap-2" role="radiogroup" aria-label="Exercise">
-          {chips.map((e) => (
-            <button
-              key={e.id}
-              type="button"
-              role="radio"
-              aria-checked={exerciseId === e.id}
-              onClick={() => choose(e.id)}
-              className={cx(
-                'min-h-11 rounded-full border px-4 text-sm font-medium',
-                exerciseId === e.id ? 'border-primary bg-primary text-primary-foreground' : 'border-input bg-card hover:bg-muted',
-              )}
-            >
-              {e.name}
-            </button>
-          ))}
-          <button type="button" onClick={() => setPicking(true)} className="inline-flex min-h-11 items-center gap-1 rounded-full border border-dashed border-input px-4 text-sm font-medium hover:bg-muted">
-            <Search size={16} aria-hidden /> Other exercise
-          </button>
-        </div>
-
-        {current ? (
-          <div className="mt-4 space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Stepper label="Weight" unit={unitLabel(units)} value={current.weight} onChange={(weight) => setDraft({ ...current, weight })} step={units === 'metric' ? 2.5 : 5} max={units === 'metric' ? 999 : 2200} />
-              <Stepper label="Reps" value={current.reps} onChange={(v) => setDraft({ ...current, reps: Math.round(v) })} step={1} min={1} max={999} />
-            </div>
-            <Button size="lg" block onClick={addSet} busy={saving}>
-              <Plus size={20} aria-hidden /> Add set
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:items-start">
+        <Panel aria-label="Add a set" className="p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="eyebrow">Exercise</h2>
+            <Button variant="ghost" size="sm" onClick={() => setPicking(true)}>
+              <Search size={15} aria-hidden /> All exercises
             </Button>
           </div>
-        ) : (
-          <p className="mt-3 text-sm text-muted-foreground">Pick an exercise to start.</p>
-        )}
-      </Card>
-
-      <section aria-labelledby="today-sets" className="mt-6">
-        <h2 id="today-sets" className="mb-2 font-semibold">Today</h2>
-        {todaysSets.length === 0 ? (
-          <Empty title="No sets yet today">Your sets show up here as you add them.</Empty>
-        ) : (
-          <div className="space-y-3">
-            {byExercise(todaysSets).map((group) => (
-              <Card key={group.exercise_id} className="p-0">
-                <h3 className="px-4 pt-3 font-semibold">{group.exercise_name}</h3>
-                <ol className="divide-y divide-border">
-                  {group.sets.map((s, i) => (
-                    <li key={s.id} className="flex items-center justify-between gap-2 py-1 pl-4 pr-1">
-                      <span className="tabular">
-                        <span className="mr-3 text-sm text-muted-foreground">{i + 1}</span>
-                        {formatWeight(s.weight_kg, units)} × {s.reps}
-                      </span>
-                      <IconButton label={`Remove set ${i + 1} of ${group.exercise_name}`} onClick={() => remove(s)}>
-                        <Trash2 size={18} />
-                      </IconButton>
-                    </li>
-                  ))}
-                </ol>
-              </Card>
+          {/* One scrolling row on phones keeps the steppers within thumb reach. */}
+          <div className="-mx-4 mt-1 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0" role="radiogroup" aria-label="Exercise">
+            {shownChips.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                role="radio"
+                aria-checked={current?.id === e.id}
+                onClick={() => choose(e.id)}
+                className={cx(
+                  'h-11 shrink-0 whitespace-nowrap rounded-full px-4 text-sm font-medium transition active:scale-[0.97] lg:h-9',
+                  current?.id === e.id ? 'bg-foreground text-background' : 'bg-muted text-foreground hover:bg-muted/70',
+                )}
+              >
+                {e.name}
+              </button>
             ))}
           </div>
-        )}
-      </section>
+
+          {current ? (
+            <div className="mt-4 space-y-4">
+              <div>
+                <p className="font-display text-xl font-bold">{nameOf(current.id)}</p>
+                <p className="tabular text-sm text-muted-foreground">
+                  {previous ? `Last time: ${formatWeight(previous.weight_kg, units)} × ${previous.reps}` : 'First time logging this one'}
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <Stepper label="Weight" unit={unitLabel(units)} value={current.weight} onChange={(weight) => setDraft({ ...current, weight })} step={units === 'metric' ? 2.5 : 5} max={units === 'metric' ? 999 : 2200} />
+                <Stepper label="Reps" value={current.reps} onChange={(v) => setDraft({ ...current, reps: Math.round(v) })} step={1} min={1} max={999} />
+              </div>
+              <Button size="lg" block onClick={addSet} busy={saving}>
+                <Plus size={18} aria-hidden /> Add set
+              </Button>
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-muted-foreground">Pick an exercise to start.</p>
+          )}
+        </Panel>
+
+        <section aria-labelledby="today-sets">
+          <h2 id="today-sets" className="eyebrow mb-2 lg:mt-0">Today</h2>
+          {todaysSets.length === 0 ? (
+            <Empty title="No sets yet">They appear here as you add them.</Empty>
+          ) : (
+            <Panel className="divide-y divide-border">
+              {byExercise(todaysSets).map((group) => (
+                <div key={group.exercise_id} className="py-2">
+                  <h3 className="px-4 pb-1 pt-1 text-sm font-semibold">{group.exercise_name}</h3>
+                  <ol>
+                    {group.sets.map((s, i) => (
+                      <li key={s.id} className="flex items-center justify-between gap-2 pl-4 pr-1">
+                        <span className="tabular text-[15px]">
+                          <span className="mr-3 inline-block w-4 text-sm text-muted-foreground">{i + 1}</span>
+                          {formatWeight(s.weight_kg, units)} × {s.reps}
+                        </span>
+                        <IconButton label={`Remove set ${i + 1} of ${group.exercise_name}`} onClick={() => remove(s)}>
+                          <Trash2 size={16} />
+                        </IconButton>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              ))}
+            </Panel>
+          )}
+        </section>
+      </div>
 
       <Sheet open={repeating && Boolean(last)} onClose={() => { setRepeating(false); router.replace('/log'); }} title="Repeat last workout">
         {last && (
           <>
-            <p className="text-muted-foreground">Logs the same sets as {dayName(last.day)}, for today. You can remove any afterwards.</p>
-            <ul className="my-4 space-y-1">
+            <p className="text-sm text-muted-foreground">Same sets as {weekday(last.day)}, logged for today. You can remove any after.</p>
+            <ul className="my-4 divide-y divide-border rounded-lg bg-muted/60 text-sm">
               {byExercise(last.sets).map((g) => (
-                <li key={g.exercise_id} className="flex justify-between gap-3">
-                  <span>{g.exercise_name}</span>
+                <li key={g.exercise_id} className="flex justify-between gap-3 px-3 py-2">
+                  <span className="font-medium">{g.exercise_name}</span>
                   <span className="tabular text-muted-foreground">
-                    {g.sets.map((s) => `${Math.round(fromKg(s.weight_kg, units) * 10) / 10}×${s.reps}`).join(', ')}
+                    {g.sets.map((s) => `${Math.round(fromKg(s.weight_kg, units) * 10) / 10}×${s.reps}`).join('  ')}
                   </span>
                 </li>
               ))}
@@ -187,27 +209,37 @@ function ExercisePicker({ open, onClose, exercises, onPick }: {
   const actions = useActions();
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('Other');
-  const matches = exercises.filter((e) => e.name.toLowerCase().includes(query.trim().toLowerCase()));
-  const exact = exercises.some((e) => e.name.toLowerCase() === query.trim().toLowerCase());
+  const q = query.trim().toLowerCase();
+  const matches = exercises.filter((e) => e.name.toLowerCase().includes(q));
+  const exact = exercises.some((e) => e.name.toLowerCase() === q);
+  const groups = CATEGORIES.map((c) => ({ category: c, items: matches.filter((e) => e.category === c) })).filter((g) => g.items.length);
 
   return (
     <Sheet open={open} onClose={onClose} title="Choose an exercise">
-      <Field label="Search">
-        <input className={inputClass} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="e.g. squat" autoComplete="off" />
-      </Field>
-      <ul className="mt-3 divide-y divide-border">
-        {matches.map((e) => (
-          <li key={e.id}>
-            <button type="button" onClick={() => onPick(e.id)} className="flex min-h-12 w-full items-center justify-between gap-3 px-1 text-left hover:bg-muted">
-              <span>{e.name}</span>
-              <span className="text-sm text-muted-foreground">{e.category}</span>
-            </button>
-          </li>
+      <label className="relative block">
+        <span className="sr-only">Search exercises</span>
+        <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden />
+        <input className={cx(inputClass, 'pl-9')} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search" autoComplete="off" />
+      </label>
+      <div className="mt-3 max-h-[50dvh] overflow-y-auto">
+        {groups.map((g) => (
+          <div key={g.category} className="mb-2">
+            <h3 className="eyebrow px-1 py-1">{g.category}</h3>
+            <ul>
+              {g.items.map((e) => (
+                <li key={e.id}>
+                  <button type="button" onClick={() => onPick(e.id)} className="flex min-h-11 w-full items-center rounded-lg px-2 text-left hover:bg-muted">
+                    {e.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         ))}
-      </ul>
-      {query.trim() && !exact && (
+      </div>
+      {q && !exact && (
         <form
-          className="mt-4 space-y-3 rounded-2xl bg-muted p-3"
+          className="mt-3 space-y-3 rounded-xl bg-muted/60 p-3"
           onSubmit={async (e) => {
             e.preventDefault();
             const row = await actions.addExercise(query, category);
@@ -216,28 +248,22 @@ function ExercisePicker({ open, onClose, exercises, onPick }: {
           }}
         >
           <p className="text-sm">
-            Add <strong>{query.trim()}</strong> as a new exercise
+            New exercise: <strong>{query.trim()}</strong>
           </p>
-          <Field label="Body part">
-            <select className={inputClass} value={category} onChange={(e) => setCategory(e.target.value)}>
-              {CATEGORIES.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </Field>
+          <Select label="Body part" value={category} onChange={setCategory} options={CATEGORIES.map((c) => ({ value: c, label: c }))} />
           <Button type="submit" block>
             Add exercise
           </Button>
         </form>
       )}
-      {!matches.length && !query.trim() && <Empty title="No exercises" />}
+      {!groups.length && !q && <Empty title="No exercises" />}
     </Sheet>
   );
 }
 
 export default function LogPage() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<ScreenSkeleton />}>
       <LogScreen />
     </Suspense>
   );

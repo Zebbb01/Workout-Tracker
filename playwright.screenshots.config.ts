@@ -10,5 +10,11 @@ export default defineConfig({
   workers: 1,
   retries: 0,
   projects: undefined,
+  use: {
+    ...base.use,
+    // Headless Chromium on Linux hints fonts fully and snaps every letter to a whole pixel,
+    // which spaces some letters unevenly in screenshots. Browsers on phones place them exactly.
+    launchOptions: { args: ['--font-render-hinting=none'] },
+  },
   reporter: 'list',
 });
