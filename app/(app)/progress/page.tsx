@@ -106,10 +106,8 @@ export default function ProgressPage() {
                   title="Weekly volume"
                   points={volume.map((w) => ({ label: `Week of ${short(w.week)}`, value: w.volume }))}
                   format={whole}
-                  axisFormat={(kg) => {
-                    const v = fromKg(kg, units);
-                    return v >= 10000 ? `${Math.round(v / 1000)}K` : String(Math.round(v));
-                  }}
+                  // One style on the whole axis: 0, 5K, 10K, 15K.
+                  axisFormat={(kg) => fromKg(kg, units).toLocaleString(undefined, { notation: 'compact', maximumFractionDigits: 1 })}
                 />
               </div>
             </>
