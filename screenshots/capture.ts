@@ -157,7 +157,8 @@ async function open(browser: Browser, size: keyof typeof SIZES, cookies: { name:
 async function settle(page: Page, path: string, heading: string) {
   await page.goto(path);
   await expect(page.getByRole('heading', { name: heading, level: 1 })).toBeVisible();
-  await expect(page.getByRole('status').filter({ hasText: 'Synced' }).first()).toBeVisible({ timeout: 20_000 });
+  // Phones show the sync badge only in some page headers; the sidebar's copy is always in the page.
+  await expect(page.getByRole('status', { includeHidden: true }).filter({ hasText: 'Synced' }).first()).toBeAttached({ timeout: 20_000 });
   await page.mouse.move(0, 0);
   // Rings and bars animate to their values once the data arrives.
   await page.waitForTimeout(1200);
