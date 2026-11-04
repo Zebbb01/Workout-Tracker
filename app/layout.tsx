@@ -5,8 +5,7 @@ import './globals.css';
 import { DataProvider } from '@/lib/data';
 import { RegisterServiceWorker } from '@/components/InstallApp';
 
-// Two static families. Archivo's variable width axis drew some letters at the wrong width in
-// Chromium on Linux, so the condensed cut for titles and big numbers is its own family.
+// Barlow for text; its condensed cut for titles and the big numbers.
 const sans = Barlow({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-sans', display: 'swap' });
 const display = Barlow_Condensed({ subsets: ['latin'], weight: '700', variable: '--font-display', display: 'swap' });
 
