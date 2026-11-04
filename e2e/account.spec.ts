@@ -19,12 +19,12 @@ test('Continue with Google hands over to Supabase Auth with Google as the provid
 test('a try-it account is offered Save with Google, and signing out returns to welcome', async ({ page }) => {
   await startTrial(page);
   await page.getByRole('link', { name: 'More' }).click();
-  await expect(page.getByText("You're trying Body Tracker without an account.")).toBeVisible();
+  await expect(page.getByText('Trying without an account')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Save my data with Google' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Sign out' }).click();
   await expect(page.getByText("signing out deletes what you've logged")).toBeVisible();
-  await page.getByRole('dialog').getByRole('button', { name: 'Sign out' }).click();
+  await page.getByRole('alertdialog').getByRole('button', { name: 'Sign out' }).click();
   await expect(page).toHaveURL(/\/welcome$/);
 
   await page.goto('/');
@@ -35,11 +35,12 @@ test('units and targets are changed in More and used everywhere', async ({ page 
   await startTrial(page);
   await page.getByRole('link', { name: 'More' }).click();
   await page.getByText('lb', { exact: true }).click();
+  await page.getByRole('button', { name: /Edit/ }).click();
   await page.getByLabel('Calories (kcal)').fill('2100');
   await page.getByRole('button', { name: 'Save targets' }).click();
   await expect(page.getByText('Daily targets saved')).toBeVisible();
 
   await page.getByRole('link', { name: 'Today' }).click();
-  await expect(page.getByText('0 of 2,100 eaten')).toBeVisible();
+  await expect(page.getByText('0 of 2,100 kcal eaten')).toBeVisible();
   await expect(page.getByLabel("Today's weight (lb)")).toBeVisible();
 });

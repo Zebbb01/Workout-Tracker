@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Timer } from 'lucide-react';
 import { useActions } from '@/lib/data';
 import { fastProgress, formatDuration } from '@/lib/calc';
 import type { Fast } from '@/lib/types';
-import { Button, Card, Meter, Segmented, useToast } from './ui';
+import { Button, Panel, Ring, Segmented, useToast } from './ui';
 
 function useMinuteClock() {
   const [now, setNow] = useState(() => new Date());
@@ -24,49 +23,41 @@ export function FastingCard({ fast, canStart = false }: { fast?: Fast; canStart?
   const [hours, setHours] = useState('16');
 
   if (fast) {
-    const { hours: elapsed, fraction, done } = fastProgress(fast, now);
+    const { hours: elapsed, done } = fastProgress(fast, now);
     return (
-      <Card aria-labelledby="fast-title">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <h2 id="fast-title" className="flex items-center gap-2 font-semibold">
-            <Timer size={18} aria-hidden /> Fasting
-          </h2>
-          <Button
-            variant="secondary"
-            onClick={async () => {
-              await actions.endFast(fast.id);
-              toast({ message: `Fast ended at ${formatDuration(elapsed)}` });
-            }}
-          >
-            End fast
-          </Button>
+      <Panel aria-label="Fasting" className="flex items-center gap-4 p-4">
+        <Ring value={Math.min(elapsed, fast.target_hours)} max={fast.target_hours} size={64} stroke={6} label="Fast progress">
+          <span className="tabular text-xs font-semibold">{Math.floor((Math.min(elapsed, fast.target_hours) / fast.target_hours) * 100)}%</span>
+        </Ring>
+        <div className="min-w-0 flex-1">
+          <h2 className="eyebrow">Fasting</h2>
+          <p className="font-display tabular text-xl font-bold">
+            {formatDuration(elapsed)} <span className="text-sm font-normal text-muted-foreground">of {fast.target_hours}h</span>
+          </p>
+          {done && <p className="text-sm text-positive">Target reached</p>}
         </div>
-        <p className="tabular text-2xl font-bold">
-          {formatDuration(elapsed)} <span className="text-base font-normal text-muted-foreground">of {fast.target_hours}h</span>
-        </p>
-        <div className="mt-2">
-          <Meter value={fraction * fast.target_hours} max={fast.target_hours} label="Fast progress" />
-        </div>
-        {done && <p className="mt-2 text-sm text-positive">Target reached. End it whenever you eat.</p>}
-      </Card>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={async () => {
+            await actions.endFast(fast.id);
+            toast({ message: `Fast ended at ${formatDuration(elapsed)}` });
+          }}
+        >
+          End
+        </Button>
+      </Panel>
     );
   }
 
   if (!canStart) return null;
   return (
-    <Card aria-labelledby="fast-title">
-      <h2 id="fast-title" className="mb-3 flex items-center gap-2 font-semibold">
-        <Timer size={18} aria-hidden /> Fasting timer
-      </h2>
-      <Segmented
-        label="Fast for"
-        value={hours}
-        onChange={setHours}
-        options={['12', '14', '16', '18'].map((h) => ({ value: h, label: `${h}h` }))}
-      />
+    <Panel aria-label="Fasting timer" className="flex flex-wrap items-end justify-between gap-3 p-4">
+      <div>
+        <h2 className="eyebrow mb-2">Fasting timer</h2>
+        <Segmented label="Fast for" hideLabel fit value={hours} onChange={setHours} options={['12', '14', '16', '18'].map((h) => ({ value: h, label: `${h}h` }))} />
+      </div>
       <Button
-        className="mt-3"
-        block
         variant="secondary"
         onClick={async () => {
           await actions.startFast(Number(hours));
@@ -75,6 +66,6 @@ export function FastingCard({ fast, canStart = false }: { fast?: Fast; canStart?
       >
         Start fast
       </Button>
-    </Card>
+    </Panel>
   );
 }

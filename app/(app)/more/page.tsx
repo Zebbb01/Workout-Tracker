@@ -2,12 +2,12 @@
 
 import { Suspense, useState, useSyncExternalStore } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { LogOut, ShieldCheck } from 'lucide-react';
+import { Download, Github, Info, Loader2, Lock, LogOut, RefreshCw, ShieldCheck, Trash2, UserRound } from 'lucide-react';
 import { account, useActions, useData, useProfile, useWeights } from '@/lib/data';
 import { computeTargets, weightSeries } from '@/lib/calc';
 import type { Units } from '@/lib/types';
-import { Button, Card, Field, Loading, NumberInput, PageHeader, Segmented, Sheet, useToast } from '@/components/ui';
-import InstallApp, { useInstall } from '@/components/InstallApp';
+import { Button, ConfirmDialog, Field, List, NumberInput, PageHeader, Row, ScreenSkeleton, Section, Segmented, Sheet, useToast } from '@/components/ui';
+import { installApp, useInstall } from '@/components/InstallApp';
 import pkg from '@/package.json';
 
 type Theme = 'system' | 'light' | 'dark';
@@ -50,21 +50,24 @@ function MoreScreen() {
   const theme = useSyncExternalStore((n) => (themeListeners.add(n), () => themeListeners.delete(n)), readTheme, () => 'system' as Theme);
 
   const [targets, setTargets] = useState<Record<'calories' | 'protein_g' | 'carbs_g' | 'fat_g', string> | null>(null);
+  const [editingTargets, setEditingTargets] = useState(false);
   const [confirm, setConfirm] = useState<'signout' | 'delete' | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(authError ? explain(authError) : null);
 
-  if (!profile || !weights || !user) return <Loading />;
+  if (!profile || !weights || !user) return <ScreenSkeleton />;
 
   const anonymous = Boolean(user.is_anonymous);
-  const current = targets ?? {
+  const saved = {
     calories: String(profile.calories ?? ''),
     protein_g: String(profile.protein_g ?? ''),
     carbs_g: String(profile.carbs_g ?? ''),
     fat_g: String(profile.fat_g ?? ''),
   };
+  const current = targets ?? saved;
 
   async function saveWithGoogle() {
+    if (!online) return setError('Connect to the internet to save with Google.');
     setBusy(true);
     setError(null);
     const { error } = await account.saveWithGoogle();
@@ -86,6 +89,7 @@ function MoreScreen() {
     const n = (v: string, max: number) => Math.min(max, Math.max(0, Math.round(Number(v) || 0)));
     await actions.saveProfile({ calories: Math.max(800, n(current.calories, 8000)), protein_g: n(current.protein_g, 1000), carbs_g: n(current.carbs_g, 1500), fat_g: n(current.fat_g, 500) });
     setTargets(null);
+    setEditingTargets(false);
     toast({ message: 'Daily targets saved' });
   }
 
@@ -93,157 +97,166 @@ function MoreScreen() {
     <>
       <PageHeader title="More" />
 
-      <div className="space-y-4">
-        <Card aria-labelledby="account-title">
-          <h2 id="account-title" className="font-semibold">Account</h2>
-          {anonymous ? (
-            <>
-              <p className="mt-1 text-sm text-muted-foreground">
-                You&apos;re trying Body Tracker without an account. Entries are kept for 30 days on this device. Save them with Google to keep them and use them on other devices.
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start">
+        <div className="space-y-6">
+          <Section title="Account">
+            <List>
+              <Row
+                icon={<UserRound size={18} />}
+                label={anonymous ? 'Trying without an account' : user.email}
+                detail={anonymous ? 'Entries are kept for 30 days' : 'Signed in with Google'}
+              />
+              {anonymous && (
+                <Row
+                  icon={busy ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}
+                  label="Save my data with Google"
+                  detail="Keep entries and use other devices"
+                  tone="accent"
+                  onClick={saveWithGoogle}
+                />
+              )}
+              <Row icon={<LogOut size={18} />} label="Sign out" onClick={() => setConfirm('signout')} />
+            </List>
+            {error && (
+              <p role="alert" className="mt-2 text-sm text-negative">
+                {error}
               </p>
-              <Button className="mt-3" block onClick={saveWithGoogle} busy={busy} disabled={!online}>
-                <ShieldCheck size={18} aria-hidden /> Save my data with Google
-              </Button>
-            </>
-          ) : (
-            <p className="mt-1 text-sm">
-              Signed in with Google as <strong>{user.email}</strong>
-            </p>
-          )}
-          {error && (
-            <p role="alert" className="mt-2 text-sm text-negative">
-              {error}
-            </p>
-          )}
-          <Button className="mt-3" block variant="secondary" onClick={() => setConfirm('signout')}>
-            <LogOut size={18} aria-hidden /> Sign out
-          </Button>
-        </Card>
+            )}
+          </Section>
 
-        {install && (
-          <Card aria-labelledby="install-title">
-            <h2 id="install-title" className="mb-2 font-semibold">Install the app</h2>
-            <InstallApp />
-          </Card>
-        )}
+          <Section title="Preferences">
+            <List>
+              <Row label="Units">
+                <Segmented<Units>
+                  label="Units"
+                  hideLabel
+                  fit
+                  value={profile.units}
+                  onChange={(units) => actions.saveProfile({ units })}
+                  options={[{ value: 'metric', label: 'kg' }, { value: 'imperial', label: 'lb' }]}
+                />
+              </Row>
+              <Row label="Theme">
+                <Segmented<Theme>
+                  label="Theme"
+                  hideLabel
+                  fit
+                  value={theme}
+                  onChange={setTheme}
+                  options={[{ value: 'system', label: 'Auto' }, { value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }]}
+                />
+              </Row>
+            </List>
+          </Section>
 
-        <Card aria-labelledby="settings-title" className="space-y-4">
-          <h2 id="settings-title" className="font-semibold">Settings</h2>
-          <Segmented<Units>
-            label="Units"
-            value={profile.units}
-            onChange={(units) => actions.saveProfile({ units })}
-            options={[{ value: 'metric', label: 'kg' }, { value: 'imperial', label: 'lb' }]}
-          />
-          <Segmented<Theme>
-            label="Theme"
-            value={theme}
-            onChange={setTheme}
-            options={[{ value: 'system', label: 'Auto' }, { value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }]}
-          />
-        </Card>
+          <Section title="Daily targets">
+            <List>
+              <Row
+                label={<span className="tabular">{Number(saved.calories).toLocaleString()} kcal</span>}
+                detail={<span className="tabular">Protein {saved.protein_g} g · Carbs {saved.carbs_g} g · Fat {saved.fat_g} g</span>}
+                onClick={() => setEditingTargets(true)}
+              >
+                <span className="text-sm font-medium text-accent">Edit</span>
+              </Row>
+            </List>
+          </Section>
+        </div>
 
-        <Card aria-labelledby="targets-title">
-          <h2 id="targets-title" className="font-semibold">Daily targets</h2>
-          <form
-            className="mt-3 space-y-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              saveTargets();
-            }}
-          >
-            <Field label="Calories (kcal)">
-              <NumberInput value={current.calories} onChange={(v) => setTargets({ ...current, calories: v })} inputMode="numeric" />
-            </Field>
-            <div className="grid grid-cols-3 gap-3">
-              <Field label="Protein (g)">
-                <NumberInput value={current.protein_g} onChange={(v) => setTargets({ ...current, protein_g: v })} inputMode="numeric" />
-              </Field>
-              <Field label="Carbs (g)">
-                <NumberInput value={current.carbs_g} onChange={(v) => setTargets({ ...current, carbs_g: v })} inputMode="numeric" />
-              </Field>
-              <Field label="Fat (g)">
-                <NumberInput value={current.fat_g} onChange={(v) => setTargets({ ...current, fat_g: v })} inputMode="numeric" />
-              </Field>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <Button type="submit" disabled={!targets}>
-                Save targets
-              </Button>
-              <Button variant="secondary" onClick={recalculate}>
-                Recalculate from my latest weight
-              </Button>
-            </div>
-          </form>
-        </Card>
+        <div className="space-y-6">
+          <Section title="App">
+            <List>
+              {install === 'prompt' && <Row icon={<Download size={18} />} label="Install app" detail="Its own window, works offline" onClick={installApp} />}
+              {install === 'ios' && <Row icon={<Download size={18} />} label="Add to Home Screen" detail="Tap Share, then Add to Home Screen" />}
+              <Row icon={<Lock size={18} />} label="Privacy" detail="Meal photos go to Google Gemini only for estimates" />
+              <Row icon={<Github size={18} />} label="Source code" detail="github.com/Zebbb01/Workout-Tracker" href="https://github.com/Zebbb01/Workout-Tracker" />
+              <Row icon={<Info size={18} />} label="Version">
+                <span className="tabular text-sm text-muted-foreground">{pkg.version}</span>
+              </Row>
+            </List>
+          </Section>
 
-        <Card aria-labelledby="about-title">
-          <h2 id="about-title" className="font-semibold">About</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Body Tracker {pkg.version}. Entries are saved on this device first and synced to your account. Meal photos are sent to Google&apos;s Gemini only to estimate nutrition and are not stored.
-          </p>
-          <a href="https://github.com/Zebbb01/Workout-Tracker" className="mt-2 inline-flex min-h-11 items-center text-sm font-medium text-accent underline-offset-4 hover:underline">
-            Source code on GitHub
-          </a>
-        </Card>
-
-        <Card aria-labelledby="danger-title">
-          <h2 id="danger-title" className="font-semibold">Delete account</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Removes your account and everything you&apos;ve logged, on every device.</p>
-          <Button className="mt-3" variant="danger" onClick={() => setConfirm('delete')} disabled={!online}>
-            Delete my account
-          </Button>
-        </Card>
+          <List>
+            <Row
+              icon={<Trash2 size={18} />}
+              label="Delete account"
+              detail="Removes everything, on every device"
+              tone="danger"
+              onClick={() => (online ? setConfirm('delete') : setError('Connect to the internet to delete your account.'))}
+            />
+          </List>
+        </div>
       </div>
 
-      <Sheet open={confirm === 'signout'} onClose={() => setConfirm(null)} title="Sign out?">
-        <p className="text-muted-foreground">
-          {anonymous
-            ? "You haven't saved your data with Google, so signing out deletes what you've logged. Save it first to keep it."
-            : 'Your entries stay in your account. This device forgets them until you sign in again.'}
-        </p>
-        <div className="mt-4 flex gap-3">
-          <Button variant="secondary" block onClick={() => setConfirm(null)}>
-            Cancel
+      <Sheet open={editingTargets} onClose={() => { setEditingTargets(false); setTargets(null); }} title="Daily targets">
+        <form
+          className="space-y-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveTargets();
+          }}
+        >
+          <Field label="Calories (kcal)">
+            <NumberInput value={current.calories} onChange={(v) => setTargets({ ...current, calories: v })} inputMode="numeric" />
+          </Field>
+          <div className="grid grid-cols-3 gap-3">
+            <Field label="Protein (g)">
+              <NumberInput value={current.protein_g} onChange={(v) => setTargets({ ...current, protein_g: v })} inputMode="numeric" />
+            </Field>
+            <Field label="Carbs (g)">
+              <NumberInput value={current.carbs_g} onChange={(v) => setTargets({ ...current, carbs_g: v })} inputMode="numeric" />
+            </Field>
+            <Field label="Fat (g)">
+              <NumberInput value={current.fat_g} onChange={(v) => setTargets({ ...current, fat_g: v })} inputMode="numeric" />
+            </Field>
+          </div>
+          <Button variant="ghost" size="sm" onClick={recalculate}>
+            <RefreshCw size={15} aria-hidden /> Recalculate from my latest weight
           </Button>
-          <Button variant={anonymous ? 'danger' : 'primary'} block onClick={() => account.signOut(db)}>
-            Sign out
+          <Button type="submit" size="lg" block disabled={!targets}>
+            Save targets
           </Button>
-        </div>
+        </form>
       </Sheet>
 
-      <Sheet open={confirm === 'delete'} onClose={() => setConfirm(null)} title="Delete your account?">
-        <p className="text-muted-foreground">This removes your account and every workout, meal and weight you&apos;ve logged. It can&apos;t be undone.</p>
-        <div className="mt-4 flex gap-3">
-          <Button variant="secondary" block onClick={() => setConfirm(null)}>
-            Keep my account
-          </Button>
-          <Button
-            variant="danger"
-            block
-            busy={busy}
-            onClick={async () => {
-              setBusy(true);
-              try {
-                await account.deleteAccount(db);
-              } catch (e) {
-                setError((e as Error).message);
-                setBusy(false);
-                setConfirm(null);
-              }
-            }}
-          >
-            Delete everything
-          </Button>
-        </div>
-      </Sheet>
+      <ConfirmDialog
+        open={confirm === 'signout'}
+        title="Sign out?"
+        confirmLabel="Sign out"
+        tone={anonymous ? 'danger' : 'primary'}
+        onCancel={() => setConfirm(null)}
+        onConfirm={() => account.signOut(db)}
+      >
+        {anonymous
+          ? "You haven't saved with Google, so signing out deletes what you've logged."
+          : 'Your entries stay in your account. This device forgets them until you sign in again.'}
+      </ConfirmDialog>
+
+      <ConfirmDialog
+        open={confirm === 'delete'}
+        title="Delete your account?"
+        confirmLabel="Delete everything"
+        busy={busy}
+        onCancel={() => setConfirm(null)}
+        onConfirm={async () => {
+          setBusy(true);
+          try {
+            await account.deleteAccount(db);
+          } catch (e) {
+            setError((e as Error).message);
+            setBusy(false);
+            setConfirm(null);
+          }
+        }}
+      >
+        Every workout, meal and weight you&apos;ve logged is removed. This can&apos;t be undone.
+      </ConfirmDialog>
     </>
   );
 }
 
 export default function MorePage() {
   return (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={<ScreenSkeleton />}>
       <MoreScreen />
     </Suspense>
   );

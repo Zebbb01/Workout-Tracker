@@ -68,7 +68,7 @@ export default function InstallApp() {
       <button
         type="button"
         onClick={installApp}
-        className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-input bg-card px-4 text-sm font-semibold hover:bg-muted"
+        className="inline-flex h-11 items-center justify-center gap-2 rounded-lg px-3 text-sm font-semibold text-muted-foreground lg:h-10 transition hover:bg-muted hover:text-foreground"
       >
         <Download size={18} aria-hidden />
         Install app
