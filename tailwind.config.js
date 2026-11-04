@@ -27,10 +27,10 @@ module.exports = {
         // Titles and the big numbers.
         display: ['var(--font-display)', 'var(--font-sans)', 'sans-serif'],
       },
-      // A 1.2 scale on a 15px body: dense enough for a tool used daily on a phone.
+      // 15px body and 14px details: dense enough for a tool used daily on a phone, still easy to read in Barlow.
       fontSize: {
         xs: ['0.75rem', { lineHeight: '1rem' }],
-        sm: ['0.8125rem', { lineHeight: '1.25rem' }],
+        sm: ['0.875rem', { lineHeight: '1.25rem' }],
         base: ['0.9375rem', { lineHeight: '1.375rem' }],
         lg: ['1.0625rem', { lineHeight: '1.5rem' }],
         xl: ['1.25rem', { lineHeight: '1.75rem' }],
