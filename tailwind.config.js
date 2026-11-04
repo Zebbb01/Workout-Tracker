@@ -23,7 +23,9 @@ module.exports = {
         fat: token('fat'),
       },
       fontFamily: {
-        sans: ['var(--font-archivo)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        // Titles and the big numbers.
+        display: ['var(--font-display)', 'var(--font-sans)', 'sans-serif'],
       },
       // A 1.2 scale on a 15px body: dense enough for a tool used daily on a phone.
       fontSize: {

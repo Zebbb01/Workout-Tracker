@@ -115,7 +115,7 @@ export function ScreenSkeleton() {
     <div role="status" aria-label="Loading" className="space-y-4">
       <Skeleton className="h-8 w-40" />
       <Skeleton className="h-36 w-full rounded-xl" />
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Skeleton className="h-28 rounded-xl" />
         <Skeleton className="h-28 rounded-xl" />
       </div>
@@ -250,12 +250,15 @@ export function Stepper({ label, value, onChange, step, min = 0, max, unit }: {
   const id = `stepper-${label.toLowerCase().replace(/\W+/g, '-')}`;
   return (
     <div>
-      <span className="mb-1.5 block text-sm font-medium" id={id}>{label}</span>
+      <span className="mb-1.5 block text-sm font-medium" id={id}>
+        {label}
+        {unit && <span className="font-normal text-muted-foreground"> ({unit})</span>}
+      </span>
       <div className="flex h-12 items-stretch overflow-hidden rounded-lg border border-input/70 bg-card">
         <button type="button" aria-label={`Less ${label.toLowerCase()}`} onClick={() => set(value - step)} className="w-12 shrink-0 text-muted-foreground transition hover:bg-muted active:bg-muted">
           <Minus size={18} className="mx-auto" aria-hidden />
         </button>
-        <div className="relative flex-1 border-x border-border">
+        <div className="flex-1 border-x border-border">
           <input
             aria-labelledby={id}
             inputMode="decimal"
@@ -267,7 +270,6 @@ export function Stepper({ label, value, onChange, step, min = 0, max, unit }: {
               else if (Number.isFinite(v)) set(v);
             }}
           />
-          {unit && <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">{unit}</span>}
         </div>
         <button type="button" aria-label={`More ${label.toLowerCase()}`} onClick={() => set(value + step)} className="w-12 shrink-0 text-muted-foreground transition hover:bg-muted active:bg-muted">
           <Plus size={18} className="mx-auto" aria-hidden />

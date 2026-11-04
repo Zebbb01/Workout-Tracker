@@ -1,12 +1,14 @@
 import type { Metadata, Viewport } from 'next';
-import { Archivo } from 'next/font/google';
+import { Barlow, Barlow_Condensed } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { DataProvider } from '@/lib/data';
 import { RegisterServiceWorker } from '@/components/InstallApp';
 
-// One variable family: the width axis gives the condensed cut used for titles and numbers.
-const archivo = Archivo({ subsets: ['latin'], axes: ['wdth'], variable: '--font-archivo', display: 'swap' });
+// Two static families. Archivo's variable width axis drew some letters at the wrong width in
+// Chromium on Linux, so the condensed cut for titles and big numbers is its own family.
+const sans = Barlow({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-sans', display: 'swap' });
+const display = Barlow_Condensed({ subsets: ['latin'], weight: '700', variable: '--font-display', display: 'swap' });
 
 // Icons come from app/icon.svg and app/apple-icon.png; the manifest from app/manifest.ts.
 export const metadata: Metadata = {
@@ -28,7 +30,7 @@ const theme = `try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={archivo.variable} suppressHydrationWarning>
+    <html lang="en" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: theme }} />
       </head>

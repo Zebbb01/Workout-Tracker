@@ -58,7 +58,7 @@ function MealsScreen() {
     <>
       <PageHeader title="Meals" action={switcher} />
 
-      <div className="grid gap-4 lg:grid-cols-5 lg:items-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5 lg:items-start">
         <div className="space-y-4 lg:col-span-2">
           <Panel aria-label="Day total" className="p-4">
             <div className="flex items-center gap-4">
@@ -68,7 +68,8 @@ function MealsScreen() {
               </Ring>
               <div className="flex-1">
                 <p className="tabular text-sm text-muted-foreground">
-                  <span className="font-semibold text-foreground">{Math.max(0, target - eaten.calories).toLocaleString()}</span> of {target.toLocaleString()} kcal left
+                  <span className="font-semibold text-foreground">{Math.abs(target - eaten.calories).toLocaleString()}</span>{' '}
+                  kcal {eaten.calories > target ? 'over' : 'left'} · goal {target.toLocaleString()}
                 </p>
                 <dl className="mt-2 grid grid-cols-3 gap-3">
                   {(
@@ -119,8 +120,8 @@ function MealsScreen() {
                       .map((m) => (
                         <li key={m.id} className="flex items-center gap-3 py-1.5 pl-4 pr-1">
                           <div className="min-w-0 flex-1">
-                            <p className="flex items-center gap-1.5 truncate font-medium">
-                              {m.name}
+                            <p className="flex min-w-0 items-center gap-1.5 font-medium">
+                              <span className="truncate">{m.name}</span>
                               {m.source === 'photo' && (
                                 <>
                                   <Camera size={13} className="shrink-0 text-muted-foreground" aria-hidden />

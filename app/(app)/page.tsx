@@ -45,9 +45,9 @@ export default function TodayPage() {
     <>
       <PageHeader title="Today" subtitle={dayName(today)} action={<SyncBadge className="lg:hidden" />} />
 
-      <div className="grid gap-4 lg:grid-cols-5">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
         {/* Food: the ring answers "how much is left", the bars say what it is made of. */}
-        <Panel aria-label="Food" className="min-w-0 p-4 lg:col-span-3 lg:p-5">
+        <Panel aria-label="Food" className="p-4 lg:col-span-3 lg:p-5">
           <div className="flex items-center gap-5">
             <Ring value={eaten.calories} max={target.calories} tone={left < 0 ? 'negative' : 'brand'} label="Calories eaten" size={124}>
               <span className="font-display tabular text-3xl font-bold leading-none">{Math.abs(left).toLocaleString()}</span>
@@ -94,7 +94,7 @@ export default function TodayPage() {
           )}
         </Panel>
 
-        <div className="grid min-w-0 gap-4 lg:col-span-2 lg:content-start">
+        <div className="grid grid-cols-1 gap-4 lg:col-span-2 lg:content-start">
           <Panel aria-label="Workout" className="p-4">
             <div className="flex items-center justify-between gap-3">
               <h2 className="eyebrow">Workout</h2>

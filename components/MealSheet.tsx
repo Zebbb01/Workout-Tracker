@@ -138,7 +138,7 @@ export function MealSheet({ open, onClose, day }: { open: boolean; onClose: () =
 
       {stage === 'choose' && (
         <>
-          <ul className="grid gap-2">
+          <ul className="grid grid-cols-1 gap-2">
             {OPTIONS.map(({ icon: Icon, title, hint, onClick }) => (
               <li key={title}>
                 <button

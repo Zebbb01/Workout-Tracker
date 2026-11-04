@@ -46,7 +46,7 @@ export default function ProgressPage() {
     <>
       <PageHeader title="Progress" action={<SyncBadge className="lg:hidden" />} />
 
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Panel aria-labelledby="weight-chart" className="p-4 lg:col-span-2">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>

@@ -85,12 +85,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Archivo's width axis: the condensed cut for titles and the big numbers. */
-  .font-display {
-    font-stretch: 78%;
-    letter-spacing: -0.01em;
-  }
-
   /* A small label over a group, the way a printed form would set it. */
   .eyebrow {
     @apply text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground;
