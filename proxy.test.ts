@@ -11,9 +11,10 @@ describe('proxy matcher', () => {
     }
   });
 
-  it('leaves API routes, the sign-in callback and Next assets alone', () => {
+  it('leaves API routes, the sign-in callback, the privacy page and Next assets alone', () => {
     expect(runs('/api/nutrition')).toBe(false);
     expect(runs('/auth/callback')).toBe(false);
+    expect(runs('/privacy')).toBe(false);
     expect(runs('/_next/static/chunks/app.js')).toBe(false);
   });
 

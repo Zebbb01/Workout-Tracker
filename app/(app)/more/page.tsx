@@ -167,7 +167,7 @@ function MoreScreen() {
             <List>
               {install === 'prompt' && <Row icon={<Download size={18} />} label="Install app" detail="Its own window, works offline" onClick={installApp} />}
               {install === 'ios' && <Row icon={<Download size={18} />} label="Add to Home Screen" detail="Tap Share, then Add to Home Screen" />}
-              <Row icon={<Lock size={18} />} label="Privacy" detail="Meal photos go to Google Gemini only for estimates" />
+              <Row icon={<Lock size={18} />} label="Privacy" detail="Meal photos go to Google Gemini only for estimates" href="/privacy" />
               <Row icon={<Github size={18} />} label="Source code" detail="github.com/Zebbb01/Workout-Tracker" href="https://github.com/Zebbb01/Workout-Tracker" />
               <Row icon={<Info size={18} />} label="Version">
                 <span className="tabular text-sm text-muted-foreground">{pkg.version}</span>
