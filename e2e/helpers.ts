@@ -1,4 +1,16 @@
-import { expect, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from '@playwright/test';
+
+/** Nothing in `scope` reaches past the right edge of the screen, so nothing is cut off or scrolls sideways. */
+export async function expectFitsWidth(scope: Locator) {
+  const past = await scope.evaluate((root) =>
+    [root, ...root.querySelectorAll('*')]
+      .filter((el) => el.checkVisibility())
+      .map((el) => ({ el, px: el.getBoundingClientRect().right - document.documentElement.clientWidth }))
+      .filter(({ px }) => px > 0.5)
+      .map(({ el, px }) => `${el.tagName.toLowerCase()} "${el.textContent?.trim().slice(0, 30)}" +${Math.round(px)}px`),
+  );
+  expect(past, 'elements past the right edge').toEqual([]);
+}
 
 /**
  * Specs that sign in need a Supabase with anonymous sign-ins on. CI starts one

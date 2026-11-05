@@ -26,10 +26,11 @@ const sizes = {
 type ButtonStyle = { variant?: keyof typeof variants; size?: keyof typeof sizes; block?: boolean };
 const buttonClass = ({ variant = 'primary', size = 'md', block }: ButtonStyle, extra?: string) =>
   cx(
-    'inline-flex shrink-0 select-none items-center justify-center rounded-lg font-semibold transition active:scale-[0.98] disabled:pointer-events-none',
+    'inline-flex select-none items-center justify-center rounded-lg font-semibold transition active:scale-[0.98] disabled:pointer-events-none',
     variants[variant],
     sizes[size],
-    block && 'w-full',
+    // A block button fills what its row leaves (Back + Save); w-full that can't shrink overflowed the row.
+    block ? 'w-full' : 'shrink-0',
     extra,
   );
 
