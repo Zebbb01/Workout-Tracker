@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Camera, Dumbbell, TrendingUp, WifiOff } from 'lucide-react';
 import { account } from '@/lib/data';
@@ -75,7 +76,12 @@ function Welcome() {
             {error}
           </p>
         )}
-        <p className="pt-1 text-center text-xs text-muted-foreground">No email needed. Save with Google any time to keep your entries.</p>
+        <p className="pt-1 text-center text-xs text-muted-foreground">
+          No email needed. Save with Google any time to keep your entries.{' '}
+          <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
+            Privacy
+          </Link>
+        </p>
       </div>
 
       <div className="mt-8 flex justify-center">

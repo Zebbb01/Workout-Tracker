@@ -15,10 +15,15 @@ for (const colorScheme of ['light', 'dark'] as const) {
   test.describe(`${colorScheme} theme`, () => {
     test.use({ colorScheme });
 
-    test('the welcome screen', async ({ page }) => {
+    test('the welcome screen and its privacy page, signed out', async ({ page }) => {
       await page.goto('/welcome');
       await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeVisible();
       await expectNoViolations(page, 'welcome');
+
+      await page.getByRole('link', { name: 'Privacy' }).click();
+      await expect(page).toHaveURL(/\/privacy$/);
+      await expect(page.getByRole('heading', { name: 'Privacy', level: 1 })).toBeVisible();
+      await expectNoViolations(page, 'privacy');
     });
 
     test('onboarding and every tab', async ({ page }) => {
