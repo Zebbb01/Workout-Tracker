@@ -4,7 +4,7 @@
  * their progress.
  */
 import { test, expect } from '@playwright/test';
-import { estimate, needsSupabase, photo, startTrial } from './helpers';
+import { estimate, expectFitsWidth, needsSupabase, photo, startTrial } from './helpers';
 
 test.skip(needsSupabase, 'needs a Supabase with anonymous sign-ins (CI starts one)');
 
@@ -23,6 +23,8 @@ test('try it, set up, log a set, a meal from a photo and a weight, then see prog
   await page.getByRole('radio', { name: /Lose fat/ }).click();
   await page.getByRole('button', { name: 'Next' }).click();
   await page.getByLabel('Weight (kg)').fill('82');
+  // Back and Next share a row; Next fills what Back leaves, no wider.
+  await expectFitsWidth(page.locator('main'));
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByLabel('Calories (kcal)')).not.toHaveValue('');
   await page.getByRole('button', { name: 'Start tracking' }).click();
@@ -50,6 +52,8 @@ test('try it, set up, log a set, a meal from a photo and a weight, then see prog
   await expect(page.getByText('AI estimate. Check the numbers')).toBeVisible();
   await expect(page.getByLabel('Meal name')).toHaveValue(estimate.name);
   await expect(page.getByLabel('Calories (kcal)')).toHaveValue('640');
+  // The review form, with Back and Save meal side by side, fits the phone: no sideways scroll.
+  await expectFitsWidth(page.getByRole('dialog'));
   // Nothing is saved until the person says so.
   await page.getByLabel('Calories (kcal)').fill('600');
   await page.getByRole('button', { name: 'Save meal' }).click();
