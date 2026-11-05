@@ -36,8 +36,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skips API routes, the sign-in callback, Next's own files, and every path
-  // with a file extension: the manifest, sw.js, offline.html and the icons
-  // must load signed out, and a redirect breaks installing and updating.
-  matcher: ['/((?!api/|auth/|_next/static|_next/image|.*\\.[a-z0-9]+$).*)'],
+  // Skips API routes, the sign-in callback, the public privacy page, Next's own
+  // files, and every path with a file extension: the manifest, sw.js,
+  // offline.html and the icons must load signed out, and a redirect breaks
+  // installing and updating.
+  matcher: ['/((?!api/|auth/|privacy$|_next/static|_next/image|.*\\.[a-z0-9]+$).*)'],
 };
