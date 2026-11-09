@@ -1,0 +1,5342 @@
+[
+ {
+  "id": "bicep-curl",
+  "name": "Barbell curl",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Shoulders",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart and your knees slightly bent.",
+   "Hold the bar with your palms up, hands shoulder width apart.",
+   "Bending only your elbows, curl the bar to your upper chest.",
+   "Pause, then lower it slowly until your arms are straight."
+  ],
+  "note": "Keep your hips and back still. No swinging.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "barbell-row",
+  "name": "Barbell row",
+  "area": "Back",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Lats",
+   "Upper back",
+   "Biceps"
+  ],
+  "drawn": true,
+  "common": true,
+  "steps": [
+   "Hold a barbell with your hands just wider than your shoulders.",
+   "Bend at the hips with a flat back until your body is close to level with the floor.",
+   "Pull the bar to your lower chest, leading with your elbows.",
+   "Lower it under control until your arms are straight."
+  ]
+ },
+ {
+  "id": "squat",
+  "name": "Barbell squat",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Rest the bar across your upper back and step away from the rack.",
+   "Stand with your feet slightly wider than your shoulders, toes turned out a little.",
+   "Bend your knees and hips as if sitting down, keeping your chest up.",
+   "Go as low as you can control, with your heels on the floor.",
+   "Push through your heels to stand up."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "bench-press",
+  "name": "Bench press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a flat bench with your feet flat on the floor.",
+   "Hold the bar a little wider than your shoulders and lift it over your chest.",
+   "Lower the bar until it just touches your chest.",
+   "Press it back up until your arms are straight."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "calf-raise",
+  "name": "Calf raise",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Stand with your toes on the footpad and your shoulders under the pads.",
+   "Rise onto the balls of your feet as high as you can.",
+   "Hold for a moment, then lower your heels slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "deadlift",
+  "name": "Deadlift",
+  "area": "Back",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Lower back",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Stand with your feet under the bar, shoulder width apart.",
+   "Bend at the hips and knees with a flat back and grip the bar just outside your legs.",
+   "Stand up, keeping the bar close to your body.",
+   "Bend the same way to lower the bar to just above the floor."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "dumbbell-bench-press",
+  "name": "Dumbbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Lie on a flat bench with a dumbbell in each hand and your feet on the floor.",
+   "Press the dumbbells up over your chest.",
+   "Lower them slowly until your elbows are bent at a right angle.",
+   "Press back up until your arms are straight."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "dumbbell-curl",
+  "name": "Dumbbell curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with a dumbbell in each hand, arms at your sides, palms forward.",
+   "Keep your elbows by your sides and curl the weights to your shoulders.",
+   "Lower them slowly until your arms are straight."
+  ],
+  "note": "Do not swing your body.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "dumbbell-fly",
+  "name": "Dumbbell fly",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Lie on a flat bench with a dumbbell in each hand and your arms straight up over your chest.",
+   "Keep a slight bend in your elbows and lower the weights out to the sides in an arc.",
+   "Stop when you feel a stretch in your chest.",
+   "Bring them back up the same way."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "incline-bench",
+  "name": "Incline bench press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps"
+  ],
+  "steps": [
+   "Lie on a bench set to about 45 degrees.",
+   "Hold the bar a little wider than your shoulders and lift it over your upper chest.",
+   "Lower the bar until it just touches your chest.",
+   "Press it back up until your arms are straight."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "lat-pulldown",
+  "name": "Lat pulldown",
+  "area": "Back",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Lats",
+   "Biceps"
+  ],
+  "steps": [
+   "Sit upright and hold the bar with your palms facing you, hands shoulder width apart.",
+   "Pull the bar down to your upper chest, keeping your elbows close to your body.",
+   "Let it rise slowly until your arms are straight."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "lateral-raise",
+  "name": "Lateral raise",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with a dumbbell at each side, palms facing your body.",
+   "Keep a slight bend in your elbows and raise your arms out to the sides.",
+   "Stop at shoulder height, palms facing the floor.",
+   "Lower them slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "leg-curl",
+  "name": "Leg curl",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Hamstrings"
+  ],
+  "steps": [
+   "Lie face down on the machine with your heels under the pad.",
+   "Hold the grips and curl your heels toward your back.",
+   "Hold for a moment, then lower slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "leg-press",
+  "name": "Leg press",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Sit in the machine with your feet shoulder width apart on the plate.",
+   "Press the plate and release the safety locks.",
+   "Bend your knees to lower the weight, keeping your knees in line with your feet.",
+   "Press back up without locking your knees."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "lunge",
+  "name": "Lunges",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Hamstrings",
+   "Glutes",
+   "Quads",
+   "Calves"
+  ],
+  "steps": [
+   "Stand with a dumbbell in each hand. Beginners can use no weights at all.",
+   "Take a long step forward, keeping your body upright.",
+   "Lower your back knee until it is just above the floor.",
+   "Push off your front foot to step back, then switch legs."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "overhead-press",
+  "name": "Overhead press",
+  "area": "Shoulders",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Sit on a bench with your back straight and hold the bar at shoulder height, hands shoulder width apart.",
+   "Press the bar overhead until your arms are almost straight.",
+   "Pause, then lower it slowly to your shoulders."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "pull-up",
+  "name": "Pull-ups",
+  "area": "Back",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Lats",
+   "Biceps"
+  ],
+  "steps": [
+   "Hold the bar with your palms facing away, hands wider than your shoulders.",
+   "Hang with your arms straight and your chest up.",
+   "Pull yourself up until your chin is above the bar.",
+   "Lower yourself slowly."
+  ],
+  "note": "Too hard at first? Use a band, or jump up and lower yourself slowly.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "push-up",
+  "name": "Push-ups",
+  "area": "Chest",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Put your hands on the floor, shoulder width apart, and straighten your legs onto your toes.",
+   "Keep your head, back and hips in one straight line.",
+   "Bend your elbows to lower your chest toward the floor.",
+   "Press back up until your arms are straight."
+  ],
+  "note": "Too hard at first? Put your knees on the floor.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "romanian-deadlift",
+  "name": "Romanian deadlift",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Hamstrings",
+   "Calves",
+   "Quads",
+   "Glutes"
+  ],
+  "steps": [
+   "Stand holding the bar against your thighs, hands a little wider than your hips.",
+   "Keep your knees slightly bent and your back flat.",
+   "Push your hips back and slide the bar down your legs.",
+   "Stop when you feel a stretch in your hamstrings, then stand back up."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "seated-row",
+  "name": "Seated row",
+  "area": "Back",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Lats",
+   "Biceps",
+   "Lower back"
+  ],
+  "steps": [
+   "Sit with your feet on the footrests and your knees slightly bent.",
+   "Lean forward a little, back straight, and hold the handle.",
+   "Pull it to your stomach while sitting upright, elbows close to your body.",
+   "Let your arms straighten slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "tricep-extension",
+  "name": "Triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand tall and hold one dumbbell in both hands over your head.",
+   "Keep your upper arms still and lower the weight behind your head.",
+   "Raise it back up until your arms are straight."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "triceps-pushdown",
+  "name": "Triceps pushdown",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand at a cable machine with a short bar on the high pulley, palms facing down.",
+   "Keep your elbows at your sides and your back straight.",
+   "Push the bar down until your arms are straight.",
+   "Let it rise slowly to chest height."
+  ],
+  "note": "You may want to stager one foot in front of the other for a better stance.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "hyperextensions",
+  "name": "Back extension",
+  "area": "Back",
+  "gear": [
+   "Other"
+  ],
+  "muscles": [
+   "Lower back",
+   "Hamstrings",
+   "Core"
+  ],
+  "steps": [
+   "Set the bench so your ankles sit under the pads and your thighs lie flat on the top pad.",
+   "Fold your arms across your chest and keep your back straight.",
+   "Bend at the waist toward the floor.",
+   "Rise slowly until your body is straight."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "barbell-shrugs",
+  "name": "Barbell shrug",
+  "area": "Back",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Traps"
+  ],
+  "steps": [
+   "Stand tall and hold the bar at arm's length, hands just wider than your shoulders.",
+   "Let your shoulders drop as low as they go.",
+   "Lift your shoulders as high as you can.",
+   "Pause, then lower them slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "bench-dips",
+  "name": "Bench dips",
+  "area": "Triceps",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Triceps",
+   "Chest"
+  ],
+  "steps": [
+   "Sit on a bench with your hands beside your hips and your feet on a second bench.",
+   "Slide your hips off the edge and straighten your arms.",
+   "Bend your elbows to lower your body until your upper arms are level with the floor.",
+   "Press back up."
+  ],
+  "note": "Do not go below a right angle at the elbow. It strains the shoulders.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "air-bike",
+  "name": "Bicycle crunch",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Lie on your back with your hands beside your head.",
+   "Lift your legs, knees bent and shins level with the floor.",
+   "Bring your left elbow to your right knee as your left leg straightens.",
+   "Switch sides in a steady pedalling motion."
+  ],
+  "note": "Twist from your stomach, not your neck.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "bodyweight-lunge",
+  "name": "Bodyweight lunge",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Stand tall with your hands on your hips.",
+   "Take a long step forward and lower your back knee toward the floor.",
+   "Keep your front knee over your ankle and your body upright.",
+   "Push off your front foot to come back, then switch legs."
+  ],
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "bodyweight-squat",
+  "name": "Bodyweight squat",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, toes turned out a little.",
+   "Push your hips back and bend your knees, keeping your chest up and heels down.",
+   "Go down until your thighs are about level with the floor.",
+   "Push through your heels to stand back up."
+  ],
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "burpee",
+  "name": "Burpee",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Quads",
+   "Chest",
+   "Abs"
+  ],
+  "steps": [
+   "Stand, then squat and put your hands on the floor.",
+   "Jump your feet back into a push-up position.",
+   "Jump your feet back to your hands.",
+   "Stand and jump up with your arms overhead."
+  ],
+  "note": "Step instead of jumping until it feels easy.",
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "cable-crossover",
+  "name": "Cable crossover",
+  "area": "Chest",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders"
+  ],
+  "steps": [
+   "Set the pulleys at shoulder height or higher and hold one handle in each hand.",
+   "Stand in the middle with one foot in front of the other.",
+   "Keep a slight bend in your elbows and bring your hands together in front of your chest.",
+   "Hold for a moment, then let your arms open slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "chest-dips",
+  "name": "Chest dips",
+  "area": "Chest",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Grip the parallel bars and push up until your arms are straight.",
+   "Lean forward a little and bend your elbows to lower your chest.",
+   "Go down until you feel a stretch in your chest.",
+   "Press back up."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "narrow-parallel-grip-chin-ups",
+  "name": "Chin-up",
+  "area": "Shoulders",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Lats",
+   "Upper back",
+   "Core"
+  ],
+  "steps": [
+   "Hold the bar with your palms facing each other.",
+   "Hang with your arms straight.",
+   "Pull yourself up until your chin is above the bar.",
+   "Lower yourself slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "close-triceps-pushup",
+  "name": "Close-grip push-up",
+  "area": "Triceps",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Triceps",
+   "Chest"
+  ],
+  "steps": [
+   "Kneel on the floor, put your hands together under your chest and lift up onto your toes.",
+   "Keep your back and neck in a straight line.",
+   "Bend your arms to lower your body until you nearly touch the floor.",
+   "Press back up."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "concentration-curls-with-dumbbell",
+  "name": "Concentration curls with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Sit on the end of a bench with your legs apart and a dumbbell in one hand, palm up.",
+   "Press your elbow against your inner thigh.",
+   "Curl the dumbbell toward your chest.",
+   "Lower it slowly, then switch arms."
+  ],
+  "note": "Keep everything still except the working arm.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "crunches",
+  "name": "Crunch",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Lie on your back with your knees bent, feet flat or up on a bench.",
+   "Put your hands across your chest or beside your head.",
+   "Lift your head and shoulders off the floor, squeezing your stomach.",
+   "Hold for a moment, then lower slowly."
+  ],
+  "note": "Keep your lower back on the floor.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "dumbbell-dead-lifts",
+  "name": "Dumbbell deadlift",
+  "area": "Back",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Lower back",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart and a dumbbell in each hand.",
+   "Bend at the hips with a flat back, lowering the weights down your legs.",
+   "Stop just above the floor.",
+   "Stand back up, keeping the weights close to your body."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "squats-using-dumbbells",
+  "name": "Dumbbell squat",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Stand with a dumbbell in each hand, feet slightly wider than your shoulders.",
+   "Bend your knees and hips as if sitting down, keeping your chest up.",
+   "Go as low as you can control, heels on the floor.",
+   "Push through your heels to stand up."
+  ],
+  "note": "New to squats? Practise without weights first.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "step-ups-with-dumbbells",
+  "name": "Dumbbell step-up",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Stand facing a bench or box with a dumbbell in each hand.",
+   "Step up with your left leg and bring your right leg up to meet it.",
+   "Step down the same way.",
+   "Repeat, starting with the other leg."
+  ],
+  "note": "Use a light weight until the movement feels steady.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "face-pull",
+  "name": "Face pull",
+  "area": "Back",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Traps"
+  ],
+  "common": true,
+  "steps": [
+   "Set a rope on a cable at face height and hold one end in each hand.",
+   "Step back until your arms are straight and the weight is off the stack.",
+   "Pull the rope toward your face, elbows high and wide.",
+   "Pause, then let your arms straighten slowly."
+  ],
+  "drawn": false
+ },
+ {
+  "id": "flutter-kicks",
+  "name": "Flutter kicks",
+  "area": "Legs",
+  "gear": [
+   "Other"
+  ],
+  "muscles": [
+   "Hamstrings",
+   "Quads"
+  ],
+  "steps": [
+   "Lie face down with your hips on the edge of a bench and hold on with your hands.",
+   "Let your legs hang down.",
+   "Squeeze your glutes and kick one leg up and back.",
+   "Alternate legs in a steady rhythm."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "front-dumbbell-raise",
+  "name": "Front dumbbell raise",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Stand with a dumbbell in each hand, palms facing your thighs.",
+   "Keep your arm straight and raise one weight to just above shoulder height.",
+   "Pause, lower it slowly, then switch arms."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "bridging",
+  "name": "Glute bridge",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Glutes",
+   "Core"
+  ],
+  "steps": [
+   "Lie on your back with your knees bent and your feet flat on the floor.",
+   "Squeeze your glutes and lift your hips until your body makes a straight line.",
+   "Hold for a moment, then lower slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "biceps-hammer-curl-with-dumbbell",
+  "name": "Hammer curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Stand with a dumbbell in each hand, palms facing each other.",
+   "Keep your elbows by your sides and curl the weights toward your shoulders.",
+   "Lower them slowly."
+  ],
+  "note": "Do not turn your wrists.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "incline-dumbbell-press",
+  "name": "Incline dumbbell press",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Sit on a bench set to about 45 degrees and hold the dumbbells at shoulder height.",
+   "Press them up over your chest, bringing them closer together.",
+   "Lower them slowly to your shoulders."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "body-row",
+  "name": "Inverted row",
+  "area": "Chest",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Chest",
+   "Core",
+   "Traps",
+   "Upper back"
+  ],
+  "steps": [
+   "Lie under a bar set at chest height and hold it with your arms straight.",
+   "Keep your body straight, heels on the floor.",
+   "Pull your chest up to the bar.",
+   "Lower yourself slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "jumping-jack",
+  "name": "Jumping jack",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Calves",
+   "Shoulders"
+  ],
+  "steps": [
+   "Stand with your feet together and arms by your sides.",
+   "Jump your feet apart and raise your arms overhead.",
+   "Jump back to the start and keep a steady rhythm."
+  ],
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "leg-extensions",
+  "name": "Leg extensions",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads"
+  ],
+  "steps": [
+   "Set the seat so the pad sits just above your ankles.",
+   "Hold the handles and keep your back against the seat.",
+   "Straighten your legs slowly without locking your knees.",
+   "Hold for a moment, then lower slowly."
+  ],
+  "note": "Use controlled movements for this exercise, do not swing the weight up.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "flat-bench-leg-raises",
+  "name": "Leg raise",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Lie on a bench with your hands under your hips and your legs off the end.",
+   "Keep your legs straight and raise them until they point at the ceiling.",
+   "Lower them slowly, stopping just above the bench."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "mountain-climber",
+  "name": "Mountain climber",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs",
+   "Shoulders",
+   "Quads"
+  ],
+  "steps": [
+   "Start at the top of a push-up with your hands under your shoulders.",
+   "Drive one knee toward your chest, then switch legs quickly.",
+   "Keep your hips low and your back flat."
+  ],
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "pike-push-up",
+  "name": "Pike push-up",
+  "area": "Shoulders",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Start at the top of a push-up, then walk your feet in and lift your hips high.",
+   "Bend your elbows and lower the top of your head toward the floor.",
+   "Press back up until your arms are straight."
+  ],
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "plank",
+  "name": "Plank",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs",
+   "Shoulders",
+   "Glutes"
+  ],
+  "steps": [
+   "Rest on your forearms and toes, elbows under your shoulders.",
+   "Squeeze your stomach and glutes so your body makes one straight line.",
+   "Hold, breathing steadily. Stop when your hips start to sag."
+  ],
+  "note": "Start with 20 seconds. Drop to your knees if your back aches.",
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "seated-leg-curl",
+  "name": "Seated leg curl",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Hamstrings"
+  ],
+  "steps": [
+   "Set the machine so the pad sits just above your heels.",
+   "Sit upright with your legs in front of you.",
+   "Curl your legs back and hold for a moment.",
+   "Let them straighten slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "side-plank",
+  "name": "Side plank",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Obliques"
+  ],
+  "steps": [
+   "Lie on your side with your legs straight and your forearm on the floor.",
+   "Lift your hips until your body makes a straight line.",
+   "Hold, then lower slowly and switch sides."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "supermans",
+  "name": "Superman",
+  "area": "Back",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Lower back",
+   "Core"
+  ],
+  "steps": [
+   "Lie on your stomach with your arms stretched out in front of you.",
+   "Lift your arms and legs off the floor.",
+   "Hold for 2 seconds, then lower."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "t-bar-rows",
+  "name": "T-bar row",
+  "area": "Back",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Lats",
+   "Biceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Stand over the bar with one foot on each side and hold the handles.",
+   "Bend at the waist until your chest is nearly level with the floor, knees slightly bent.",
+   "Pull the bar toward your chest as high as you can.",
+   "Pause, then lower it slowly."
+  ],
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "tricep-dips-using-body-weight",
+  "name": "Triceps dips",
+  "area": "Triceps",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Triceps",
+   "Shoulders",
+   "Chest"
+  ],
+  "steps": [
+   "Grip the parallel bars and push up until your arms are straight.",
+   "Keep your body upright and your elbows close to your sides.",
+   "Lower yourself until your upper arms are level with the floor.",
+   "Press back up."
+  ],
+  "note": "Keep your abs drawn in and your body straight during this exercise.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "triceps-kickback-with-dumbbell",
+  "name": "Triceps kickback with dumbbell",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Put your left knee and left hand on a bench, back level, with a dumbbell in your right hand.",
+   "Hold your right upper arm close to your body with your elbow bent.",
+   "Straighten your arm backward.",
+   "Bend it slowly, then switch arms."
+  ],
+  "note": "Keep your elbow close to your body during this exercise.",
+  "drawn": true,
+  "common": true
+ },
+ {
+  "id": "wall-sit",
+  "name": "Wall sit",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes"
+  ],
+  "steps": [
+   "Lean your back against a wall and slide down until your knees are bent at a right angle.",
+   "Keep your feet flat and your knees over your ankles.",
+   "Hold, then press into the wall to stand up."
+  ],
+  "drawn": false,
+  "common": true
+ },
+ {
+  "id": "ab-rollout-on-knees-with-barbell",
+  "name": "Ab rollout on knees with barbell",
+  "area": "Core",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Abs",
+   "Lower back",
+   "Shoulders"
+  ],
+  "steps": [
+   "Place a barbell on the floor in front of you.",
+   "Start by kneeling in front of the bar, grip the barbell with a shoulder with overhand grip.",
+   "With a slow controlled motion, roll the bar out so that your back is straight, bend your knees and keep your feet off the floor.",
+   "Keep your arms straight throughout the exercise.",
+   "Roll back up bring the bar under your shoulders and return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "ab-rollout-with-barbell",
+  "name": "Ab rollout with barbell",
+  "area": "Core",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Abs",
+   "Lower back",
+   "Shoulders"
+  ],
+  "steps": [
+   "Place a barbell on the floor at your feet.",
+   "Bending at the waist, grip the barbell with a shoulder with overhand grip.",
+   "With a slow controlled motion, roll the bar out so that your back is straight.",
+   "Keep your arms straight throughout the exercise.",
+   "Roll back up raising your hips and butt as you return to the starting position."
+  ],
+  "note": "Practice raising your hips and butt as high as you can with this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "alternating-biceps-curl-with-dumbbell",
+  "name": "Alternating biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Steps",
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a dumbbell in each hand so your palms are facing up.",
+   "Extend your arms so they are at the sides of your body.",
+   "Keeping your elbows locked lift your left arm to your chest so that your forearm touches your bicep.",
+   "Lower your arm and repeat with your right arm."
+  ],
+  "note": "Do not swing your body as you perform this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "alternating-hammer-curl-with-dumbbell",
+  "name": "Alternating hammer curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with our feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a dumbbell in each hand so your palms are facing each other.",
+   "Extend your arms so they are at the sides of your body.",
+   "Keeping your elbows locked lift your left arm in an arc towards your left shoulder.",
+   "Lower your arm and repeat with your right arm."
+  ],
+  "note": "Do not turn your wrists during this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "alternating-incline-curl-with-dumbbell",
+  "name": "Alternating incline curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Adjust an incline bench to a 45 degree angle.",
+   "Grasp a dumbbell in each hand and sit back on the bench with your feet firmly planted on the floor.",
+   "Allow your arms to hang down at your sides.",
+   "Keeping your elbow straight, raise your right arm up towards your head.",
+   "In a controlled manner lower the weight and repeat with your left arm."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "back-flys-exercise-band",
+  "name": "Back flys with exercise band",
+  "area": "Shoulders",
+  "gear": [
+   "Band"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Triceps",
+   "Lats"
+  ],
+  "steps": [
+   "Place an exercise band around a post or machine at mid chest height.",
+   "Stand with your feet shoulder width apart, abs drawn in and knees slightly bent.",
+   "Stand back from the post so there is tension in the band, grasping the band with your arms extended in front of you and a slight bend in your elbows; this is your starting position.",
+   "Bring your arms back in a controlled motion till they are parallel at your sides and in line with your shoulders.",
+   "Slowly return your arms to the starting position in front of your chest."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "barbell-front-raise-pullover",
+  "name": "Barbell front raise and pullover",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a flat bench and grasp a barbell using a medium grip (about 15” apart).",
+   "Place the barbell on your upper thighs and lock your arms straight with a slight bend in your elbows.",
+   "Draw your abs in and keeping your back flat on the bench, raise your arms up in an arc over and behind your head (as if you were performing a reverse pullover).",
+   "Slowly return the barbell to the starting position on your thighs."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "barbell-good-mornings",
+  "name": "Barbell good morning",
+  "area": "Back",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Lower back",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a barbell across your shoulders.",
+   "Keeping your head up and your back completely straight, bend at the waist until your back is parallel with the floor.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "hack-squat-with-barbell",
+  "name": "Barbell hack squat",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place the barbell on the floor just behind your legs and stand with your feet shoulder width apart with your toes pointing forward.",
+   "With your feet firmly placed on the floor, reach down and grasp the barbell from behind with an overhand grip.",
+   "Lift the barbell by extending your hips and knees, taking care not to lock your knees.",
+   "Lower yourself (squat) down until your thighs are parallel to the floor.",
+   "Slowly raise yourself up to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "jefferson-squats-with-barbell",
+  "name": "Barbell Jefferson squats",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a barbell between your legs so it is perpendicular to your feet.",
+   "Grasp the barbell with one hand in front of you and one hand behind you with an overhand grip.",
+   "Squatting down so your thighs are parallel to the floor slowly lift the weight up between your legs as you stand.",
+   "Slowly return to a starting position just above the floor."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "barbell-lunges",
+  "name": "Barbell lunges",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Hamstrings",
+   "Glutes",
+   "Quads",
+   "Calves"
+  ],
+  "steps": [
+   "Start by placing a barbell across your upper back, using a grip slightly wider than your shoulders.",
+   "Stand with your feet about 8 inches apart, toes facing forward.",
+   "Take a step forward (2-3 feet) keeping your abs drawn in and your upper body straight.",
+   "Slowly lower one knee down as if kneeling while keeping your other knee bent at a 90 degree angle, do not let your knee touch the ground.",
+   "Lower your body so that your rear knee is just above the floor and hold for a moment before returning to the starting position.",
+   "Repeat on other side."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "preacher-curl-with-barbell",
+  "name": "Barbell preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "&nbsp;",
+   "Adjust the seat of the bench so that your arms are level with the top of the bench.",
+   "Grasp the bar with palms facing up, shoulder width apart.",
+   "Picking up the bar, rest your arms against the bench and extend them fully.",
+   "Keeping your arms on the bench at all times, curl the bar up towards your head.",
+   "Pause for a moment and then lower the bar back to starting position."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "side-squats-with-barbell",
+  "name": "Barbell side squats",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hips",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a barbell on your shoulders and grasp it with a wide grip.",
+   "Stand with your feet wide apart, with the foot of the leg you will be leaning towards angled out.",
+   "Bring your lower body to your foot by bending the hip and knee of your lead leg, and keeping your other leg fairly straight.",
+   "Return to the starting position and switch legs."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "speed-squats-with-barbell",
+  "name": "Barbell speed squats",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "This version of the squat uses an empty barbell and moves at a faster pace than the standard squat. This is a good exercise for building speed and conditioning used in running and jumping sports.",
+   "Place your feet slightly wider than shoulder width apart with your knees and toes pointed slightly outward.",
+   "Drawing your abs in, descend slowly by bending at the knees and hips as if you are sitting down (squatting).",
+   "Lower yourself as far as you can control without letting your body shift towards your toes (this will cause you to loose balance).",
+   "Pause in the downward position and slowly return upright to the starting position."
+  ],
+  "note": "Keep your feet firmly planted on the floor throughout this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "step-ups-with-barbell",
+  "name": "Barbell step-up",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Place a bench, box or step in front of you.",
+   "Grasp a barbell with a wide grip and place it across your shoulders.",
+   "With your left leg, step up on the bench, and follow by stepping up with your right leg.",
+   "Step down with your left leg and then your right leg.",
+   "Repeat starting with your right leg."
+  ],
+  "note": "Use a lighter weight until you are used to the motion of this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "bent-arm-pullover",
+  "name": "Bent arm pullover",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Lats",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Lie flat on a bench with your head hanging slightly over the end and your feet flat on the floor.",
+   "Hold a barbell with a close grip (approximately 14”), keep your elbows in throughout the exercise.",
+   "Starting with your arms fully extended over your chest, slowly lower the bar in an arc over your head and towards the floor.",
+   "Pull the bar back up to chest height in a slow controlled manner and return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "bent-knee-hip-raise",
+  "name": "Bent knee hip raise",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Lie on your back with your arms outstretched to your sides.",
+   "Bend your knees at a 60 degree angle and hold your feet up just off the floor.",
+   "Keeping your back and arms down, raise your hips up and off the floor so that your knees are over your chest.",
+   "Contract your abs for a moment and then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "bent-over-rear-deltoid-raise-with-head-on-bench",
+  "name": "Bent over rear deltoid raise with head on bench",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Rest your forehead on an incline bench in oder to stabilise your movements so you are bent over with your back parallel to the floor, draw your abs in.",
+   "Grasp dumbbells in your hands with your arms straight and elbows slightly bent ensuring they are not locked.",
+   "Slowly raise the dumbbells up to shoulder height.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "bent-over-lateral-cable-raises",
+  "name": "Bent-over lateral cable raises",
+  "area": "Shoulders",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Traps",
+   "Lats"
+  ],
+  "steps": [
+   "Grasp the handle of the low pulley with your right hand.",
+   "Bend forward from the waist; your upper body should be nearly parallel with the floor. Bend your knees slightly and place your left hand on your left thigh. Let your right arm hang from your shoulder in front of you with your elbow slightly bent. This is your starting position.",
+   "Lift your right arm, keeping your elbow slightly bent.",
+   "Keep moving your arm until it is parallel to the floor, in line with your right ear.",
+   "Slowly bring the weight back down to the starting position.",
+   "Perform exercise on left arm and then repeat."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "bent-over-one-arm-triceps-extension-with-dumbbell",
+  "name": "Bent-over one arm dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your abs drawn in and your back straight as you bend at the waist.",
+   "Hold a dumbbell in your right hand.",
+   "Bring your right arm up to your side so the dumbbell is almost parallel to your chest, keeping your lower arm vertical and press your arm back in arc.",
+   "Return to the starting position repeat and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "bent-over-two-arm-triceps-extension-with-dumbbell",
+  "name": "Bent-over two arm dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your abs drawn in and your back straight as you bend at the waist until your upper body is parallel to the floor.",
+   "Hold a dumbbell in each hand.",
+   "Bring your right arm up to your side so the dumbbell in line with your chest, keeping your lower arm vertical and press your arm back in arc.",
+   "Return to the starting position repeat and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "preacher-curl-with-cable",
+  "name": "Cable preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Place a padded arm curl bench in front of a cable machine.",
+   "Attach a short bar to the bottom pulley.",
+   "Rest your arms against the bench and extend them fully.",
+   "With a narrow grip (6 inches) grasp the bar with palms facing up and pull it towards your head.",
+   "Pause for a moment and then lower the bar back to starting position."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "cable-shoulder-shrugs",
+  "name": "Cable shoulder shrugs",
+  "area": "Back",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Traps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Attach a pulley to the lowest setting on cable machine.",
+   "Stand with your feet shoulder width apart, your abs drawn and your back straight.",
+   "Start with the pulley at waist height.",
+   "Grasp the pulley and shrug your shoulders up while keeping your arms extended.",
+   "Hold this position for a moment then with a controlled motion return to the starting position of the pulley to waist height."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "calf-raises-with-band",
+  "name": "Calf raises with band",
+  "area": "Legs",
+  "gear": [
+   "Band"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Stand with your toes on an exercise band and raise the handles up to your shoulders.",
+   "Raise up on your toes, keeping your hands up by your shoulders.",
+   "Pause for a moment and then lower your heel to the floor."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "calves-press-on-leg-machine",
+  "name": "Calves press on leg machine",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Sit down on a Leg Press Machine and press the plate up as if you were performing a leg press.",
+   "Slide your feet down so that the balls of your feet are pressing against the rack (with your heels hanging free).",
+   "Keeping the handles locked, press up and flex your toes and then slowly bring your toes back towards your body.",
+   "Perform theses movements slowly for maximum benefit."
+  ],
+  "note": "Use a lighter weight on this exercise than you are able to lift with a leg press until you are familiar with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "close-grip-barbell-bench-press",
+  "name": "Close grip barbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a flat bench with your feet flat on the floor, keep your back flat on the bench.",
+   "Grasp the bar a close grip (approximately 14” apart).",
+   "Raise the barbell above your body and move it over the middle of your chest, this is your starting position.",
+   "Lower the bar down so it just touches your chest.",
+   "Raise the bar till your arms are fully extended and your elbows are locked.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "close-grip-ez-bar-curl-with-barbell",
+  "name": "Close grip EZ bar curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp an EZ bar with an underhand close (4 inch) grip on the innermost part of the bar.",
+   "Extend your arms fully against your thighs.",
+   "Keeping your elbows straight, raise the bar towards your chest.",
+   "Pause for moment and then return to the starting position."
+  ],
+  "note": "Lean up against a wall or post if you have problems keeping from swinging.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-close-grip-bench-press",
+  "name": "Close grip Smith machine bench press",
+  "area": "Triceps",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Triceps",
+   "Chest"
+  ],
+  "steps": [
+   "Place a flat bench in the middle of a Smith Machine.",
+   "Using a close grip (about 6 inches apart) unlatch the bar and lower it towards your chest.",
+   "Pause just before the bar hits your chest and raise the bar by extending your arms to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "close-grip-standing-biceps-curls-with-barbell",
+  "name": "Close grip standing biceps curls with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a barbell with palms up, about 12 inches apart.",
+   "Extend your arms fully against your thighs.",
+   "Keeping your elbows straight, raise the bar towards your chest until your forearms touch your chest.",
+   "Pause for moment and then return to the starting position."
+  ],
+  "note": "Lean up against a wall or post if you have problems keeping from swinging.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "cross-body-crunch",
+  "name": "Cross body crunch",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Lie on your back and bring your knees up to a 60 degree angle, keep your feet flat on the floor.",
+   "Place your hands on either side of your head (over your ears).",
+   "Curl up raising your right elbow and your left knee so that they touch over your chest.",
+   "Return to the starting position and repeat with alternate arms and legs."
+  ],
+  "note": "Contract your abs as you twist during this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "cross-body-hammer-curl-with-dumbbell",
+  "name": "Cross body hammer curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "While standing, grab a dumbbell in each arm with palms facing in.",
+   "Keeping your palms facing in (and not twisting your arms) curl the dumbbell up towards your opposite shoulder.",
+   "Bring the top of dumbbell up to and touching the shoulder.",
+   "Slowly with a controlled manner, lower the dumbbell back to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "crossover-bands",
+  "name": "Crossover with bands",
+  "area": "Chest",
+  "gear": [
+   "Band"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Biceps"
+  ],
+  "steps": [
+   "Secure an exercise to a post (or secure pole) and hold it in each hand.",
+   "Step forward so the band has some tension, facing away from the post.",
+   "Your arms at mid chest height and out to the side, palms facing forward this is your starting position.",
+   "Bring your hands together in front of you.",
+   "Hold this for a moment and then in a controlled motion return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "biceps-curl-with-deadlift-with-barbell",
+  "name": "Deadlift to biceps curl",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Calves",
+   "Lower back",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Grasp an EZ Curl or barbell with palms facing up.",
+   "Standing with your feet shoulder width apart and your knees slightly bent, draw your abs in.",
+   "Extend your arms so the bar rests in front of your thighs.",
+   "Bending at the waist, bring the bar down to just above the floor.",
+   "As you return to a standing position, bring the bar up and curl your arms bringing your forearms to your biceps.",
+   "Return the starting position and repeat."
+  ],
+  "note": "Performing this exercise in front of a mirror may help you spot and correct your form.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-barbell-bench-press",
+  "name": "Decline barbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a decline bench with your head lower than your feet.",
+   "Grasp the bar at a grip 3-6 inches wider than your shoulders.",
+   "Raise the bar above your chest, keeping your elbows close in.",
+   "Slowly and with control lower the bar straight to your lower chest.",
+   "Raise the bar back up to starting position with the bar just above your chest."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-chest-press",
+  "name": "Decline chest press",
+  "area": "Chest",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Adjust the seat of the machine so that the handles are near the lower portion of your chest.",
+   "Slowly press the handles forward until your hands are fully extended, do not lock your elbows.",
+   "Pause for a moment and then with a controlled movement lower your hands back to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-close-grip-bench-to-skull-crusher",
+  "name": "Decline close grip bench to skull crusher",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps",
+   "Chest"
+  ],
+  "steps": [
+   "Lay with your back on a flat bench.",
+   "Grip a barbell with a close grip 8-12 inches apart.",
+   "Keeping your arms close to your sides lower the bar so it touches your chest, approximately an inch below your nipples.",
+   "Slowly return to starting position, concentrating on your triceps.",
+   "At the top of the exercise bend your arms down towards your head.",
+   "Raise the bar back up over your chest and repeat."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-crunch",
+  "name": "Decline crunch",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Lie on a decline bench face up.",
+   "Place your feet securely under the pads.",
+   "Place your hands either across your chest or on either side of your head (over your ears).",
+   "Lay fully back and then rise slowly crunching your abs.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "Use the full range of movement in this exercise for the optimal results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-dumbbell-bench-press",
+  "name": "Decline dumbbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Grasp the dumbbells your hands and lie on a decline bench with your head lower than your feet.",
+   "Raise the dumbbells above your chest, bringing your elbows close in, this is your starting position.",
+   "Slowly and with control lower the dumbbells to either side of your lower chest.",
+   "Raise the dumbbells back up to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-dumbbell-flys",
+  "name": "Decline dumbbell flys",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a decline bench with your head lower than your body and your feet firmly on the ground.",
+   "With dumbbells together above your shoulders and your arms straight out above you as your starting position.",
+   "Keeping your arms straight and with a slight bend in your elbows lower the dumbbells down towards the floor in an arc, up until just above your shoulders.",
+   "Return to the starting position in a slow controlled manner."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-triceps-extension-with-dumbbell",
+  "name": "Decline dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lay face up on a decline bench with a dumbbell in each hand.",
+   "Extend your arms so they are perpendicular to your chest, and keeping your elbows in one place, lower your hands so the dumbbells are lowered near your head.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-ez-bar-triceps-extension-with-barbell",
+  "name": "Decline EZ bar barbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lay face up on a decline bench and grasp an EZ Bar (Curved Barbell).",
+   "Extend your arms so they are perpendicular to your chest, and keeping your elbows in one place, lower the bar toward your head.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "decline-oblique-crunch",
+  "name": "Decline oblique crunch",
+  "area": "Core",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "This version of a decline crunch isolates the oblique (side) muscles of the abs.",
+   "Lie on a decline bench face up.",
+   "Place your feet securely under the pads.",
+   "Place your hands either across your chest or on either side of your head (over your ears).",
+   "Raise your shoulders and chest up keeping your back straight and bring your left elbow to your right knee, slowly crunching your abs.",
+   "Pause for a moment and then return to the starting position.",
+   "Lay fully back and repeat with your right elbow to your left knee."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "push-up-feet-elevated",
+  "name": "Decline push-up",
+  "area": "Chest",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Place your feet on a bench at least 18” off the ground.",
+   "Make sure the tops of your feet are flush against the bench.",
+   "Place your hands on the floor slightly wider than shoulder width apart.",
+   "With your hands directly under your shoulders, press up from the floor, keeping your back and neck in a straight line so you are looking forward during the entire exercise.",
+   "Once your arms are fully extended pause and then with slow controlled movements lower yourself to the floor again."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "wide-grip-decline-bench-press",
+  "name": "Decline wide grip barbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a decline bench with your head lower than your feet.",
+   "Place your hands wider than shoulder width apart on the bar and lift it off the rack.",
+   "Bring the bar over your chest and lower it till it is just above the lower portion of your chest, this is starting position.",
+   "Extend your arms upward and raise the bar straight up.",
+   "Pause for a moment and then lower the bar to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "donkey-calf-raises",
+  "name": "Donkey calf raises",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Bend your waist and lean your arms against a weight rack or bench that is waist height.",
+   "Have a partner sit on top of your lower back.",
+   "Raise up on your toes leaning slightly forward.",
+   "Pause at the top and then lower your heels to the floor."
+  ],
+  "note": "Have a Personal Trainer or Instructor show you how to perform this exercise safely.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "drag-curl-with-barbell",
+  "name": "Drag curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent, and your abs drawn in.",
+   "Grasp the bar with palms down, shoulder width apart.",
+   "Extend your arms fully so they are against your thighs.",
+   "Slowly raise your arms, palms down, to touch your chest."
+  ],
+  "note": "Do not move your elbows or shoulders during this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "dumbbell-bent-arm-pullover",
+  "name": "Dumbbell bent arm pullover",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps",
+   "Lats"
+  ],
+  "steps": [
+   "Lie flat on a bench with your head hanging slightly over the end and your feet flat on the floor.",
+   "Hold a dumbbell with both hands, keep your elbows in throughout the exercise.",
+   "Starting with your arms fully extended over your chest, slowly lower the dumbbell in an arc over your head and towards the floor.",
+   "Pull the dumbbell back up to chest height in a slow controlled manner and return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "iron-cross-with-dumbbells",
+  "name": "Dumbbell iron cross",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Traps",
+   "Glutes",
+   "Shoulders",
+   "Lower back",
+   "Hamstrings"
+  ],
+  "steps": [
+   "With a dumbbell in each hand, stand in a low squat stance, your feet shoulder width arms held out in front of you with your palms facing in.",
+   "Standing upright, move your arms out and away from your body forming a “T” or “cross”."
+  ],
+  "note": "Do this exercise with light weights until you are comfortable with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "shoulder-shrugs",
+  "name": "Dumbbell shoulder shrugs",
+  "area": "Back",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Traps"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart and a slight bend in your knees.",
+   "Hold a dumbbell in each hand and with your arms at your sides.",
+   "Lower your shoulders as much as possible.",
+   "With your arms straight raise both shoulders up towards your ears.",
+   "Hold the upright positions for a moment and then lower in a controlled motion."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "dumbbell-upright-rows",
+  "name": "Dumbbell upright row",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Biceps",
+   "Upper back"
+  ],
+  "steps": [
+   "Grasp a dumbbell in each hand with an overhand grip (palms facing downwards) and hold them in front of your thighs.",
+   "Stand with your feet shoulder width apart, your abs drawn in and your back straight.",
+   "Starting with the dumbbells at your thighs, slowly raise them up towards your shoulders by bending your elbows.",
+   "Pause at the top and rotate your shoulder blades together.",
+   "Lower the dumbbells in a controlled motion to your thighs."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "squats-with-exercise-bands",
+  "name": "Exercise bands squats",
+  "area": "Legs",
+  "gear": [
+   "Band"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Stand with your feet on the exercise bands with your feet shoulder width apart.",
+   "Grasp the handles of the bands and pull them up to your shoulders.",
+   "With your abs drawn in, squat down until your thighs are parallel with the floor.",
+   "Slowly return to the starting position."
+  ],
+  "note": "Keep your feet firmly planted on the floor throughout this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "ez-bar-curl-with-barbell",
+  "name": "EZ bar curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart and your knees slightly bent.",
+   "Grasp the barbell with palms up.",
+   "Lower the bar so it is against your thighs.",
+   "Keeping your elbows still, raise the bar up to your chest so that your forearms touch your biceps."
+  ],
+  "note": "Lean up against a wall or post to keep yourself from swaying.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "flat-bench-cable-flys",
+  "name": "Flat bench cable flys",
+  "area": "Chest",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on flat bench between two cable towers and your feet firmly on the ground.",
+   "Grasp a pulley in each hand with your palms facing up.",
+   "With a slight bend in your elbows, squeeze your chest and pull the cables together meeting in the middle of your chest.",
+   "Hold for a moment and then slowly lower your hands back to starting position at bench height.",
+   "Ensure your back and hips stay in contact with the bench at all times during this exercise."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "flexor-incline-curls-with-dumbbell",
+  "name": "Flexor incline curls with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Sit on an incline bench with your feet firmly on the floor in front of you.",
+   "Grasp a dumbbell with your palms facing up.",
+   "Bring your arms down to your sides and while keeping your wrists as straight as possible, raise your wrists to your shoulders.",
+   "Concentrate on squeezing your biceps as you contract (raise) your arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "forward-lunge-with-biceps-curl-using-dumbbell",
+  "name": "Forward lunge with biceps curl using dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Calves",
+   "Hips",
+   "Forearms",
+   "Hamstrings",
+   "Glutes"
+  ],
+  "steps": [
+   "Grasp a dumbbell in each hand with your palms facing up.",
+   "Stand with your feet together, your back straight and your abs drawn in.",
+   "Allow your arms to extend down fully to the sides of your body.",
+   "While keeping your body straight, take a step forward then bend your waist and your knee into a lunge.",
+   "Be careful not to let your back knee drop to the floor.",
+   "As you go into the lunge, curl your arms up towards your shoulders, contracting your biceps.",
+   "Return to starting position and switch legs."
+  ],
+  "note": "Have a Personal Trainer or Instructor show you how to properly perform this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "front-cable-raises",
+  "name": "Front cable raises",
+  "area": "Shoulders",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Chest",
+   "Forearms"
+  ],
+  "steps": [
+   "Place the pulley on the setting just above the floor.",
+   "Stand with your feet shoulder width apart, your abs drawn in and your knees slightly bent.",
+   "Starting at waist height, take the pulley in your left hand, palm facing the floor with otherwise known as an overhand grip, and raise your straight arm up towards your left shoulder.",
+   "At shoulder height pause for a moment.",
+   "With a controlled movement resist the weight and slowly lower your arm back to starting position at your waist.",
+   "Repeat the exercise with your right arm."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "front-squat-to-bench-with-barbells",
+  "name": "Front squat to bench with barbells",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "The Front Squat works the same muscles as the rear squat without placing the weight of the bar on your shoulders. This exercise can be a good substitute for people with back and neck injuries. By using a bench you remind yourself how far to squat down",
+   "Steps",
+   "Place a bench behind you.",
+   "Place the barbell on your upper chest, resting it across your front deltoids and holding it with your arms crossed securely.",
+   "Keep your head and back straight, abs drawn in and your toes pointing slightly outward.",
+   "Slowly “squat” down so your upper thighs are parallel to the floor.",
+   "Slowly return to the starting position."
+  ],
+  "note": "Practice the squat without any weight to allow yourself to become comfortable with the movements. Do not sit on the bench during the exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "front-squat-with-barbell",
+  "name": "Front squat with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "The Front Squat works the same muscles as the rear squat without placing the weight of the bar on your shoulders. This exercise can be a good substitute for people with back and neck injuries.",
+   "Place the barbell on your upper chest, resting it across your front deltoids and holding it with your arms crossed securely.",
+   "Keep your head and back straight, abs drawn in and toes pointing slightly outward.",
+   "Slowly “squat” down so your upper thighs are parallel to the floor.",
+   "Slowly return to the starting position."
+  ],
+  "note": "Practice the squat without any weight to allow yourself to become comfortable with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "hammer-curls-with-rope-and-cable",
+  "name": "Hammer curls with rope and cable",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Using the rope with the cable machine allows you isolate the biceps with this version of the Hammer Curl. This is a good exercise for beginners.",
+   "Attach a rope to a cable pulley to the bottom of the weight stack. Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in. Grasp the rope with a close underhand grip (palms facing up). Lower your arms fully to above your thighs and bending only your elbows, raise the rope to your upper chest. Pause for a moment and then return to the starting position."
+  ],
+  "note": "Keep your elbows at your side throughout this exercise. Do not swing your hips or back during this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "preacher-hammer-curl-with-dumbbell",
+  "name": "Hammer dumbbell preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Adjust the seat of the bench so that your arms are level with the top of the bench.",
+   "Grasp a dumbbell in each hand with your palms facing each other, shoulder width apart and extend your arms fully along the bench.",
+   "Keeping your arms and elbows on the bench at all times, curl the dumbbells up towards your head.",
+   "Pause for a moment and then lower the bar back to starting position."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "high-cable-curls",
+  "name": "High cable curls",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps",
+   "Triceps"
+  ],
+  "steps": [
+   "Place a flat bench next to a cable weigh stack.",
+   "Attach a short bar to the high pulley.",
+   "Lay on your back with your head towards the stack.",
+   "Grip the bar with palms facing you)and extend your arms fully on a slight angle over your head.",
+   "Pull the bar down towards you, curling your arms as much as possible.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "hip-adduction",
+  "name": "Hip adduction",
+  "area": "Legs",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Quads",
+   "Hips"
+  ],
+  "steps": [
+   "Stand alongside a cable pulley stack and attach a cuff to the pulley and your ankle.",
+   "Step away from the stack, holding onto the stack for support.",
+   "Standing firm on the foot not attached to the cable and slowly abduct, or pull, your cuffed ankle in front of your stabilizing leg.",
+   "Repeat and switch ankles."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-bench-press-with-bands",
+  "name": "Incline bands bench press",
+  "area": "Chest",
+  "gear": [
+   "Band"
+  ],
+  "muscles": [
+   "Chest",
+   "Biceps"
+  ],
+  "steps": [
+   "Securely fasten the band under the leg of a flat bench, near your head.",
+   "Lie flat on the bench with your feet flat on the floor in order to stabilise your movements.",
+   "Grasp one end of the band in each hand and starting with your hands at chest level.",
+   "Press upwards so your arms are fully extended.",
+   "With a slow controlled motion return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-triceps-extension-with-barbell",
+  "name": "Incline barbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Grasp a barbell with a close grip (4-6 inches apart).",
+   "Lie on an incline bench and hold the bar over your head.",
+   "Lower your arms in a slight arc so your forearms are touching your biceps.",
+   "Slowly return back to the starting position with the bar over your head."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-cable-flys",
+  "name": "Incline cable flys",
+  "area": "Chest",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Chest",
+   "Biceps",
+   "Triceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Place an incline bench set at a 45 degree angle between two cable towers.",
+   "Grasp a pulley in each hand with your palms facing up.",
+   "With a slight bend in your elbows, squeeze your chest and pull the cables in an arc so they meet together in the middle of your chest.",
+   "Hold for a moment and then slowly lower your hands back to starting position at along the same arc."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-triceps-extension-with-cable",
+  "name": "Incline cable triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Place an incline bench facing away from a cable pulley.",
+   "Attach a short straight bar to the pulley and adjust the height so that your arms can extend fully.",
+   "Lie face up on the bench and grasp the bar with a narrow overhand grip.",
+   "Starting with your elbows bent overhead, slowly lower the bar towards your feet.",
+   "Pause at the bottom and then return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "dumbbell-incline-bench-press",
+  "name": "Incline dumbbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on an incline bench which has been set to an incline of 45 degrees.",
+   "Start with the dumbbells at shoulder height, your arms wide and elbows pointing down to the floor.",
+   "Grasp the dumbbells with a grip so your palms face each other.",
+   "Raise your arms up over your chest bringing the dumbbells closer together as they meet over your chest, as if you were clapping.",
+   "Slowly return the dumbbells to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-dumbbell-flys",
+  "name": "Incline dumbbell flys",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on an incline bench set a 45 degree angle with a dumbbell in each hand and your feet firmly on the ground.",
+   "Lift the dumbbells over your chest extending your arms fully and your palms facing each other.",
+   "Keeping a slight bend in your elbows, lower the dumbbells towards the floor in and arc like motion.",
+   "Slowly return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-triceps-extensions-with-dumbbell",
+  "name": "Incline dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Grasp a dumbbell in each hand and lie against an incline bench, face up with your feet firmly planted on the floor.",
+   "Extend your arms over your shoulders with your palms facing each other.",
+   "Slowly lower the dumbbells behind your head by bending your elbows.",
+   "With a controlled motion raise your arms back up to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-flys-twist",
+  "name": "Incline flys with a twist",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on an incline bench set at a 45 degree angle with a dumbbell in each hand and your feet flat on the ground.",
+   "Start with the dumbbells out to the sides of your chest, parallel to the floor as you would a regular Fly.",
+   "Raise the dumbbells over your chest in and arc, at the top turn your pinky finger in so they are facing each other.",
+   "Slowly return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "hammer-grip-incline-bench-press",
+  "name": "Incline hammer grip dumbbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Grasp a dumbbell in each hand and lay on an incline bench set at a 45 degree angle.",
+   "Keep your feet flat on the floor and your back against the bench at all times.",
+   "Using a hammer grip (with your palms facing each other), lift the weights to shoulder height on either side of your chest.",
+   "Extend your arms fully and press the dumbbells up.",
+   "Slowly return the dumbbells to the starting position at the sides of your chest."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-inner-biceps-curl-with-dumbbell-2",
+  "name": "Incline inner biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Adjust an incline bench to a 45 degree angle.",
+   "Grasp dumbbells in each hand with and sit down with your back against the bench, with your feet resting on the floor for support.",
+   "Allow your arms to hang down at your sides, your palms facing your body.",
+   "Keeping your elbow straight, raise the dumbbells up towards your head, contracting your biceps.",
+   "In a controlled manner lower the weight and repeat."
+  ],
+  "note": "Practice steady movements in this exercise, be careful not to let your arms sway.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-pushdown-with-cable",
+  "name": "Incline pushdown with cable",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Place an incline bench facing away from a cable pulley.",
+   "Attach a short straight bar to the pulley and adjust the height so that your arms can extend fully.",
+   "Lie face up on the bench and grasp the bar with a narrow overhand grip.",
+   "Keeping your arms straight, slowly push the bar down towards your feet.",
+   "Pause at the bottom and then return to starting position."
+  ],
+  "note": "Keep your elbows steady throughout this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "incline-shoulder-press-dumbbell",
+  "name": "Incline shoulder press dumbbell",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie down on an incline bench with your feet flat on the floor and grasp the dumbbells.",
+   "With your elbows bent raise your arms up until in line with your shoulders this is your starting position.",
+   "With your abs drawn in, raise the dumbbells as high as you are able above your shoulders.",
+   "Lower the dumbbells in a slow controlled manner to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-incline-bench-press",
+  "name": "Incline Smith machine bench press",
+  "area": "Chest",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Place an incline bench at a 45 degree angle in the middle of the Smith Machine.",
+   "Align the bench so the bar is across the upper portion of your chest.",
+   "Grasp the bar with a shoulder width grip.",
+   "Unlock the bar and slowly lower the weight to your chest, do not bounce the bar on your chest.",
+   "With slow controlled movements, raise the bar back to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "internal-cable-rotation",
+  "name": "Internal cable rotation",
+  "area": "Shoulders",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Biceps"
+  ],
+  "steps": [
+   "Sit on the floor with your body close to low cable pulley.",
+   "Grasp the pulley with your left arm and position your elbow bent at 90 degree angle.",
+   "Pull the cable towards your body and internally rotate your shoulder until your forearm is across your abs.",
+   "Return to starting position.",
+   "Repeat with right arm."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "jm-press",
+  "name": "JM press",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lay on a flat bench with your head just at the end of the bench.",
+   "Grasp the bar with a medium overhand grip keeping your elbows close to your side, over your sternum (mid chest).",
+   "Lower the bar towards your sternum at a regular pace, then pause for a moment.",
+   "With a controlled but rapid pace, push the bar back to starting position."
+  ],
+  "note": "The bar should move in straight line, up and down.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "kneeling-triceps-extension-with-cable-2",
+  "name": "Kneeling cable triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Place a bench sideways in front of a high pulley machine.",
+   "Grasp a straight bar with an over head grip.",
+   "Kneel on the floor in front of the bench with your back straight and your head down.",
+   "With your elbows and forearms above your head, push the bar down in an arc so that your forearms are touching the bench."
+  ],
+  "note": "Keep your abs drawn in and your back straight as you perform this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "kneeling-triceps-extension-with-cable",
+  "name": "Kneeling triceps concentration extension with cable",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Attach a stirrup handle to a cable pulley and adjust the pulley up high.",
+   "Kneeling on your left knee, with the left side of your body turned towards the machine, keep your right leg bent and the upper portion of your thigh parallel to the floor.",
+   "With your right elbow and upper arm pressed against your inner thigh just above your knee, pull the cable down towards the floor in a slight arcing motion.",
+   "Slowly to return to starting position.",
+   "Repeat and switch arms."
+  ],
+  "note": "Keep all of your body still except the arm you are exercising.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lateral-lunge-with-biceps-curl-with-dumbbell",
+  "name": "Lateral lunge with biceps curl with dumbbell",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Biceps",
+   "Forearms",
+   "Hamstrings",
+   "Glutes",
+   "Calves",
+   "Hips"
+  ],
+  "steps": [
+   "Grasp a dumbbell in each hand with your palms facing up.",
+   "Stand with your feet together, your back straight and your abs drawn in.",
+   "Allow your arms to extend down fully in front of your thighs.",
+   "While keeping your body straight, take a step sideways and then bend your waist and your knee into a lunge.",
+   "As you go into the lunge, curl your arms up towards your shoulders contracting your biceps.",
+   "Return to starting position and switch legs."
+  ],
+  "note": "Have a Personal Trainer or Instructor show you how to properly perform this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "low-triceps-extension-with-cable",
+  "name": "Low cable triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Attach a rope to the cable pulley at of a seated row station.",
+   "Lie on your back on the bench with your head facing the weight stack.",
+   "Grasp the rope with your palms facing each other and raise your arms over your chest, with your forearms parallel to the floor at a 90 degree angle.",
+   "Slowly extend your arms upward squeezing your triceps.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-triceps-extension-across-face-with-dumbbell",
+  "name": "Lying across face dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lay on a flat bench with your head at one end and your feet planted firmly on the floor.",
+   "Grasp a dumbbell in each hand with palms facing up.",
+   "Raise dumbbells over your body. Your arms will be pointed towards the ceiling.",
+   "While keeping your upper arms and elbows still, lower the dumbbell slowly over your face bending only your elbow.",
+   "Slowly raise the dumbbell back to the starting position and repeat with your other arm."
+  ],
+  "note": "Do not perform this exercise if your arms are fatigued, as you are lifting the weight over your face.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-bicep-cable-curl",
+  "name": "Lying biceps cable curl",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Attach a short bar to a cable pulley set on the lowest setting.",
+   "Lie down on a mat or the floor with your feet touching the weight stack.",
+   "Grasp the bar with and palms facing up.",
+   "With your arms fully extended and your elbows at your sides, pull the bar in an arc to your chest.",
+   "Pause for a moment contracting your biceps, and then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-close-grip-triceps-extension-behind-the-head-with-barb",
+  "name": "Lying close grip behind the head barbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "You can use a barbell or EZ (curl) bar to further concentrate the benefit to your triceps.",
+   "Lie flat on a bench on your back.",
+   "Grasp the bar with a grip approximately 8 inches apart and lower the bar behind your head.",
+   "Keeping the bar parallel with the floor, bend your arms down in an arc so the bar moves in a direction under your head.",
+   "Slowly return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-close-grip-biceps-curls-with-cable",
+  "name": "Lying close grip biceps curls with cable",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Place a flat bench under a cable weight stack and attach a flat bar to the pulley.",
+   "Lie down with your head towards the stack and your feet firmly on the floor.",
+   "Grasp the bar with your palms down, about 8 inches apart, and extend your arms straight up.",
+   "Curl the bar down in an arc touching your chin.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-close-grip-triceps-press-to-chin-with-barbell",
+  "name": "Lying close grip triceps press to chin with barbell",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lie on a flat bench on your back, with your head at one end.",
+   "Grasp a bar with a close grip, approximately 6 inches apart.",
+   "Raise the bar straight up over your shoulders, keeping your elbows close in.",
+   "Slowly lower the bar in an arc towards your chin.",
+   "Return the bar to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-triceps-extension-with-dumbbells",
+  "name": "Lying dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lay on a flat bench with your head at one end and your feet planted firmly on the floor.",
+   "Grasp a dumbbell with both hands with palms facing up.",
+   "Raise dumbbell over your body. Your arms will be pointed towards the ceiling.",
+   "While keeping your upper arms and elbows still, lower the dumbbell in an arc behind your head.",
+   "Slowly raise the dumbbell back to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-high-bench-biceps-curl-with-barbell",
+  "name": "Lying high bench biceps curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "With this exercise your lay face down to isolate your biceps.",
+   "Lay face down on a high bench with your head at one end and your toes pressed against the floor to support you.",
+   "Grasp a barbell with palms facing up, about 12 inches apart.",
+   "Extending your arms to the floor, curl your arms back towards your head in a slight arc, so your biceps touch your forearm.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-incline-curl-with-barbell",
+  "name": "Lying incline curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Adjust an incline bench to a 45 degree angle.",
+   "Grasp a barbell with a shoulder width grip and lean face down against the bench, with your feet resting on the floor for support.",
+   "Allow your arms to hang down at your sides.",
+   "Keeping your elbows straight, raise the bar up towards your head, contracting your biceps.",
+   "In a controlled manner lower the weight and repeat."
+  ],
+  "note": "Practice steady movements in this exercise, be careful not to let your arms sway.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "body-leg-lifts",
+  "name": "Lying leg lift",
+  "area": "Legs",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Using a post or tall weight bench for balance stand straight with your abs drawn in.",
+   "Raise one off the ground and behind you while standing on the other leg.",
+   "Slowly lower the leg and raise it again while flexing the gluts.",
+   "Repeat with your other leg."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-one-arm-rear-lateral-raise",
+  "name": "Lying one arm rear lateral raise",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Lay face down on a flat bench high enough for your arms to hang down to the floor.",
+   "Place a dumbbell at your side.",
+   "Your other hand not grasping the dumbbell can be on the floor stabilising your movements.",
+   "Grasp the dumbbell in your hand and raise your upper arm to shoulder height.",
+   "Keep your arm straight and perpendicular to your chest with a slight bend in the elbow.",
+   "In a slow controlled manner lower your arm to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-rear-lateral-raise",
+  "name": "Lying rear lateral raise",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Place the dumbbells at he head of the bench.",
+   "Lie facedown on a raised bench; raised enough for your arms to move freely beneath the bench.",
+   "Place your toes on the floor in order to stabilise yourself.",
+   "Grasp the dumbbells and with a 30 degree bend in your elbows, this is the starting position.",
+   "Raise your arms to shoulder height, maintaining a controlled motion.",
+   "Return to starting position and repeat."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-squat",
+  "name": "Lying squat",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Adjust the shoulder rack of the machine so that your feet comfortably reach the crosspiece with a slight bend in your knees.",
+   "To begin, press your feet forward and release the safety locks.",
+   "Slowly lower the weight towards your body, keeping your abs drawn in and your knees moving in the same direction as your feet to a 90 degree angle.",
+   "Do not lock your knees or bounce the weight."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-supine-biceps-curl-with-dumbbell",
+  "name": "Lying supine biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Lie on a flat bench with your head at one end and your feet planted firmly on the floor.",
+   "With a dumbbell in each hand, palms facing in, bring your arms down to your sides, hanging off the bench.",
+   "Slowly raise your arms up until they are level with your chest.",
+   "Curl the dumbbells by twisting your palms, so that your forearms touch your biceps.",
+   "Slowly lower your arms to the starting position."
+  ],
+  "note": "Practice the motions of this exercise with light weights to become familiar with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-triceps-extension-with-cable",
+  "name": "Lying tricep extension with cable",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Place a flat bench with the end towards a weight stack.",
+   "Attach a short straight bar to the pulley and lower the pulley to the bottom of the stack.",
+   "Lie face up on the bench and grasp the bar with a narrow overhand grip.",
+   "Starting with your arms extended lower the bar towards the bar towards the stack by bending your elbows.",
+   "Slowly extend your arms upright and return to the starting position."
+  ],
+  "note": "Keep your elbows level throughout the exercises.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-triceps-press-with-barbell",
+  "name": "Lying triceps press with barbell",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps",
+   "Chest"
+  ],
+  "steps": [
+   "Lie on a flat bench with your head at one end.",
+   "Grasp an EZ or Curl bar with an overhand grip.",
+   "Raise the bar straight up over your shoulders, taking care to keep your elbows in close.",
+   "Slowly lower the bar in an arc over your head.",
+   "Return the bar to the starting position."
+  ],
+  "note": "Keep your arms straight throughout this exercise moving only your elbows.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "lying-two-arm-triceps-extension-with-dumbbell",
+  "name": "Lying two arm dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lie flat on a bench, on your back, with your head at one end.",
+   "Grasp a dumbbell in each hand and raise them at arms length over your shoulders.",
+   "Lower the dumbbells in an arc bending your elbows until your forearms are touching your biceps.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "machine-bench-press",
+  "name": "Machine bench press",
+  "area": "Chest",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Adjust the machine so that you are sitting with the bars at chest height.",
+   "Place your hands on the bars and place your feet on the foot rest.",
+   "Press out, extending your arms as far as possible in a steady motion.",
+   "Pause for a moment and then return slowly to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "biceps-curl-with-machine",
+  "name": "Machine biceps curl",
+  "area": "Biceps",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Adjust the seat of the machine so your elbows are correctly aligned with the rotation axis.",
+   "Press your arms against the pads and keep them stationary throughout the exercise.",
+   "Curl your forearms until your arms are fully flexed.",
+   "Slowly lower your arms back to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "hack-squat-machine",
+  "name": "Machine hack squat",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Lie face up on a Hack Squat machine with your shoulders against the pad.",
+   "Place your feet facing forward at slightly less than shoulder width apart with your toes point slightly outward.",
+   "Release the dock levers and place your hands on the hand grips.",
+   "Drawing your abs in, extend your body standing upright.",
+   "Lower your body to a squatting position so you knees are bent as if you were sitting down.",
+   "Return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "preacher-curl-with-machine",
+  "name": "Machine preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "A Preacher Curl uses a special bench to support the triceps and isolate the biceps to build the arms. This version of the exercises is a machine exercise. This is a good exercise for beginners.",
+   "Adjust the seat of the bench so your arms are level with the top of the bench. Rest your arms against the bench and extend them fully. Grasp the bar underhand (palms facing up) and pull it towards your head. Pause for a moment and then lower the bar back to starting position."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results. Read the instructions on the machine before performing this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "tricep-dips",
+  "name": "Machine triceps dips",
+  "area": "Triceps",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Adjust the seat of the machine so that the handles are equal with your elbows.",
+   "Grasping the handles, press down with equal pressure until your arms are fully extended.",
+   "Pause, and then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "triceps-extensions-using-machine",
+  "name": "Machine triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Name: This exercise uses a machine to insure proper range of motion. This is a good exercise for beginners and people rehabilitating from injury.",
+   "Adjust the seat height of the machine so your upper arms and elbows lie flat on the pad. Draw your abs in and sit upright with your back straight. With your arms fully extended grasp the handles and pull them towards your body. Hold for a moment and then slowly return to the starting position."
+  ],
+  "note": "Stay seated and keep your feet firmly on the floor throughout this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "narrow-stance-hack-squats",
+  "name": "Narrow stance hack squats",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Like the Hack Squat, this exercise works the muscles of the leg. The narrow stance targets the external muscles more efficiently.",
+   "Lie face up on a Hack Squat machine with your shoulders against the pad.",
+   "Place your feet facing forward at a distance of 6 inches apart with your toes point slightly outward.",
+   "Release the dock levers and place your hands on the handgrips.",
+   "Drawing your abs in, extend your body standing upright.",
+   "Lower your body to a squatting position so your knees are bent as if you were sitting down.",
+   "Return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "narrow-stance-leg-press",
+  "name": "Narrow stance leg press",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Sit on a leg press machine with your feet on the crosspiece 6 inches apart, with your toes pointed slightly outward.",
+   "Grasp the handles on the side of the machine and release the locks.",
+   "Keeping your abs drawn in, bend your knees and bring the weight as far as possible towards your chest.",
+   "Hold this position for a moment and then slowly return the weight to starting position."
+  ],
+  "note": "Do not lock your knees at the top.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "narrow-stance-squat-with-barbell",
+  "name": "Narrow stance squat with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Lifting a barbell off of a weight rack, position it on your shoulders.",
+   "Place your feet about 6 inches apart with your knees and toes pointed slightly outward.",
+   "Drawing your abs in, descend slowly by bending at the knees and hips as if you are sitting down (squatting).",
+   "Lower yourself as far as you can control without letting your body shift towards your toes (this will cause you to loose balance).",
+   "Pause in the downward position and slowly return upright to the starting position."
+  ],
+  "note": "A pad on the bar or towel on your shoulders can help improve your grip and reduce the discomfort of the bar against your back. Practice the squat without any weight to allow yourself to become comfortable with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "old-school-reverse-extensions",
+  "name": "Old school reverse extensions",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lie down on a bench, on your back, with your head at one end.",
+   "Grasp a barbell with an underhand grip.",
+   "Move your arms beyond your head, keeping them in a straight line.",
+   "Bending only your elbows, slowly lower and raise the barbell."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-barbell-floor-press",
+  "name": "One arm barbell floor press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps"
+  ],
+  "steps": [
+   "Lie flat on your back with your knees bent and your feet firmly on the floor.",
+   "Draw in your abs and contract your lats, and glutes.",
+   "Have your partner hand you the bar and with your bicep parallel to the floor lift and extend your arm fully so it is straight.",
+   "Return to the starting position.",
+   "Complete reps and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-biceps-curl-with-olympic-bar-or-barbell",
+  "name": "One arm biceps curl with olympic bar or barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart and your knees slightly bent.",
+   "Grasp an Olympic bar (empty weight bar) in the middle with one hand so that the bar is equally balanced.",
+   "Keep your free hand at your side for support.",
+   "Curl the bar up so your forearm touches your bicep.",
+   "Slowly lower the bar and change arms."
+  ],
+  "note": "If an Olympic bar is too heavy use a lighter weight barbell.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-bench-press",
+  "name": "One arm dumbbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie flat on a bench with your feet placed firmly on the floor and your abs drawn in.",
+   "Grasp the dumbbell in one hand and bring it up to the side of your chest, this is starting position.",
+   "Extend your arm, pressing the dumbbell up till your arm is straight and your elbow locked.",
+   "Using slow controlled movements, lower the weight to starting position.",
+   "Switch arms after completing reps with one arm."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-preacher-curl-with-dumbbell",
+  "name": "One arm dumbbell preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "A Preacher Curl uses a special bench to support the triceps and isolate the biceps to build the arms. This version uses dumbbells and single arm movements for better control.",
+   "Adjust the seat of the bench so your arm is level with the top of the bench.",
+   "Grasp a dumbbell in your hand with palms facing up.",
+   "Rest your arm against the bench and extend it fully down.",
+   "Keeping your arm on the bench at all times, curl the dumbbell up towards your head.",
+   "Pause for a moment and then lower the dumbbell back to starting position.",
+   "Switch arms and repeat."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-dumbbell-shoulder-press",
+  "name": "One arm dumbbell shoulder press",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Triceps",
+   "Biceps"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, back straight and abs drawn in.",
+   "Grasp a dumbbell in your hand and lift it with a bent elbow to your shoulder height to start.",
+   "Lift the dumbbell straight up till your arm is fully extended overhead.",
+   "Lower in a controlled manner and return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-triceps-extension-with-dumbbell",
+  "name": "One arm dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Sit on a bench with your back straight and your abs drawn in.",
+   "Grasp a dumbbell in your hand and place it behind your neck with your elbow bent.",
+   "Slowly extend your arm straight up over your head and slowly return to the starting position."
+  ],
+  "note": "Place your free hand across your chest to help steady yourself during this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-upright-row",
+  "name": "One arm dumbbell upright row",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Traps"
+  ],
+  "steps": [
+   "Stand near a post or other stable tall object. With your one hand, hold the post.",
+   "Grasp the dumbbell in your other hand with a pronated grip (palms facing backwards).",
+   "Place the dumbbell in front of your thigh, this is starting position.",
+   "Lift the dumbbell upward to your shoulder with your elbow pointing away from your body in a rowing motion.",
+   "Lower your arm to starting position and repeat."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-flat-bench-flys",
+  "name": "One arm flat bench flys",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest"
+  ],
+  "steps": [
+   "Lie on a flat bench with your free hand holding the bench.",
+   "Grasp the dumbbell in your other hand and with your forearm parallel to the floor raise your arm in an arc the middle of your chest.",
+   "Once the dumbbell is at the middle of your chest line, slowly lower is along the same path to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-low-pulley-triceps-extension-with-cable",
+  "name": "One arm low-pulley cable triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Attach a handle to a low cable pulley machine.",
+   "Stand with your back to the weight stack, your feet shoulder width apart.",
+   "With your left hand, reach behind you and grasp the handle.",
+   "Place your right hand on your left elbow for support.",
+   "Extend your left arm straight up towards the ceiling and then lower it to the starting position.",
+   "Repeat and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-snatch-with-barbell",
+  "name": "One arm snatch with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Shoulders",
+   "Hamstrings",
+   "Lower back",
+   "Abs",
+   "Traps",
+   "Calves"
+  ],
+  "steps": [
+   "Exercises like this are used to develop functional strength for sports that require strong hands.",
+   "Stand with your feet shoulder width apart, and a slight bend in your knees.",
+   "Grasp the bar with an overhead grip.",
+   "Starting with the barbell held slightly above the knees (hang position), lift the weight up over your head (step 1) then back to shoulder height (step 2) and finally back to starting position between near your knees."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-tricep-extension-with-cable",
+  "name": "One arm tricep extension with cable",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Place a cable pulley on the highest setting and adjust a stirrup handle to the pulley.",
+   "Stand facing the weight stack and grasp the handle with and underhand grip.",
+   "Keep your back straight, your abs drawn in and your knees slightly bent.",
+   "Starting at the top, push your arm down until it is straight, feeling the concentration in your tricep.",
+   "Slowly return to starting position."
+  ],
+  "note": "Keep your elbow close to your side while performing this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-leg-squat-with-barbell",
+  "name": "One leg squat with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings",
+   "Glutes"
+  ],
+  "steps": [
+   "The One Leg Squat isolates the muscles of the leg for optimal exercise. This exercise is also used to build or rebuild strength after injury.",
+   "Place a bench or box 12-18 inches tall behind you. The taller the box the greater the difficulty of the exercise.",
+   "Lifting a barbell off of a weight rack, position it on your shoulders.",
+   "Place one foot up on the bench, and your other foot firmly on the floor 2-3 feet in front you.",
+   "Drawing your abs in descend slowly by bending your front knee and hip as if you are sitting down (squatting).",
+   "Lower yourself as far as you can control without letting your body shift towards your toe (this will cause you to loose balance).",
+   "Pause in the downward position and slowly return upright to the starting position.",
+   "Switch legs and repeat."
+  ],
+  "note": "A pad on the bar or towel on your shoulders can help improve your grip and reduce the discomfort of the bar against your back. Practice the squat without any weight to allow yourself to become comfortable with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-legged-cable-kickback",
+  "name": "One legged cable kickback",
+  "area": "Legs",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Standing at a cable tower attach an ankle cuff to a low pulley.",
+   "Facing the weight stack, with a slight bend in your knees and your abs drawn in",
+   "Slowly kick your ankle back in and arc as high as you are able to.",
+   "Return to starting position and switch ankles."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-armed-biased-push-up",
+  "name": "One-arm biased push-up",
+  "area": "Chest",
+  "gear": [
+   "Other"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Biceps",
+   "Shoulders",
+   "Core"
+  ],
+  "steps": [
+   "Arrange the ball so that as you begin the exercise, one hand on the Bosu ball and the other on the floor.",
+   "Place the ball flat side down on the floor.",
+   "Kneel on the floor with your arms fully extended on the dome, and body straight.",
+   "Keeping your abs drawn in and your body straight, lower your chest to the ball.",
+   "Pause for a moment and then return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "one-arm-side-deadlift-with-barbell",
+  "name": "One-arm side deadlift",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Abs",
+   "Glutes",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Stand besides a barbell placed on the floor.",
+   "Grasp the bar with an overhand grip in the center.",
+   "Crouching down as if your were performing a squat, bend down so your thighs are parallel with the floor.",
+   "Extend your legs slowly as you straighten your body up, drawing in your abs as you rise."
+  ],
+  "note": "Perform this exercise with an empty bar to become familiar with the movement before adding weights.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "overhead-curl-with-cable",
+  "name": "Overhead curl with cable",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "By using cable this exercise isolates and defines the biceps (arm) muscles.",
+   "Attach a stirrup handle to each side of a high pulley on a cable machine.",
+   "Grasp the handles with palms facing up and stand with your feet shoulder width apart.",
+   "Extend your arms fully to each side.",
+   "Keeping your elbows steady, curl your wrists towards the sides of your head.",
+   "Contract your biceps and pause for a moment.",
+   "Then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "overhead-squat-with-barbell",
+  "name": "Overhead squat with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes",
+   "Calves",
+   "Hamstrings",
+   "Shoulders",
+   "Lower back"
+  ],
+  "steps": [
+   "Stand with your feet a bit wider than shoulder width apart with your toes pointed slightly outward.",
+   "Grasp a barbell using a wide side snatch grip with your arms and elbows fully extended.",
+   "Keeping the bar overhead, bend your knees and lower your body until your thighs are parallel with the floor.",
+   "Return to starting position."
+  ],
+  "note": "Keep your feet firmly planted on the floor throughout this exercise. Keep your abs drawn in your back tight and your chest up you perform this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "pile-squat-with-dumbbell",
+  "name": "Pile squat with dumbbell",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Stand with your feet 2-4 inches wider than your shoulders, with your toes pointed out at a 45 degree angle.",
+   "Grasp a dumbbell with both hands in the center of your body.",
+   "Keep your knees slightly bent and your back straight.",
+   "Squat down as if you were going to sit in a chair, bringing your thighs parallel to the floor.",
+   "With a controlled motion return to starting position."
+  ],
+  "note": "Keep your feet planted firmly on the floor throughout this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "prone-incline-biceps-curl-with-dumbbell",
+  "name": "Prone incline biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Adjust an incline bench to a 45 degree angle.",
+   "Grasp dumbbells in each hand and lean face down against the bench, with your feet resting on the floor for support.",
+   "Allow your arms to hang down at your sides.",
+   "Keeping your elbow straight, raise the dumbbells up towards your head, contracting your biceps.",
+   "In a controlled manner, lower the weight and repeat."
+  ],
+  "note": "Practice steady movements in this exercise, be careful not to let your arms sway.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "quick-alternating-biceps-curls-with-band",
+  "name": "Quick alternating biceps curls with band",
+  "area": "Biceps",
+  "gear": [
+   "Band"
+  ],
+  "muscles": [
+   "Biceps",
+   "Triceps"
+  ],
+  "steps": [
+   "Place a bungy under your feet and hold the handles palms forward in your hands.",
+   "Stand with your feet shoulder width apart, knees slightly bent and your abs drawn in.",
+   "Curl your arms up and down in an alternating motion, keeping your body straight.",
+   "As you become comfortable with the motion, increase your speed."
+  ],
+  "note": "Contract your biceps as you curl your arms up.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "rear-lunges-with-barbell",
+  "name": "Rear barbell lunges",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Hips",
+   "Calves",
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a barbell on a rack at chest height.",
+   "Lift the barbell of of the rack and onto your shoulders, gripping the bar slightly wider than shoulder width apart.",
+   "Stand with your feet approximately 8 inches apart with your toes pointing forward.",
+   "Slowly take a step backward with your right leg.",
+   "Keeping your abs drawn in and your upper body straight, lower your body until your left knee is almost on the ground. You may choose to place a mat or towel under your knee.",
+   "Hold for a moment and then return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "rear-deltoid-row-barbell",
+  "name": "Rear deltoid row barbell",
+  "area": "Shoulders",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Biceps"
+  ],
+  "steps": [
+   "Place a barbell on the floor in front of you with the resided weights attached.",
+   "With your knees bent and back straight grasp the bar with a wide overhand grip (palms facing downwards).",
+   "Keep your chest steady and your arms perpendicular to your chest.",
+   "Pull the bar as far up to your chest as you can.",
+   "Hold for a moment than lower the bar in a controlled manner."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "rear-deltoid-row-dumbbell",
+  "name": "Rear deltoid row dumbbell",
+  "area": "Shoulders",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Biceps",
+   "Traps"
+  ],
+  "steps": [
+   "Place your right foot on the floor, rest your left knee and hand on a flat bench.",
+   "Lean forward so your body's weight is supported by your left arm and knee.",
+   "Keeping your back flat, reach down and pick up the dumbbell with your right hand.",
+   "Raise your right arm as close to your chest as possible; while bending and bringing your elbow back as far as you can.",
+   "Pause at the top for a moment and then lower the dumbbell in a controlled manner to the starting position.",
+   "Switch arms by doing the opposite positioning."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "rear-lunges-with-dumbbell",
+  "name": "Rear dumbbell lunges",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings",
+   "Glutes",
+   "Hips"
+  ],
+  "steps": [
+   "Grasp a dumbbell in each hand.",
+   "Stand with your feet approximately 8 inches apart with your toes pointing forward.",
+   "Slowly take a step backward with your right leg.",
+   "Keeping your abs drawn in and your upper body straight, lower your body until your left knee is almost on the ground. You may choose to place a mat or towel under your knee.",
+   "Hold for a moment and then return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "biceps-curl-reverse-with-dumbbells",
+  "name": "Reverse dumbbell biceps curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a dumbbell in each hand with palms facing down.",
+   "Keeping your arms at your side your elbows steady, lift the dumbbells up towards your shoulders.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "reverse-grip-triceps-pushdown",
+  "name": "Reverse grip triceps pushdown",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand in front of a cable machine and attach a bar to a high pulley.",
+   "Grasp the handle with palms facing up.",
+   "Keeping your elbows at your side, pull the handle down towards your thighs.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "You may want to stager one foot in front of the other for a better stance.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "reverse-grips-bent-over-barbell-rows",
+  "name": "Reverse grips bent over barbell rows",
+  "area": "Back",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Lats",
+   "Biceps"
+  ],
+  "steps": [
+   "Bend over a barbell at slight angle with your knees bent and your back straight.",
+   "Grasp the bar with a reverse grip (palms facing up) and slowly pull the barbell to your abs, keeping your elbows close to your sides.",
+   "Pause for a moment at the top.",
+   "Return the barbell to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "reverse-plate-curls-with-weight",
+  "name": "Reverse plate curls with weight",
+  "area": "Biceps",
+  "gear": [
+   "Other"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a plate in your hands with palms facing down, at the 11:00 and 1:00 o'clock position.",
+   "Keeping your elbows and arms at your side, curl the slowly up towards your head.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "reverse-triceps-bench-press-with-barbell",
+  "name": "Reverse triceps barbell bench press",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps",
+   "Chest"
+  ],
+  "steps": [
+   "Lie on a flat bench with your head at one end and your feet placed firmly on the floor.",
+   "Grasp a barbell with palms facing your head about 16 inches apart.",
+   "Move the bar over your chest (about 1 inch below your nipples).",
+   "Extend your arms fully raising the bar fully and then lower the bar to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "rocking-standing-calf-raise-with-barbell",
+  "name": "Rocking standing calf raise with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Stand with a bar across your shoulders.",
+   "With your feet flat on the floor, lift your feet up and forward as if you are performing a calf raise.",
+   "Then “rock” back onto your ankles so your toes are flexed and off the floor.",
+   "Return to starting position."
+  ],
+  "note": "Wear running or cross training shoes while performing this exercise. Try performing this exercise without weight to become familiar with the movement,",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "triceps-pushdown-with-rope-and-cable",
+  "name": "Rope cable triceps pushdown",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand in front of a cable machine and attach a rope to a high pulley.",
+   "Grasp the rope with palms facing down.",
+   "Draw your abs in and keep your back straight.",
+   "Keeping your elbows at your side push the rope down towards your thighs, if possible “split” the rope apart at the bottom.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "You may want to stager one foot in front of the other for a better stance.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-ab-crunch-with-cable",
+  "name": "Seated ab crunch with cable",
+  "area": "Core",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Attach a rope to a high cable pulley.",
+   "Place a bench in front of cable weight stack.",
+   "Grasp the rope over your shoulders and sit with your back towards the stack.",
+   "With your feet firmly on the floor and keeping your hips steady, flex at the waist bringing your elbows towards your knees.",
+   "Return to the starting position."
+  ],
+  "note": "Perform this exercise in a slow controlled manner.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-biceps-curl-with-dumbbell",
+  "name": "Seated biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Sit on bench with your feet firmly on the floor and your back straight.",
+   "Grasp a dumbbell in each hand with your palms facing each other.",
+   "Lower the dumbbells to your sides and slowly curl your arms up so your palms are facing up.",
+   "Squeeze your biceps at the top and slowly lower to the starting position."
+  ],
+  "note": "If possible use a short backed bench to help your posture.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-calf-raise-using-machine",
+  "name": "Seated calf raise using machine",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Sit at a calf raise machine.",
+   "Put the balls of your feet on the footpad.",
+   "Place your thighs under the leg pad above your knees.",
+   "Unlock the bar and slowly raise your toes up as far as possible.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "Practice slow and precise movements with this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-calf-raise-with-barbell",
+  "name": "Seated calf raise with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Place a block on the floor about one foot in front of a bench.",
+   "Sit on the bench with a barbell across your upper thighs and the balls of your feet on the block.",
+   "Slowly raise and lower your toes up as high as possible without lifting your foot off the block."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-close-grip-concentration-curls-with-barbell",
+  "name": "Seated close grip concentration curls with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Concentration exercises limit your range of movement to increase the effectiveness of the movement. This version uses a barbell.",
+   "Sit on the end of a flat bench with your feet flat and your legs spread apart.",
+   "Bend forward at your waist keeping your back straight.",
+   "Grasp a barbell in your hands with a close grip approximately 6 inches apart with your palms facing up.",
+   "With your elbow pressed against your inner thigh, curl the bar up towards your chest.",
+   "Slowly lower the bar to the starting position near the floor."
+  ],
+  "note": "Keep all of your body still except the arm you are exercising.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-inner-biceps-curl-with-dumbbell",
+  "name": "Seated inner biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Sit on the edge of a bench with your feet firmly planted on the floor.",
+   "Keep your back straight and your abs drawn in.",
+   "Grasp a dumbbell in each arm with your palms facing each other and fully extend your arms along your sides.",
+   "Curl your arms up and out, turning your palms up and out as you lift.",
+   "Slowly lower the dumbbells to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-one-arm-triceps-extension-with-dumbbell",
+  "name": "Seated one arm dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Sit on the edge of a bench with your feet flat on the floor.",
+   "Hold a dumbbell in your right hand.",
+   "Bring your right arm up to your side so the dumbbell is almost parallel to your chest, keeping your lower arm vertical.",
+   "Press your arm back in arc.",
+   "Return to the starting position repeat and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-one-leg-calf-raise-with-dumbbell",
+  "name": "Seated one leg calf raise with dumbbell",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "This version of a calf raise allows you to exercise each leg individually. This exercise is helpful to people who are rehabilitating from injury as it allows you flexibility with the weight.",
+   "Place a block on the floor about one foot in front of a bench.",
+   "Sit on the bench with a dumbbell across your upper thigh and the balls of one foot on the block.",
+   "Slowly raise and lower your toe up as high as possible without lifting your foot off the block.",
+   "Switch feet and repeat."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-overhead-triceps-extension-with-barbell",
+  "name": "Seated overhead barbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Sit on a short straight back chair with your feet firmly placed on the floor and your back straight.",
+   "Grasp an EZ or Curl bar, or barbell with a grip about 6 inches apart.",
+   "Raise the bar to arms length above your head and then lower the bar in an arc towards the floor behind your head.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-rear-lateral-cable-raise",
+  "name": "Seated rear lateral cable raise",
+  "area": "Shoulders",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Sit on the edge of a bench with your feet on the floor in front of you.",
+   "Rest your chest on your thighs with your back straight, grasp the cable pulleys with opposite hands.",
+   "Raise your upper arms to shoulder height. Pause at the top for a moment.",
+   "Lower your arms to the starting position in a controlled motion."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-triceps-press-with-dumbbell",
+  "name": "Seated triceps press with dumbbell",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Sit on a short, straight backed bench with your feet planted firmly on the floor.",
+   "Drawing your abs in, grasp the dumbbell with both hands with a palms up grip.",
+   "Raise the weight over your head, this is your starting position.",
+   "Lower the dumbbell in an arc from above your head to behind your back.",
+   "Slowly return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "seated-two-arm-triceps-extension-with-dumbbell",
+  "name": "Seated two arm dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Sit on the edge of a bench with your feet flat on the floor.",
+   "Hold a dumbbell in each hand.",
+   "Bring your arms up to your side so the dumbbell is almost parallel to your chest, keeping your lower arm vertical.",
+   "Press your arm back in arc towards your back.",
+   "Return to the starting position repeat and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "side-bend-with-dumbbell",
+  "name": "Side bend with dumbbell",
+  "area": "Core",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Abs"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a dumbbell in one hand and standing straight upright, bend at the waist as far as possible to one side.",
+   "Slowly return back up to the staring position.",
+   "Switch the dumbbell to your other hand and repeat the exercise."
+  ],
+  "note": "Be careful to bend only at your waist and not at the hips or knees.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "single-arm-triceps-extension-with-dumbbell",
+  "name": "Single arm pronated dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lie flat in a bench with your head at one end and your feet placed firmly on the floor.",
+   "Grasp a dumbbell in one hand and raise it to a position above your chest, with your palm facing your feet.",
+   "Place your free hand under the shoulder to support your other arm.",
+   "Slowly lower the weight moving only your forearm and elbow towards and away from your chest.",
+   "Repeat with your other arm."
+  ],
+  "note": "Practice this exercise with light weight to get used to the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "single-arm-supinated-triceps-extension-with-dumbbell",
+  "name": "Single arm supinated dumbbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lie flat in a bench with your head at one end and your feet placed firmly on the floor.",
+   "Grasp a dumbbell in one hand and raise it to a position above your chest, with your palm facing the floor.",
+   "Place your free hand under the shoulder to support your other arm. Slowly bend your elbow over your head with the weight moving only your forearm and elbow.",
+   "Return to the starting position and repeat with your other arm."
+  ],
+  "note": "Practice this exercise with light weight to get used to the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "single-leg-squat-with-barbell",
+  "name": "Single leg squat with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a barbell on your back, above your shoulders with a wide grip.",
+   "Cross the lower leg above the knee of your supporting leg (the leg you will squat with).",
+   "Squat down as low as you are able.",
+   "Slowly return to an upright position by straightening your hip and knee.",
+   "Switch legs and repeat."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-bench-press",
+  "name": "Smith machine bench press",
+  "area": "Chest",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Chest",
+   "Shoulders",
+   "Triceps"
+  ],
+  "steps": [
+   "Place a flat bench in the middle of the Smith Machine, with the bar in line with the middle of your chest.",
+   "Lying on the bench, grasp the bar at shoulder width apart.",
+   "Unlatch the bar and slowly lower the bar to your chest.",
+   "Extend your arms fully and raise the bar to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-dead-lifts",
+  "name": "Smith machine deadlift",
+  "area": "Back",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Lower back",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart so that your feet are under the bar.",
+   "Keeping your back straight bend at the waist, allow some bend in your knees.",
+   "Grasp the par with an overhand grip approximately 16 inches apart.",
+   "Straighten your back as you hold the bar at arm's length.",
+   "Bend over again lowering the bar to just above the floor."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-good-mornings",
+  "name": "Smith machine good morning",
+  "area": "Back",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Lower back",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a barbell across your shoulders.",
+   "Keeping your head up and your back completely straight, bend at the waist until your back is parallel with the floor.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-hack-squat",
+  "name": "Smith machine hack squat",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings",
+   "Glutes"
+  ],
+  "steps": [
+   "Adjust the bar to a low setting just above your ankles.",
+   "Stand with the bar on the floor just behind your legs, with your feet shoulder width apart and your toes pointing forward.",
+   "With your feet firmly placed on the floor reach down and grasp the bar from behind, with an overhand grip.",
+   "Lift the bar by extending your hips and knees, taking care not to lock your knees.",
+   "Lower yourself (squat) down until your thighs are parallel to the floor.",
+   "Slowly raise yourself up to starting position."
+  ],
+  "note": "Your knees should be moving in the same direction as your feet.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-rear-deltoid-row",
+  "name": "Smith machine rear deltoid row",
+  "area": "Shoulders",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Upper back",
+   "Biceps"
+  ],
+  "steps": [
+   "Set the bar to the lowest setting.",
+   "Place your feet shoulder width apart with a slight bend in the knees.",
+   "Bend at the waist while keeping your back straight and chest parallel to the floor.",
+   "Grasp the bar slightly wider than your shoulders with an overhand grasp and your arms straight with a slight bend in the elbows.",
+   "Raise the bar with a controlled motion to the lower part of your chest by bending and elevating your elbows.",
+   "Hold for a moment and then lower to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-reverse-calf-raises",
+  "name": "Smith machine reverse calf raises",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Place a block or low box under the bar at a Smith Machine.",
+   "Stand on the edge of the box with your toes hanging off.",
+   "Place the bar across your shoulders and lean forward lifting your ankles off the box.",
+   "Return to the starting position."
+  ],
+  "note": "Use the bar for support as you perform this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-shoulder-shrugs",
+  "name": "Smith machine shoulder shrugs",
+  "area": "Shoulders",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Shoulders"
+  ],
+  "steps": [
+   "Place the barbell at waist height.",
+   "Stand with your feet shoulder width apart and your abs drawn in.",
+   "Grasp the bar with an overhand grip and straightened arms.",
+   "As you lift the bar allow the weight to pull your shoulders down, shrug your shoulders up and to the back.",
+   "Hold for a moment and then return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-squats",
+  "name": "Smith machine squats",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Glutes",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Set the height of the barbell to shoulder height.",
+   "Place your feet slightly wider than shoulder width apart with your knees and toes pointed slightly outward.",
+   "Drawing your abs in descend slowly by bending at the knees and hips as if you are sitting down (squatting).",
+   "Lower yourself as far as you can control without letting your body shift over your toes (this will cause you to loose balance).",
+   "Pause in the downward squatting position and slowly return upright to the starting position.",
+   "If needed, a pad on the bar or towel on your shoulders can help improve your grip and the reduce the discomfort of the bar against your back. First practice the squat without any weight to allow yourself to become comfortable with the movements."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "smith-machine-upright-row",
+  "name": "Smith machine upright row",
+  "area": "Shoulders",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Biceps",
+   "Upper back"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart and your abs drawn in.",
+   "Place the bar on the Smith Machine in the position where your arms are fully extended in front of you.",
+   "Place your hands shoulder width apart and raise the bar up towards your chin with a controlled motion.",
+   "Pause at the top for a moment and rotate your shoulder blades together.",
+   "Lower the bar to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "spider-curl-with-barbell",
+  "name": "Spider curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps"
+  ],
+  "steps": [
+   "Turn a Preacher Curl bench around so you are leaning against the angled side.",
+   "Grasp a barbell with palms up, approximately 6 inches apart.",
+   "Leaning against the bench, lower the bar along the flat side of the bench fully extending your arms.",
+   "Curl your arms up so your biceps are touching your forearms.",
+   "Slowly lower the bar to the starting position."
+  ],
+  "note": "Use a low weight to get used to the motion of this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "biceps-curl-squat-with-dumbbell",
+  "name": "Squat with dumbbell biceps curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Hamstrings",
+   "Glutes"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a dumbbell in each hand and curl your arms up to your shoulders.",
+   "Bending at the waist, squat down as you lower your hands to the floor (the lower part of a curl).",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "Contract your biceps as you curl your arms up.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-barbell-calf-raise",
+  "name": "Standing barbell calf raise",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Calves"
+  ],
+  "steps": [
+   "Place a block or two free weight plates on the floor.",
+   "Place a barbell across your back and step up so the balls of your feet are on the block.",
+   "Slowly lift your heels up and then lower them back to the floor getting as much of a stretch as possible.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-biceps-curl-with-cable",
+  "name": "Standing biceps curl with cable",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms",
+   "Shoulders"
+  ],
+  "steps": [
+   "Attach a short bar to a cable pulley to the bottom of the weight stack.",
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp the bar with palms facing up, and hands fairly close together.",
+   "Lower your arms fully to above your thighs and bending only your elbows, raise the bar to your upper chest.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "Do not swing your hips or back during this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-inner-biceps-curl-with-dumbbell",
+  "name": "Standing inner biceps curl with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a dumbbell in each arm with your palms facing each other, fully extend your arms along your sides.",
+   "Curl your arms up and out, turning your palms up and out as you lift.",
+   "Slowly lower the dumbbells to the starting position."
+  ],
+  "note": "Try to keep your forearms in line with your shoulders as you lift the weight.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-leg-curls",
+  "name": "Standing leg curls",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Hamstrings"
+  ],
+  "steps": [
+   "Standing at a leg curl machine adjust the rear footpad so it is just above your ankle.",
+   "Grasp the handles of the machine for support and draw your abs in.",
+   "Raise your foot up towards your back slowly.",
+   "Return to the starting position and chance legs."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-one-arm-biceps-curl-with-cable",
+  "name": "Standing one arm biceps curl with cable",
+  "area": "Biceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Attach a stirrup bar to a low cable pulley.",
+   "Stand of the side of the weight stack with your legs shoulder width apart and your knees slightly bent and your abs drawn in.",
+   "Grasp the stirrup in one hand with an palms facing up.",
+   "Lower the stirrup to the top of your thighs.",
+   "Keeping your elbows still, curl the stirrup up towards your chest.",
+   "Slowly lower the stirrup to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-one-arm-curl-over-incline-bench-with-dumbbell",
+  "name": "Standing one arm curl over incline bench with dumbbell",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand in front of an incline bench so your arm is resting on the top of the angled portion of the bench.",
+   "Grasp a dumbbell in your hand with palms facing up.",
+   "Rest your arm against the back bench and extend it fully down.",
+   "Keeping your arm on the bench at all times, curl the dumbbell up towards your head.",
+   "Pause for a moment and then lower the dumbbell back to starting position.",
+   "Switch arms and repeat."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-overhead-triceps-extension-with-barbell",
+  "name": "Standing overhead barbell triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your back straight and your abs drawn in.",
+   "Hold a barbell or EZ Curl bar about 6-8 inches apart with your palms facing up.",
+   "Raise the bar over your head and slowly lower the dumbbell in an arc behind your head, towards your back.",
+   "Slowly raise the bar back up to the starting position."
+  ],
+  "note": "Keep your elbows close to your head during the exercise",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "standing-triceps-extension-with-towel",
+  "name": "Standing towel triceps extension",
+  "area": "Triceps",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your back straight and your abs drawn in.",
+   "Hold a towel or rope facing up behind and in back of your head.",
+   "Have a partner hold the towel taught during the exercise so the resistance is constant.",
+   "Lower your forearms down until they reach your biceps, then slowly raise your arms back up to starting position."
+  ],
+  "note": "Keep your elbows close to your head during the exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "straight-arm-dumbbell-pullover",
+  "name": "Straight arm dumbbell pullover",
+  "area": "Chest",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Lats",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie on a flat bench with your feet flat on the floor and your head at the end of the bench.",
+   "Grasp a dumbbell and raise it over your chest.",
+   "Keeping your elbows as straight as possible, lower the weight in an arc over your head and as low to the ground as possible with out any pain.",
+   "Return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "straight-arm-push-down",
+  "name": "Straight arm push down",
+  "area": "Back",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Lats",
+   "Triceps"
+  ],
+  "steps": [
+   "Grasp wide grip pull down bar with a wide grip so your hands are on the portion of the bar which curves down.",
+   "Stand erect with your abs drawn in.",
+   "Keeping a slight bend in your elbows and your wrist steady pull the bar down from the starting position to your upper thighs.",
+   "With a controlled motion bring the bar back up to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "tate-press-with-dumbbell",
+  "name": "Tate press with dumbbell",
+  "area": "Triceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Lay flat on a bench with your head at one end and your feet firmly planted on the floor.",
+   "Hold a dumbbell in each hand so your palms are facing your feet.",
+   "Drawing your abs in and keeping your back on the bench, raise the weights to the center of your chest.",
+   "Without moving elbows, slowly raise your arms up and out contracting your triceps."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "thigh-abductor",
+  "name": "Thigh abductor",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Sit on the machine and place your knees against the pads.",
+   "Draw your abs in and “abduct” or move your thighs apart against the pads.",
+   "Slowly return to the starting position and repeat."
+  ],
+  "note": "Maintain the same level of resistance throughout this exercise for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "thigh-adductor",
+  "name": "Thigh adductor",
+  "area": "Legs",
+  "gear": [
+   "Machine"
+  ],
+  "muscles": [
+   "Quads",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Sit on the machine and place your knees against the pads.",
+   "Draw your abs in and “adduct” or move your thighs together.",
+   "Slowly return to the starting position and repeat."
+  ],
+  "note": "Maintain the same level of resistance throughout this exercise for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "squat-to-bench-with-barbell",
+  "name": "To bench barbell squats",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Place a bench behind you.",
+   "Lifting a barbell off of a weight rack, position it on your shoulders.",
+   "Place your feet slightly wider than shoulder width apart with your knees and toes pointed slightly outward.",
+   "Drawing your abs in, descend slowly and squat down, bending at the knees and hips.",
+   "Lower yourself as far as you can control without letting your body shift towards your toes (this will cause you to loose balance). Do not sit on the bench.",
+   "Pause in the downward position and slowly return upright to the starting position.",
+   "A pad on the bar or towel on your shoulders can help improve your grip and reduce discomfort of the bar against your back. Practice the squat without any weight to allow yourself to become comfortable with the movements. Do not sit on the bench during the exercise."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "squat-to-bench-with-dumbbells",
+  "name": "To bench dumbbells squats",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings",
+   "Glutes"
+  ],
+  "steps": [
+   "Place a bench behind you.",
+   "Grasp a dumbbell in each hand.",
+   "Place your feet slightly wider than shoulder width apart with your knees and toes pointed slightly outward.",
+   "Drawing your abs in descend slowly by squatting down and bending at the knees and hips.",
+   "Lower yourself as far as you can control without letting your body shift towards your toes (this will cause you to loose balance).",
+   "Pause in the downward position and slowly return upright to the starting position.",
+   "Practice the squat without any weight to allow yourself to become comfortable with the movements. Do not sit on the bench during the exercise."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "two-arm-preacher-curl-with-dumbbell",
+  "name": "Two arm dumbbell preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "A Preacher Curl uses a special bench to support the triceps and isolate the biceps to build the arms. This version of the exercise uses dumbbells.",
+   "Adjust the seat of the bench so your arms are level with the top of the bench.",
+   "Grasp a dumbbell in each hand with palms facing up.",
+   "Picking up the dumbbells, rest your arms against the bench and extend them fully towards the floor.",
+   "Keeping your arms on the bench at all times, curl the weight up towards your head.",
+   "Pause for a moment and then lower the weights back to starting position."
+  ],
+  "note": "Perform this exercise in a slow controlled manner for best results.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "upright-band-rows",
+  "name": "Upright band rows",
+  "area": "Back",
+  "gear": [
+   "Bodyweight",
+   "Band"
+  ],
+  "muscles": [
+   "Lats",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Stand on the band so that the handles are level with your upper thigh.",
+   "With your back straight and abs drawn in raise your hands upward to your collarbone.",
+   "Your elbows and arms should be parallel with the floor.",
+   "Slowly lower your arms and return to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "upright-barbell-rows",
+  "name": "Upright barbell rows",
+  "area": "Shoulders",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Biceps",
+   "Upper back"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your abs drawn in and back straight.",
+   "Place the bar on rack in the position where your arms are fully extended in front of you with your elbows slightly bent.",
+   "Place your hands shoulder width apart and raise the bar up towards your chin with a controlled motion.",
+   "Pause at the top for a moment and rotate your shoulder blades together.",
+   "Lower the bar to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "upright-cable-row",
+  "name": "Upright cable row",
+  "area": "Shoulders",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Shoulders",
+   "Upper back",
+   "Biceps"
+  ],
+  "steps": [
+   "Attach a straight bar to the pulley on the floor.",
+   "Stand with your feet shoulder width apart, your abs drawn in and your back straight.",
+   "Grasp the bar with an overhand grasp (your palms facing downwards) and pull it up towards your waist, this is the starting position.",
+   "Raise the bar up to in line with your shoulders.",
+   "Pause at the top and rotate your shoulder blades together.",
+   "Lower the bar in a controlled motion to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "triceps-pushdown-with-v-bar-and-cable",
+  "name": "V-bar cable triceps pushdown",
+  "area": "Triceps",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Triceps"
+  ],
+  "steps": [
+   "Steps",
+   "Stand in front of a cable machine and attach a V Bar to a high pulley.",
+   "Grasp the bar with palms facing down.",
+   "Draw your abs in and keep your back straight.",
+   "Keeping your elbows at your side push the bar down towards your thighs.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "note": "You may want to stager one foot in front of the other for a better stance.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "v-bar-pull-down",
+  "name": "V-bar pulldown",
+  "area": "Back",
+  "gear": [
+   "Cable"
+  ],
+  "muscles": [
+   "Lats",
+   "Biceps"
+  ],
+  "steps": [
+   "Attach a V bar to the pull down pulley of a cable machine.",
+   "Sitting upright with your abs drawn grasp the bar with an overhand grip, your palms facing in.",
+   "Pull the bar straight down to your upper chest.",
+   "Pause for a moment after touching the chest and then slowly return the bar to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "walking-lunges",
+  "name": "Walking dumbbell lunges",
+  "area": "Legs",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Hamstrings",
+   "Quads",
+   "Glutes",
+   "Calves"
+  ],
+  "steps": [
+   "Start by grasping a dumbbell in each hand.",
+   "Stand with your feet about 8 inches apart, toes facing forward.",
+   "Take a lunge forward keeping your abs drawn in and your upper body straight.",
+   "Slowly lower one knee down as if kneeling while keeping your other knee bent at a 90 degree angle, do not let your knee touch the ground.",
+   "Lower your body to just above the floor and hold for a moment before pushing off with the back foot.",
+   "Step through and repeat the exercise with the other leg."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "weighted-sissy-squat-with-weight-plate",
+  "name": "Weighted sissy squat with weight plate",
+  "area": "Legs",
+  "gear": [
+   "Other"
+  ],
+  "muscles": [
+   "Quads"
+  ],
+  "steps": [
+   "Don't let the name of this exercise fool you, it is a an assisted squat which effectively works the quadriceps (leg muscles).",
+   "Grasp a weight rack or bar for support with one arm and hold a free weight plate across your chest with your other hand.",
+   "With your abs drawn in, squat down lowering your body to the floor until your knees are almost fully flexed.",
+   "Return to the starting position."
+  ],
+  "note": "Keep your feet placed firmly on the floor throughout this exercise.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "wide-grip-bench-press",
+  "name": "Wide grip barbell bench press",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest",
+   "Triceps",
+   "Shoulders"
+  ],
+  "steps": [
+   "Lie flat on a bench with your feet flat on the floor.",
+   "Place your hands wider than shoulder width apart on the bar and lift it off the rack, this is starting position.",
+   "Bring the bar over your chest and lower it till it is just above your body.",
+   "Extend your arms upward and raise the bar straight up.",
+   "Pause for a moment and with slow controlled movement, return the bar to starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "wide-grip-decline-barbell-pullover",
+  "name": "Wide grip decline barbell pullover",
+  "area": "Chest",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Chest"
+  ],
+  "steps": [
+   "Lie on a decline bench with your feet higher than your head and your feet firmly on the ground.",
+   "Grasp the barbell with an extra wide grip (your hands near the plates) and starting at you're your upper thighs raise the barbell in an arc over your head towards the floor.",
+   "Slowly return the barbell to starting position on your thighs."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "wide-grip-standing-biceps-curl-with-barbell",
+  "name": "Wide grip standing biceps curl with barbell",
+  "area": "Biceps",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your abs drawn in.",
+   "Grasp a barbell with palms up as wide as you comfortably can.",
+   "Extend your arms fully against your thighs.",
+   "Keeping your elbows straight, raise the bar towards your chest until your forearms touch your chest.",
+   "Pause for moment and then return to the starting position."
+  ],
+  "note": "Lean up against a wall or post if you have problems keeping from swinging.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "wide-stance-squat-with-barbell",
+  "name": "Wide stance squat with barbell",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Calves",
+   "Hamstrings"
+  ],
+  "steps": [
+   "Lifting a barbell off of a weight rack, position it on your shoulders.",
+   "Stand with your feet wider than shoulder width apart (about 30 inches apart) with your toes pointing out.",
+   "Drawing your abs in descend slowly by bending at the knees and hips as if you are sitting down (squatting).",
+   "Lower yourself as far as you can control without letting your body shift towards your toes (this will cause you to loose balance).",
+   "Pause in the downward position and slowly return upright to the starting position."
+  ],
+  "note": "A pad on the bar or towel on your shoulders can help improve your grip and reduce the discomfort of the bar against your back. Practice the squat without any weight to allow yourself to become comfortable with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "wide-grip-chin-up",
+  "name": "Wide-grip pull-up",
+  "area": "Back",
+  "gear": [
+   "Bodyweight"
+  ],
+  "muscles": [
+   "Traps",
+   "Biceps"
+  ],
+  "steps": [
+   "Grasp a chin up bar with a slightly wider than shoulder width grip.",
+   "Keeping your body straight pull yourself up and to one side of the bar.",
+   "Lower your body back down to the starting position.",
+   "Raise yourself to the other side of the bar."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "zecher-squats",
+  "name": "Zecher squats",
+  "area": "Legs",
+  "gear": [
+   "Barbell"
+  ],
+  "muscles": [
+   "Quads",
+   "Glutes",
+   "Hamstrings",
+   "Calves"
+  ],
+  "steps": [
+   "This variation of squat is similar to a Front Squat, it works to build the upper muscles of the quadriceps (thighs).",
+   "Lift a barbell off of a weight rack and place across your chest. Hold the barbell with your arms crossed.",
+   "Place your feet slightly wider than shoulder width apart with your knees and toes pointed slightly outward.",
+   "Drawing your abs in, descend slowly by bending at the knees and hips as if you are sitting down (squatting).",
+   "Lower yourself as far as you can control without letting your body shift towards your toes (this will cause you to loose balance).",
+   "Pause in the downward position and slowly return upright to the starting position."
+  ],
+  "note": "Practice the squat without any weight to allow yourself to become comfortable with the movements.",
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "zottman-curl-with-dumbbells",
+  "name": "Zottman curl with dumbbells",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Stand with your feet shoulder width apart, your knees slightly bent and your and your abs drawn in.",
+   "Grasp a dumbbell in each hand with your palms facing each other.",
+   "Start with your hands at your sides.",
+   "Curl your arms up turning your wrists so they are facing down as the dumbbells reach your chest.",
+   "Pause for a moment and then return to the starting position."
+  ],
+  "drawn": true,
+  "common": false
+ },
+ {
+  "id": "zottman-preacher-curl-with-dumbbells",
+  "name": "Zottman dumbbell preacher curl",
+  "area": "Biceps",
+  "gear": [
+   "Dumbbell"
+  ],
+  "muscles": [
+   "Biceps",
+   "Forearms"
+  ],
+  "steps": [
+   "Sit at a Preacher Curl Bench.",
+   "Grasp a dumbbell in your hand with your palms facing up.",
+   "Extend your arm fully along the bench.",
+   "Curl your arm up turning your wrist so it faces down as the dumbbell reaches your chest.",
+   "Pause for a moment and then return to the starting position and switch arms."
+  ],
+  "drawn": true,
+  "common": false
+ }
+]

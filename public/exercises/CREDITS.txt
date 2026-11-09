@@ -1,0 +1,4 @@
+Exercise drawings: Everkinetic (https://github.com/everkinetic/data), created by Greg Priday.
+Licensed CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0/).
+The barbell row drawing is also Everkinetic, CC BY-SA 3.0, from wger.de.
+Adapted for Body Tracker: frames cropped and aligned, converted to WebP with a transparent background.

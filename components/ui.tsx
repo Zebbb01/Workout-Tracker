@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import * as RadixSelect from '@radix-ui/react-select';
-import { Check, ChevronDown, ChevronRight, Loader2, Minus, Plus, X } from 'lucide-react';
+import { ArrowLeft, Check, ChevronDown, ChevronRight, Loader2, Minus, Plus, X } from 'lucide-react';
 
 export const cx = (...classes: (string | false | null | undefined)[]) => classes.filter(Boolean).join(' ');
 
@@ -45,6 +45,15 @@ export function Button({ variant, size, block, busy, className, children, ...pro
 
 export function ButtonLink({ variant, size, block, className, ...props }: ComponentProps<typeof Link> & ButtonStyle) {
   return <Link className={buttonClass({ variant, size, block }, className)} {...props} />;
+}
+
+/** A quiet way back, above a page title. */
+export function BackLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link href={href} className="-ml-1 inline-flex h-11 items-center gap-1.5 px-1 text-sm font-medium text-muted-foreground hover:text-foreground">
+      <ArrowLeft size={16} aria-hidden /> {children}
+    </Link>
+  );
 }
 
 /** An icon-only button: 40px to see, 44px to hit on a phone. The label is for screen readers. */
@@ -102,6 +111,25 @@ export function Empty({ title, children, action }: { title: string; children?: R
       <p className="font-semibold">{title}</p>
       {children && <p className="max-w-xs text-sm text-muted-foreground">{children}</p>}
       {action && <div className="mt-2">{action}</div>}
+    </div>
+  );
+}
+
+/** What a crashed screen shows: plain words and a way on. The details go to the console. */
+export function CrashNotice({ error, retry }: { error: unknown; retry: () => void }) {
+  useEffect(() => console.error(error), [error]);
+  return (
+    <div className="py-8">
+      <h1 className="font-display text-3xl font-bold">Something went wrong</h1>
+      <p className="mt-2 text-muted-foreground">This screen didn&apos;t load. What you&apos;ve logged is safe on this phone.</p>
+      <div className="mt-5 flex gap-2">
+        <Button onClick={retry}>Try again</Button>
+        {/* A full load, because the error boundary stays up on a link to the same page. */}
+        {/* eslint-disable-next-line @next/next/no-location-assign-relative-destination */}
+        <Button variant="secondary" onClick={() => location.assign('/')}>
+          Go to Today
+        </Button>
+      </div>
     </div>
   );
 }
@@ -276,6 +304,31 @@ export function Stepper({ label, value, onChange, step, min = 0, max, unit }: {
           <Plus size={18} className="mx-auto" aria-hidden />
         </button>
       </div>
+    </div>
+  );
+}
+
+/** One pick from a row of pills: scrolls sideways on phones so the page stays short, wraps on a desktop. Sits in a 16px gutter. */
+export function Chips<T extends string>({ label, options, value, onChange }: {
+  label: string; options: { value: T; label: string }[]; value: T | undefined; onChange: (v: T) => void;
+}) {
+  return (
+    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0" role="radiogroup" aria-label={label}>
+      {options.map((o) => (
+        <button
+          key={o.value}
+          type="button"
+          role="radio"
+          aria-checked={value === o.value}
+          onClick={() => onChange(o.value)}
+          className={cx(
+            'h-11 shrink-0 whitespace-nowrap rounded-full px-4 text-sm font-medium transition active:scale-[0.97] lg:h-9',
+            value === o.value ? 'bg-foreground text-background' : 'bg-muted text-foreground hover:bg-muted/70',
+          )}
+        >
+          {o.label}
+        </button>
+      ))}
     </div>
   );
 }

@@ -77,7 +77,7 @@ export function OfflineBanner() {
   const message = !online
     ? "Offline. What you log stays on this phone and syncs later."
     : syncError && pending > 0 && firstSyncDone
-      ? `${pending} ${pending === 1 ? 'entry' : 'entries'} saved on this phone, not synced yet.`
+      ? `${pending} ${pending === 1 ? 'entry' : 'entries'} saved on this phone, not synced yet. It keeps trying on its own.`
       : null;
   if (!message) return null;
   return (
