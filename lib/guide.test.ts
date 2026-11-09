@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import { AREAS, GEAR, GUIDE, searchGuide } from './guide';
 import { EXERCISES } from './exercises';
@@ -100,6 +101,24 @@ describe('the guide data', () => {
     for (const e of GUIDE.filter((x) => x.drawn)) {
       for (const part of ['1', '2', 't']) expect(existsSync(`public/exercises/${e.id}-${part}.webp`), `${e.id}-${part}`).toBe(true);
     }
+  });
+
+  it('draws the whole body, not a copy cropped at the legs', async () => {
+    // The data repo's PNGs cut the low squat off at the knees, about half as tall as it is wide.
+    const { data, info } = await sharp('public/exercises/squat-1.webp').ensureAlpha().extractChannel(3).raw().toBuffer({ resolveWithObject: true });
+    const rows: number[] = [];
+    const columns: number[] = [];
+    for (let y = 0; y < info.height; y++) {
+      for (let x = 0; x < info.width; x++) {
+        if (data[y * info.width + x] > 128) {
+          rows.push(y);
+          columns.push(x);
+        }
+      }
+    }
+    const height = rows[rows.length - 1] - rows[0];
+    const width = columns.reduce((max, v) => Math.max(max, v), 0) - columns.reduce((min, v) => Math.min(min, v), info.width);
+    expect(height / width).toBeGreaterThan(0.75);
   });
 
   it('covers no-equipment training', () => {

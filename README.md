@@ -23,7 +23,7 @@ Real screenshots of the app, taken by [`screenshots/capture.ts`](screenshots/cap
   sets, your weight trend and a running fast.
 - **Log** a set in two or three taps: the next set starts as a copy of the
   last one, and **Repeat** logs your last workout again.
-- **Exercise guide**: forgot how a move goes? Search 254 exercises by name, body
+- **Exercise guide**: forgot how a move goes? Search 250+ exercises by name, body
   part or plain words like "arms" or "no equipment". Each one shows the movement
   drawn in two positions, what it works and short steps, and logs in one tap.
 - **Meals**: photograph a meal or describe it, and AI (Google's Gemini) fills
