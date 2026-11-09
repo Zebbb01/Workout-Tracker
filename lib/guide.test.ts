@@ -116,7 +116,7 @@ describe('the guide data', () => {
         }
       }
     }
-    const height = Math.max(...rows.slice(0, 1), rows[rows.length - 1]) - rows[0];
+    const height = rows[rows.length - 1] - rows[0];
     const width = columns.reduce((max, v) => Math.max(max, v), 0) - columns.reduce((min, v) => Math.min(min, v), info.width);
     expect(height / width).toBeGreaterThan(0.75);
   });
