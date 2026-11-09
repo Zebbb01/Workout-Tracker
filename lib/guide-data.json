@@ -4214,27 +4214,6 @@
   "common": false
  },
  {
-  "id": "seated-inner-biceps-curl-with-dumbbell",
-  "name": "Seated inner biceps curl with dumbbell",
-  "area": "Biceps",
-  "gear": [
-   "Dumbbell"
-  ],
-  "muscles": [
-   "Biceps",
-   "Forearms"
-  ],
-  "steps": [
-   "Sit on the edge of a bench with your feet firmly planted on the floor.",
-   "Keep your back straight and your abs drawn in.",
-   "Grasp a dumbbell in each arm with your palms facing each other and fully extend your arms along your sides.",
-   "Curl your arms up and out, turning your palms up and out as you lift.",
-   "Slowly lower the dumbbells to the starting position."
-  ],
-  "drawn": true,
-  "common": false
- },
- {
   "id": "seated-one-arm-triceps-extension-with-dumbbell",
   "name": "Seated one arm dumbbell triceps extension",
   "area": "Triceps",

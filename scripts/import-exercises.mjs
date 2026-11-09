@@ -50,8 +50,9 @@ const COMMON = new Set([
 // Balance-toy and rehab variations that would only crowd the list.
 const LEAVE_OUT = /bosu|dome|stability ball|exercise ball|medicine ball|swiss ball|ball wall|weighted ball|ankle circles|knee circles|static neck|neck press|draw in|stork stance|balance/i;
 
-// Standing lifts whose drawings stop at the legs.
+// Lifts where the feet stay planted, and ones where the hands stay on an overhead bar.
 const GROUNDED = /squat|dead ?lift|lunge|good morning/i;
+const HANGING = /pull ups|chin-?\s?up/i;
 
 const RENAME = {
   'Bridging': 'Glute bridge',
@@ -167,12 +168,28 @@ async function fetchCached(file) {
   return bytes;
 }
 
-/** Greyscale pixels, cropped to the ink, ink = high. */
-async function ink(bytes) {
-  const trimmed = await sharp(bytes).flatten({ background: '#fff' }).greyscale().trim({ background: '#fff', threshold: 40 }).toBuffer();
-  const { data, info } = await sharp(trimmed).greyscale().raw().toBuffer({ resolveWithObject: true });
-  return { data: Uint8Array.from(data, (v) => 255 - v), width: info.width, height: info.height, png: trimmed };
+/** Some files mix px and pt in their size, which would stretch the canvas; the viewBox is what counts. */
+function atNaturalSize(svg) {
+  const text = svg.toString('utf8');
+  const [, , width, height] = text.match(/viewBox="([^"]+)"/)[1].trim().split(/\s+/).map(Number);
+  return Buffer.from(text.replace(/<svg[^>]*>/, (tag) => tag.replace(/\s(width|height)="[^"]*"/g, '').replace('<svg', `<svg width="${width}" height="${height}"`)));
 }
+
+/** Greyscale pixels, cropped to the ink, ink = high. */
+async function ink(bytes, isSvg) {
+  const source = isSvg ? sharp(atNaturalSize(bytes), { density: 288 }) : sharp(bytes);
+  const trimmed = await source.flatten({ background: '#fff' }).greyscale().trim({ background: '#fff', threshold: 40 }).toBuffer();
+  const { data, info } = await sharp(trimmed).greyscale().raw().toBuffer({ resolveWithObject: true });
+  return { data: Uint8Array.from(data, (v) => 255 - v), width: info.width, height: info.height };
+}
+
+async function resized(f, scale) {
+  const width = Math.round(f.width * scale);
+  const { data, info } = await sharp(Buffer.from(f.data), { raw: { width: f.width, height: f.height, channels: 1 } }).resize({ width }).greyscale().raw().toBuffer({ resolveWithObject: true });
+  return { data: Uint8Array.from(data), width: info.width, height: info.height };
+}
+
+const total = (f) => f.data.reduce((sum, v) => sum + v, 0);
 
 function shrink({ data, width, height }, factor) {
   const w = Math.floor(width / factor);
@@ -201,20 +218,21 @@ function overlap(a, b, dx, dy) {
 
 /**
  * Where b sits on a so the parts that do not move (bench, bar, feet) land on each other, coarse
- * to fine. `ground` is for standing lifts drawn cut off at the legs: their bottom edges line up,
- * so the head visibly rises and falls instead of the legs growing out of a still torso.
+ * to fine. The body is the biggest shape, so it would win and the floor or bar would seem to
+ * move: `anchor` pins the bottom edges for standing lifts and the top edges for hanging ones.
  */
-function align(a, b, ground) {
+function align(a, b, anchor) {
   let dx = 0;
   let dy = 0;
+  let score = 0;
   for (const [factor, reach] of [[16, 0], [8, 2], [4, 2], [2, 2]]) {
     const small = [shrink(a, factor), shrink(b, factor)];
     const range = reach === 0 ? null : reach;
     let best = -1;
     let bestAt = [0, 0];
     const xs = range === null ? [-small[1].width + 1, small[0].width - 1] : [dx * 2 - range, dx * 2 + range];
-    const floor = small[0].height - small[1].height;
-    const ys = ground ? [floor, floor] : range === null ? [-small[1].height + 1, small[0].height - 1] : [dy * 2 - range, dy * 2 + range];
+    const pinned = anchor === 'bottom' ? small[0].height - small[1].height : 0;
+    const ys = anchor ? [pinned, pinned] : range === null ? [-small[1].height + 1, small[0].height - 1] : [dy * 2 - range, dy * 2 + range];
     for (let y = ys[0]; y <= ys[1]; y++) {
       for (let x = xs[0]; x <= xs[1]; x++) {
         const score = overlap(small[0], small[1], x, y);
@@ -225,8 +243,9 @@ function align(a, b, ground) {
       }
     }
     [dx, dy] = bestAt;
+    score = best;
   }
-  return { dx: dx * 2, dy: dy * 2 };
+  return { dx: dx * 2, dy: dy * 2, score };
 }
 
 const toWebp = (raw, side, size, quality) =>
@@ -236,10 +255,22 @@ const toWebp = (raw, side, size, quality) =>
     .toBuffer();
 
 /** Both frames on one square canvas, as black ink on transparent, so CSS can flip it for the dark theme. */
-async function frames(id, first, second, ground) {
-  const a = await ink(first);
-  const b = await ink(second);
-  const { dx, dy } = align(a, b, ground);
+async function frames(id, first, second, { anchor, scales = [1], isSvg } = {}) {
+  const a = await ink(first, isSvg);
+  const natural = await ink(second, isSvg);
+  // A few SVG pairs were exported at different sizes: keep the scale where the still parts overlap best.
+  let b = natural;
+  let fit = { score: -1 };
+  for (const scale of scales) {
+    const candidate = scale === 1 ? natural : await resized(natural, scale);
+    const tried = align(a, candidate, anchor);
+    const score = tried.score / Math.min(total(a), total(candidate));
+    if (score > fit.score) {
+      fit = { ...tried, score };
+      b = candidate;
+    }
+  }
+  const { dx, dy } = fit;
   const left = Math.min(0, dx);
   const top = Math.min(0, dy);
   const width = Math.max(a.width, b.width + dx) - left;
@@ -321,7 +352,7 @@ await mkdir(OUT, { recursive: true });
 
 const seen = new Set();
 const entries = [];
-const pending = data.filter((x) => x.png?.length === 2 && !LEAVE_OUT.test(x.title));
+const pending = data.filter((x) => x.png?.length === 2 && x.svg?.length === 2 && !LEAVE_OUT.test(x.title));
 for (const x of pending) {
   const [builtId, builtName] = BUILT_IN[x.title] ?? [];
   const name = builtName ?? cleanName(x.title);
@@ -335,7 +366,11 @@ for (const x of pending) {
     id, name, area: AREA[MUSCLE[x.primary[0]]], gear: gearOf(x.equipment), muscles, steps, ...(note && { note }),
     drawn: true, common: COMMON.has(x.title),
   });
-  await frames(id, await fetchCached(x.png[0]), await fetchCached(x.png[1]), GROUNDED.test(x.title));
+  const [one, two] = await Promise.all(x.svg.map(fetchCached));
+  // The PNGs are cropped, but their two widths still say how the frames compare in size.
+  const widths = await Promise.all([one, two, ...(await Promise.all(x.png.map(fetchCached)))].map((bytes, i) => ink(bytes, i < 2).then((f) => f.width)));
+  const relative = widths[3] / widths[2] / (widths[1] / widths[0]);
+  await frames(id, one, two, { anchor: GROUNDED.test(x.title) ? 'bottom' : HANGING.test(x.title) ? 'top' : null, scales: Math.abs(relative - 1) > 0.03 ? [1, relative] : [1], isSvg: true });
   if (entries.length % 40 === 0) console.log(entries.length, 'done');
 }
 // Everkinetic's drawing of this one survives on wger, not in the data repo.
