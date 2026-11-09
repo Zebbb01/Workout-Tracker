@@ -31,15 +31,20 @@ test('text put in the address never reaches the page', async ({ page }) => {
   await expectNoRawDetail(page, 'exchange external code');
 });
 
-test('losing the connection before sign-in code has loaded reads as plain words', async ({ page }) => {
-  await page.goto('/welcome');
-  await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeVisible();
-  // Everything the first tap would still have to fetch.
-  await page.route('**/_next/static/**', (route) => route.abort('failed'));
-  await page.getByRole('button', { name: 'Try it without an account' }).click();
-  await expect(page.getByText("Couldn't reach the sign-in service. Check your connection, then try again.")).toBeVisible();
-  await expectNoRawDetail(page, 'ChunkLoadError');
-  await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeEnabled();
+test.describe('before the sign-in code has loaded', () => {
+  // On the deployed site the worker would fetch the file itself, out of reach of page.route.
+  test.use({ serviceWorkers: 'block' });
+
+  test('losing the connection reads as plain words', async ({ page }) => {
+    await page.goto('/welcome');
+    await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeVisible();
+    // Everything the first tap would still have to fetch.
+    await page.route('**/_next/static/**', (route) => route.abort('failed'));
+    await page.getByRole('button', { name: 'Try it without an account' }).click();
+    await expect(page.getByText("Couldn't reach the sign-in service. Check your connection, then try again.")).toBeVisible();
+    await expectNoRawDetail(page, 'ChunkLoadError');
+    await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeEnabled();
+  });
 });
 
 test.describe('signed in', () => {
