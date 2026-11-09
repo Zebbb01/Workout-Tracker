@@ -3,7 +3,7 @@ import { Barlow, Barlow_Condensed } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { DataProvider } from '@/lib/data';
-import { RegisterServiceWorker } from '@/components/InstallApp';
+import { RegisterServiceWorker } from '@/components/RegisterServiceWorker';
 
 // Barlow for text; its condensed cut for titles and the big numbers.
 const sans = Barlow({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--font-sans', display: 'swap' });

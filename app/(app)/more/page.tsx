@@ -8,7 +8,7 @@ import { computeTargets, weightSeries } from '@/lib/calc';
 import { authMessage } from '@/lib/errors';
 import type { Units } from '@/lib/types';
 import { Button, ConfirmDialog, Field, List, NumberInput, PageHeader, Row, ScreenSkeleton, Section, Segmented, Sheet, useToast } from '@/components/ui';
-import { installApp, useInstall } from '@/components/InstallApp';
+import { useInstallRow } from '@/components/InstallApp';
 import pkg from '@/package.json';
 
 type Theme = 'system' | 'light' | 'dark';
@@ -40,7 +40,7 @@ function MoreScreen() {
   const weights = useWeights();
   const actions = useActions();
   const toast = useToast();
-  const install = useInstall();
+  const { row: installRow, steps: installSteps } = useInstallRow();
   const authError = useSearchParams().get('auth_error');
   const theme = useSyncExternalStore((n) => (themeListeners.add(n), () => themeListeners.delete(n)), readTheme, () => 'system' as Theme);
 
@@ -160,8 +160,7 @@ function MoreScreen() {
         <div className="space-y-6">
           <Section title="App">
             <List>
-              {install === 'prompt' && <Row icon={<Download size={18} />} label="Install app" detail="Its own window, works offline" onClick={installApp} />}
-              {install === 'ios' && <Row icon={<Download size={18} />} label="Add to Home Screen" detail="Tap Share, then Add to Home Screen" />}
+              {installRow && <Row icon={<Download size={18} />} {...installRow} />}
               <Row icon={<Lock size={18} />} label="Privacy" detail="Meal photos go to Google Gemini only for estimates" href="/privacy" />
               <Row icon={<Github size={18} />} label="Source code" detail="github.com/Zebbb01/Workout-Tracker" href="https://github.com/Zebbb01/Workout-Tracker" />
               <Row icon={<Info size={18} />} label="Version">
@@ -225,6 +224,8 @@ function MoreScreen() {
           ? "You haven't saved with Google, so signing out deletes what you've logged."
           : 'Your entries stay in your account. This device forgets them until you sign in again.'}
       </ConfirmDialog>
+
+      {installSteps}
 
       <ConfirmDialog
         open={confirm === 'delete'}
