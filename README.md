@@ -96,10 +96,9 @@ can't read or change another's rows, and axe accessibility checks of every
 screen in both themes. Specs that need sign-in skip locally unless you set
 `E2E_SUPABASE=1` with a project that allows anonymous sign-ins.
 
-Measured on the live site on 4 November 2026 (0.4.0): all 16 browser tests
-pass against production, and Lighthouse (mobile) scores the welcome screen 93
-for performance (median of three runs) and 100 for accessibility, best
-practices and SEO.
+Measured on the live site on 9 November 2026 (0.5.4): Lighthouse (mobile)
+scores the welcome screen 97 for performance (median of five runs) and 100 for
+accessibility, best practices and SEO.
 
 ## Free-tier notes
 
