@@ -106,6 +106,25 @@ export function Empty({ title, children, action }: { title: string; children?: R
   );
 }
 
+/** What a crashed screen shows: plain words and a way on. The details go to the console. */
+export function CrashNotice({ error, retry }: { error: unknown; retry: () => void }) {
+  useEffect(() => console.error(error), [error]);
+  return (
+    <div className="py-8">
+      <h1 className="font-display text-3xl font-bold">Something went wrong</h1>
+      <p className="mt-2 text-muted-foreground">This screen didn&apos;t load. What you&apos;ve logged is safe on this phone.</p>
+      <div className="mt-5 flex gap-2">
+        <Button onClick={retry}>Try again</Button>
+        {/* A full load, because the error boundary stays up on a link to the same page. */}
+        {/* eslint-disable-next-line @next/next/no-location-assign-relative-destination */}
+        <Button variant="secondary" onClick={() => location.assign('/')}>
+          Go to Today
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function Skeleton({ className }: { className?: string }) {
   return <div aria-hidden className={cx('animate-pulse rounded-lg bg-muted', className)} />;
 }

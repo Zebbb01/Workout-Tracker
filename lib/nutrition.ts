@@ -32,6 +32,23 @@ export type Estimate = z.infer<typeof Estimate>;
 
 export type EstimateInput = { text: string } | { image: { mimeType: string; base64: string } };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Runs `attempt` up to three times, because timeouts, dropped connections, 429
+ * and 5xx usually clear within seconds. Any other reply is final. Null means no
+ * try got a reply at all.
+ */
+export async function withRetry(attempt: () => Promise<Response>, wait: (ms: number) => Promise<unknown> = sleep) {
+  let response: Response | null = null;
+  for (const delay of [500, 1500, null]) {
+    response = await attempt().catch(() => null);
+    if (response && response.status !== 429 && response.status < 500) return response;
+    if (delay !== null) await wait(delay);
+  }
+  return response;
+}
+
 export function geminiRequest(input: EstimateInput) {
   const parts =
     'text' in input

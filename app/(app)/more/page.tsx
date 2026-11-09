@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Download, Github, Info, Loader2, Lock, LogOut, RefreshCw, ShieldCheck, Trash2, UserRound } from 'lucide-react';
 import { account, useActions, useData, useProfile, useWeights } from '@/lib/data';
 import { computeTargets, weightSeries } from '@/lib/calc';
+import { authMessage } from '@/lib/errors';
 import type { Units } from '@/lib/types';
 import { Button, ConfirmDialog, Field, List, NumberInput, PageHeader, Row, ScreenSkeleton, Section, Segmented, Sheet, useToast } from '@/components/ui';
 import { installApp, useInstall } from '@/components/InstallApp';
@@ -33,12 +34,6 @@ function setTheme(theme: Theme) {
 }
 
 /** Turns Supabase's linking errors into what the person can do about them. */
-function explain(error: string) {
-  if (/already|exists|linked/i.test(error)) return 'That Google account already has Body Tracker data. Sign out, then choose Continue with Google to use it.';
-  if (/manual linking/i.test(error)) return 'Saving with Google is not switched on for this app yet.';
-  return error;
-}
-
 function MoreScreen() {
   const { user, db, online } = useData();
   const profile = useProfile();
@@ -53,7 +48,7 @@ function MoreScreen() {
   const [editingTargets, setEditingTargets] = useState(false);
   const [confirm, setConfirm] = useState<'signout' | 'delete' | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(authError ? explain(authError) : null);
+  const [error, setError] = useState<string | null>(authError ? authMessage(authError) : null);
 
   if (!profile || !weights || !user) return <ScreenSkeleton />;
 
@@ -72,7 +67,7 @@ function MoreScreen() {
     setError(null);
     const { error } = await account.saveWithGoogle();
     if (error) {
-      setError(explain(error.message));
+      setError(error);
       setBusy(false);
     }
   }
@@ -242,7 +237,8 @@ function MoreScreen() {
           try {
             await account.deleteAccount(db);
           } catch (e) {
-            setError((e as Error).message);
+            console.error('Delete account failed:', e);
+            setError("Couldn't delete your account. Check your connection, then try again.");
             setBusy(false);
             setConfirm(null);
           }

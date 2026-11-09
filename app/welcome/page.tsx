@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Camera, Dumbbell, TrendingUp, WifiOff } from 'lucide-react';
 import { account } from '@/lib/data';
+import { authMessage } from '@/lib/errors';
 import { Button } from '@/components/ui';
 import InstallApp from '@/components/InstallApp';
 
@@ -15,18 +16,27 @@ const POINTS = [
   { icon: WifiOff, text: 'Works with no signal at the gym' },
 ];
 
-function Welcome() {
+/** A failed Google sign-in comes back in the address. Its own boundary, so the rest of the page renders on the server. */
+function ReturnedProblem() {
+  const code = useSearchParams().get('auth_error');
+  return code ? (
+    <p role="alert" className="text-sm text-negative">
+      {authMessage(code)}
+    </p>
+  ) : null;
+}
+
+export default function WelcomePage() {
   const router = useRouter();
-  const authError = useSearchParams().get('auth_error');
   const [busy, setBusy] = useState<'try' | 'google' | null>(null);
-  const [error, setError] = useState<string | null>(authError);
+  const [error, setError] = useState<string | null>(null);
 
   async function tryIt() {
     setBusy('try');
     setError(null);
     const { error } = await account.tryWithoutAccount();
     if (error) {
-      setError(error.message.includes('rate limit') ? 'Too many new tries from this network. Wait a few minutes, or continue with Google.' : error.message);
+      setError(error);
       setBusy(null);
       return;
     }
@@ -38,7 +48,7 @@ function Welcome() {
     setError(null);
     const { error } = await account.signInWithGoogle();
     if (error) {
-      setError(error.message);
+      setError(error);
       setBusy(null);
     }
   }
@@ -71,10 +81,14 @@ function Welcome() {
           </svg>
           Continue with Google
         </Button>
-        {error && (
+        {error ? (
           <p role="alert" className="text-sm text-negative">
             {error}
           </p>
+        ) : (
+          <Suspense>
+            <ReturnedProblem />
+          </Suspense>
         )}
         <p className="pt-1 text-center text-xs text-muted-foreground">
           No email needed. Save with Google any time to keep your entries.{' '}
@@ -88,13 +102,5 @@ function Welcome() {
         <InstallApp />
       </div>
     </main>
-  );
-}
-
-export default function WelcomePage() {
-  return (
-    <Suspense>
-      <Welcome />
-    </Suspense>
   );
 }

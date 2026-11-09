@@ -1,5 +1,55 @@
 import { describe, expect, it } from 'vitest';
-import { geminiRequest, readEstimate } from './nutrition';
+import { geminiRequest, readEstimate, withRetry } from './nutrition';
+
+/** A stand-in for fetch that plays back replies in order; `null` is a dropped connection. */
+function replies(...statuses: (number | null)[]) {
+  const calls = { count: 0, waits: [] as number[] };
+  const attempt = async () => {
+    const status = statuses[calls.count++];
+    if (status === null) throw new TypeError('network');
+    return new Response(null, { status });
+  };
+  const wait = async (ms: number) => void calls.waits.push(ms);
+  return { calls, attempt, wait };
+}
+
+describe('withRetry', () => {
+  it('returns a good reply without waiting', async () => {
+    const { calls, attempt, wait } = replies(200);
+    expect((await withRetry(attempt, wait))?.status).toBe(200);
+    expect(calls).toEqual({ count: 1, waits: [] });
+  });
+
+  it('tries again after a 503 and uses the reply that worked', async () => {
+    const { calls, attempt, wait } = replies(503, 200);
+    expect((await withRetry(attempt, wait))?.status).toBe(200);
+    expect(calls).toEqual({ count: 2, waits: [500] });
+  });
+
+  it('tries again after a rate limit and a dropped connection, waiting longer each time', async () => {
+    const { calls, attempt, wait } = replies(429, null, 200);
+    expect((await withRetry(attempt, wait))?.status).toBe(200);
+    expect(calls).toEqual({ count: 3, waits: [500, 1500] });
+  });
+
+  it('does not repeat a request the provider rejected', async () => {
+    const { calls, attempt, wait } = replies(400);
+    expect((await withRetry(attempt, wait))?.status).toBe(400);
+    expect(calls.count).toBe(1);
+  });
+
+  it('gives up after three tries and returns the last reply', async () => {
+    const { calls, attempt, wait } = replies(503, 503, 502);
+    expect((await withRetry(attempt, wait))?.status).toBe(502);
+    expect(calls).toEqual({ count: 3, waits: [500, 1500] });
+  });
+
+  it('returns null when no try got a reply at all', async () => {
+    const { attempt, wait } = replies(null, null, null);
+    expect(await withRetry(attempt, wait)).toBeNull();
+  });
+});
+
 
 const reply = (text: string) => ({ candidates: [{ content: { parts: [{ text }] } }] });
 

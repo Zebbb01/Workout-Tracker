@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { Camera, Keyboard, Loader2, MessageSquareText, Sparkles } from 'lucide-react';
 import { useActions } from '@/lib/data';
+import { ESTIMATE_UNREACHABLE, estimateProblem } from '@/lib/errors';
 import { mealTypeAt } from '@/lib/calc';
 import type { MealSource, MealType } from '@/lib/types';
 import { Button, Field, NumberInput, Segmented, Sheet, inputClass, useToast } from './ui';
@@ -70,12 +71,16 @@ export function MealSheet({ open, onClose, day }: { open: boolean; onClose: () =
     setStage('review');
     try {
       const response = await fetch('/api/nutrition', kind === 'photo' ? { method: 'POST', body } : { method: 'POST', body, headers: { 'content-type': 'application/json' } });
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.error ?? 'The estimate did not work. Enter the numbers yourself.');
+      const data = await response.json().catch(() => null);
+      if (!response.ok) {
+        setProblem(estimateProblem(data));
+        setSource('manual');
+        return;
+      }
       setForm((f) => ({ ...f, name: data.name, calories: String(data.calories), protein_g: String(data.protein_g), carbs_g: String(data.carbs_g), fat_g: String(data.fat_g) }));
       setSource(kind);
-    } catch (error) {
-      setProblem(navigator.onLine ? (error as Error).message : "You're offline, so there's no estimate. Enter the numbers yourself.");
+    } catch {
+      setProblem(navigator.onLine ? ESTIMATE_UNREACHABLE : "You're offline, so there's no estimate. Enter the numbers yourself.");
       setSource('manual');
     } finally {
       setEstimating(false);

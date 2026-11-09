@@ -83,7 +83,7 @@ npm test             # Vitest: calculations, AI reply parsing, the sync engine
 npm run test:e2e     # Playwright against a production build (port 3100)
 npm run lint && npm run typecheck
 npm run check:ai -- "2 eggs and toast"   # one real Gemini call with your key
-npm run test:live                        # all 16 browser tests against the deployed site
+npm run test:live                        # the browser tests against the deployed site
 ```
 
 GitHub Actions runs everything on every push against a throwaway local

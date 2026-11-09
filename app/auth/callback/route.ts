@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { serverSupabase } from '@/lib/supabase/server';
+import { authProblem } from '@/lib/errors';
 
 /**
  * Where Google sign-in and "Save your data with Google" come back to. Swaps
@@ -18,6 +19,8 @@ export async function GET(request: NextRequest) {
     problem = error.message;
   }
   const back = new URL(next, origin);
-  back.searchParams.set('auth_error', problem ?? 'Sign-in was cancelled.');
+  // Only a short code travels in the address; the provider's own words stay in the log.
+  if (problem) console.error('Sign-in failed:', problem);
+  back.searchParams.set('auth_error', problem ? authProblem(problem) : 'cancelled');
   return NextResponse.redirect(back);
 }
