@@ -38,7 +38,7 @@ Real screenshots of the app, taken by [`screenshots/capture.ts`](screenshots/cap
 
 - **Android, or Chrome and Edge on a computer:** open the site and tap
   **Install app** (on Today or in More), or use the install icon in the address bar.
-- **iPhone and iPad:** open the site in Safari, tap **Share**, then **Add to Home Screen**.
+- **iPhone and iPad:** open the site in Safari, tap **•••** then **Share** (on older iOS, the Share icon in the toolbar), then **Add to Home Screen**. The app shows these steps too.
 
 It then opens in its own window, and pages you've opened before still open with no connection.
 

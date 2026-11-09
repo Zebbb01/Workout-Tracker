@@ -9,7 +9,7 @@ import { SyncBadge } from '@/components/Shell';
 import { WeightForm } from '@/components/WeightForm';
 import { FastingCard } from '@/components/Fasting';
 import { Sparkline } from '@/components/charts';
-import { installApp, useInstall } from '@/components/InstallApp';
+import { useInstallRow } from '@/components/InstallApp';
 
 const dayName = (day: string) => new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'short' });
 const weekday = (day: string) => new Date(`${day}T12:00:00`).toLocaleDateString(undefined, { weekday: 'long' });
@@ -23,7 +23,7 @@ export default function TodayPage() {
   const meals = useMeals();
   const weights = useWeights();
   const fasts = useFasts();
-  const install = useInstall();
+  const { row: installRow, steps: installSteps } = useInstallRow();
 
   if (!profile || !sets || !meals || !weights || !fasts) return <ScreenSkeleton />;
 
@@ -165,15 +165,15 @@ export default function TodayPage() {
         </div>
       </div>
 
-      {(user?.is_anonymous && hasEntries) || install ? (
+      {(user?.is_anonymous && hasEntries) || installRow ? (
         <List className="mt-4">
           {user?.is_anonymous && hasEntries && (
             <Row icon={<ShieldCheck size={18} />} label="Keep what you've logged" detail="Save it with Google" href="/more" tone="accent" />
           )}
-          {install === 'prompt' && <Row icon={<Download size={18} />} label="Install the app" detail="Its own window, works offline" onClick={installApp} />}
-          {install === 'ios' && <Row icon={<Download size={18} />} label="Add to Home Screen" detail="Tap Share, then Add to Home Screen" />}
+          {installRow && <Row icon={<Download size={18} />} {...installRow} />}
         </List>
       ) : null}
+      {installSteps}
     </>
   );
 }
