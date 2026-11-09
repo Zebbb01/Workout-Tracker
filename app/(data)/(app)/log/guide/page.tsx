@@ -6,7 +6,8 @@ import { Dumbbell, ExternalLink, Pause, Play, Search } from 'lucide-react';
 import { useActions, useCustomExercises, useData } from '@/lib/data';
 import { CATEGORIES } from '@/lib/exercises';
 import { AREAS, GEAR, GUIDE, searchGuide, videoUrl, type GuideEntry } from '@/lib/guide';
-import { BackLink, Button, ButtonLink, Chips, Empty, IconButton, List, PageHeader, Row, ScreenSkeleton, Select, Sheet, cx, inputClass } from '@/components/ui';
+import { BackLink, Button, ButtonLink, Chips, Empty, IconButton, List, PageHeader, Row, ScreenSkeleton, Sheet, cx, inputClass } from '@/components/ui';
+import { Select } from '@/components/select';
 
 const logHref = (e: { id: string; name: string }) => `/log?exercise=${encodeURIComponent(e.id)}&name=${encodeURIComponent(e.name)}`;
 
