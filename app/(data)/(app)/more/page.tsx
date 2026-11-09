@@ -3,7 +3,8 @@
 import { Suspense, useState, useSyncExternalStore } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Download, Github, Info, Loader2, Lock, LogOut, RefreshCw, ShieldCheck, Trash2, UserRound } from 'lucide-react';
-import { account, useActions, useData, useProfile, useWeights } from '@/lib/data';
+import { account } from '@/lib/account';
+import { useActions, useData, useProfile, useWeights } from '@/lib/data';
 import { computeTargets, weightSeries } from '@/lib/calc';
 import { authMessage } from '@/lib/errors';
 import type { Units } from '@/lib/types';

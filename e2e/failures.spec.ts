@@ -31,19 +31,15 @@ test('text put in the address never reaches the page', async ({ page }) => {
   await expectNoRawDetail(page, 'exchange external code');
 });
 
-test('a crash while the app starts offers a retry instead of a blank page', async ({ page }) => {
-  // DataProvider reads this while the root layout renders, so nothing below it can catch the throw.
-  await page.addInitScript(() => {
-    Object.defineProperty(Navigator.prototype, 'onLine', {
-      get() {
-        throw new TypeError('startup detail');
-      },
-    });
-  });
+test('losing the connection before sign-in code has loaded reads as plain words', async ({ page }) => {
   await page.goto('/welcome');
-  await expect(page.getByRole('heading', { name: 'Something went wrong' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
-  await expectNoRawDetail(page, 'startup detail');
+  await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeVisible();
+  // Everything the first tap would still have to fetch.
+  await page.route('**/_next/static/**', (route) => route.abort('failed'));
+  await page.getByRole('button', { name: 'Try it without an account' }).click();
+  await expect(page.getByText("Couldn't reach the sign-in service. Check your connection, then try again.")).toBeVisible();
+  await expectNoRawDetail(page, 'ChunkLoadError');
+  await expect(page.getByRole('button', { name: 'Try it without an account' })).toBeEnabled();
 });
 
 test.describe('signed in', () => {
@@ -87,6 +83,22 @@ test.describe('signed in', () => {
     await page.route('**/api/nutrition', (route) => route.fulfill({ status: 429, json: { error: message } }));
     await askForEstimate(page);
     await expect(page.getByText(message)).toBeVisible();
+  });
+
+  test('a crash in the data layer offers a retry instead of a blank page', async ({ page }) => {
+    await startTrial(page);
+    // DataProvider reads this while it renders, above every screen, so no tab can catch it.
+    await page.addInitScript(() => {
+      Object.defineProperty(Navigator.prototype, 'onLine', {
+        get() {
+          throw new TypeError('startup detail');
+        },
+      });
+    });
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Something went wrong' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
+    await expectNoRawDetail(page, 'startup detail');
   });
 
   test('a page that does not exist says so and links back to Today', async ({ page }) => {

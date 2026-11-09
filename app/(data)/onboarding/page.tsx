@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useActions, useData, useProfile } from '@/lib/data';
 import { cmToFeetInches, computeTargets, feetInchesToCm, fromKg, toKg, unitLabel } from '@/lib/calc';
 import type { Activity, Goal, Sex, Targets, Units } from '@/lib/types';
-import { Button, Field, NumberInput, ScreenSkeleton, Segmented, Select } from '@/components/ui';
+import { Button, Field, NumberInput, ScreenSkeleton, Segmented } from '@/components/ui';
+import { Select } from '@/components/select';
 
 const GOALS: { value: Goal; label: string; detail: string }[] = [
   { value: 'lose', label: 'Lose fat', detail: 'About 0.5 kg (1 lb) a week' },

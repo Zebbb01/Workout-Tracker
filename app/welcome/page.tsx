@@ -4,7 +4,6 @@ import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Camera, Dumbbell, TrendingUp, WifiOff } from 'lucide-react';
-import { account } from '@/lib/data';
 import { authMessage } from '@/lib/errors';
 import { Button } from '@/components/ui';
 import InstallApp from '@/components/InstallApp';
@@ -31,24 +30,22 @@ export default function WelcomePage() {
   const [busy, setBusy] = useState<'try' | 'google' | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  async function tryIt() {
-    setBusy('try');
+  // The account code loads on the first tap, so the page itself stays small.
+  async function signIn(way: 'try' | 'google') {
+    setBusy(way);
     setError(null);
-    const { error } = await account.tryWithoutAccount();
-    if (error) {
-      setError(error);
-      setBusy(null);
-      return;
-    }
-    router.replace('/onboarding');
-  }
-
-  async function google() {
-    setBusy('google');
-    setError(null);
-    const { error } = await account.signInWithGoogle();
-    if (error) {
-      setError(error);
+    try {
+      const { account } = await import('@/lib/account');
+      const { error } = await (way === 'try' ? account.tryWithoutAccount() : account.signInWithGoogle());
+      if (error) {
+        setError(error);
+        setBusy(null);
+      } else if (way === 'try') {
+        router.replace('/onboarding');
+      }
+    } catch (problem) {
+      console.error('Sign-in could not start:', problem);
+      setError(authMessage('network'));
       setBusy(null);
     }
   }
@@ -69,10 +66,10 @@ export default function WelcomePage() {
       </ul>
 
       <div className="mt-8 space-y-2.5">
-        <Button size="lg" block onClick={tryIt} busy={busy === 'try'} disabled={busy !== null}>
+        <Button size="lg" block onClick={() => signIn('try')} busy={busy === 'try'} disabled={busy !== null}>
           Try it without an account
         </Button>
-        <Button size="lg" block variant="outline" onClick={google} busy={busy === 'google'} disabled={busy !== null}>
+        <Button size="lg" block variant="outline" onClick={() => signIn('google')} busy={busy === 'google'} disabled={busy !== null}>
           <svg aria-hidden width="18" height="18" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.76h3.56c2.08-1.92 3.28-4.74 3.28-8.09Z" />
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.56-2.76c-.98.66-2.24 1.06-3.72 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />

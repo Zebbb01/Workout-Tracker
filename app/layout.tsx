@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Barlow, Barlow_Condensed } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
-import { DataProvider } from '@/lib/data';
 import { RegisterServiceWorker } from '@/components/RegisterServiceWorker';
 
 // Barlow for text; its condensed cut for titles and the big numbers.
@@ -34,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: theme }} />
       </head>
       <body className="min-h-dvh font-sans">
-        <DataProvider>{children}</DataProvider>
+        {children}
         <RegisterServiceWorker />
         <Analytics />
       </body>
