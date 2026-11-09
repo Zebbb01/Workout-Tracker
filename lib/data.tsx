@@ -6,6 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import type { User } from '@supabase/supabase-js';
 import { LocalDB } from './db';
 import { pendingCount, syncAll } from './sync';
+import { authMessage } from './errors';
 import { supabase } from './supabase/client';
 import { localDay } from './calc';
 import type { Fast, Meal, Profile, WeightEntry, WorkoutSet } from './types';
@@ -81,6 +82,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       } while (again.current);
       setSyncError(null);
     } catch (error) {
+      console.error('Sync failed:', error);
       setSyncError(error instanceof Error ? error.message : 'Sync failed');
     } finally {
       running.current = false;
@@ -247,11 +249,23 @@ export function useActions() {
 
 const callback = (next: string) => `${location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
 
+/** Every sign-in call answers with a sentence for the screen, or null. */
+async function explained(call: PromiseLike<{ error: { message: string } | null }>) {
+  try {
+    const { error } = await call;
+    if (error) console.error('Sign-in failed:', error.message);
+    return { error: error ? authMessage(error.message) : null };
+  } catch (error) {
+    console.error('Sign-in failed:', error);
+    return { error: authMessage(String(error)) };
+  }
+}
+
 export const account = {
-  tryWithoutAccount: () => supabase().auth.signInAnonymously(),
-  signInWithGoogle: () => supabase().auth.signInWithOAuth({ provider: 'google', options: { redirectTo: callback('/') } }),
+  tryWithoutAccount: () => explained(supabase().auth.signInAnonymously()),
+  signInWithGoogle: () => explained(supabase().auth.signInWithOAuth({ provider: 'google', options: { redirectTo: callback('/') } })),
   /** Turns a "try it" account into a Google one. Same user id, so every entry stays. */
-  saveWithGoogle: () => supabase().auth.linkIdentity({ provider: 'google', options: { redirectTo: callback('/more') } }),
+  saveWithGoogle: () => explained(supabase().auth.linkIdentity({ provider: 'google', options: { redirectTo: callback('/more') } })),
   async signOut(db: LocalDB | null) {
     await supabase().auth.signOut();
     await db?.delete();

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { serverSupabase } from '@/lib/supabase/server';
-import { ENDPOINT, IMAGE_TYPES, MAX_IMAGE_BYTES, geminiRequest, readEstimate, type EstimateInput } from '@/lib/nutrition';
+import { ENDPOINT, IMAGE_TYPES, MAX_IMAGE_BYTES, geminiRequest, readEstimate, withRetry, type EstimateInput } from '@/lib/nutrition';
 
-export const maxDuration = 30;
+// Three tries of up to 12 seconds, plus the waits between them.
+export const maxDuration = 45;
 
 const fail = (status: number, error: string) => NextResponse.json({ error }, { status });
 
@@ -36,14 +37,17 @@ export async function POST(request: Request) {
   if (error) return fail(500, 'Something went wrong. Enter the numbers yourself for now.');
   if (!allowed) return fail(429, "You've used today's estimates. Enter the numbers yourself, or try again tomorrow.");
 
-  const response = await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
-    body: JSON.stringify(geminiRequest(input)),
-    signal: AbortSignal.timeout(25_000),
-  }).catch(() => null);
+  const payload = JSON.stringify(geminiRequest(input));
+  const response = await withRetry(() =>
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+      body: payload,
+      signal: AbortSignal.timeout(12_000),
+    }),
+  );
   if (!response?.ok) {
-    console.error('Gemini estimate failed with status', response?.status ?? 'network error');
+    console.error('Gemini estimate failed:', response?.status ?? 'no reply', (await response?.text().catch(() => ''))?.slice(0, 300));
     return fail(502, 'The estimate service is busy. Try again in a minute, or enter the numbers yourself.');
   }
 
