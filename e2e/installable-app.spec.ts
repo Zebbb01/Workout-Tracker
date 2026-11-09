@@ -54,6 +54,17 @@ test('Chrome offers to install Body Tracker, and the Install app button appears'
   }
 });
 
+test('drawings saved by an older version are thrown away, so new art reaches installed apps', async ({ page }) => {
+  await page.goto('/welcome');
+  await page.evaluate(async () => {
+    const stale = await caches.open('drawings-v1');
+    await stale.put('/exercises/squat-1.webp', new Response('old drawing'));
+    await navigator.serviceWorker.register('/sw.js');
+    await navigator.serviceWorker.ready;
+  });
+  await expect.poll(() => page.evaluate(() => caches.has('drawings-v1'))).toBe(false);
+});
+
 test('a page opened once still opens offline', async ({ page, context }) => {
   await withServiceWorker(page);
   await page.reload(); // the worker now controls the page and keeps it
