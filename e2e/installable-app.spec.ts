@@ -142,7 +142,7 @@ test.describe('on an iPhone inside Messenger', () => {
     expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(baseURL);
   });
 
-  test('if copying is refused, it says so and the address is there to type', async ({ page }) => {
+  test('if copying is refused, it says so and the address is there to type', async ({ page, baseURL }) => {
     await page.addInitScript(() => {
       Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => Promise.reject(new Error('NotAllowedError: raw detail')) } });
     });
@@ -152,6 +152,6 @@ test.describe('on an iPhone inside Messenger', () => {
     await sheet.getByRole('button', { name: 'Copy link' }).click();
     await expect(sheet.getByRole('button', { name: "Couldn't copy. Type the address above." })).toBeVisible();
     await expect(sheet).not.toContainText('NotAllowedError');
-    await expect(sheet.getByText('localhost')).toBeVisible();
+    await expect(sheet.getByText(new URL(baseURL!).host)).toBeVisible();
   });
 });
