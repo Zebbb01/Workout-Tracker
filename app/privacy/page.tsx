@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { BackLink } from '@/components/ui';
 
 export const metadata: Metadata = { title: 'Privacy' };
 
@@ -8,11 +7,9 @@ export const metadata: Metadata = { title: 'Privacy' };
 export default function PrivacyPage() {
   return (
     <main className="mx-auto max-w-2xl px-4 pb-16 pt-4">
-      <Link href="/" className="-ml-1 inline-flex h-11 items-center gap-1.5 px-1 text-sm font-medium text-muted-foreground hover:text-foreground">
-        <ArrowLeft size={16} aria-hidden /> Body Tracker
-      </Link>
+      <BackLink href="/">Body Tracker</BackLink>
       <h1 className="font-display mt-3 text-3xl font-bold">Privacy</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Updated 4 November 2026</p>
+      <p className="mt-1 text-sm text-muted-foreground">Updated 9 November 2026</p>
 
       <Part title="What is stored">
         <p>
@@ -53,6 +50,20 @@ export default function PrivacyPage() {
         <p>
           Body Tracker is a free portfolio project, provided as is, without warranty. Calorie and macro estimates are
           approximations, not medical or nutrition advice.
+        </p>
+      </Part>
+
+      <Part title="Credits">
+        <p>
+          Exercise drawings and many of the step-by-step instructions are adapted from{' '}
+          <a href="https://github.com/everkinetic/data" className="font-medium text-accent underline underline-offset-4">
+            Everkinetic
+          </a>{' '}
+          by Greg Priday, under{' '}
+          <a href="https://creativecommons.org/licenses/by-sa/4.0/" className="font-medium text-accent underline underline-offset-4">
+            CC BY-SA 4.0
+          </a>
+          . The drawings were cropped and lined up, and the instructions shortened. &ldquo;Watch a video&rdquo; opens a YouTube search.
         </p>
       </Part>
 

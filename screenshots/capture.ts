@@ -187,6 +187,15 @@ test('capture the README and portfolio screenshots', async ({ browser, baseURL }
     await settle(page, '/more', 'More');
     await saveWebp(page, `more-${size}`);
 
+    await settle(page, '/log/guide', 'Exercises');
+    await saveWebp(page, `guide-${size}`);
+
+    await page.getByRole('button', { name: /^Bench press/ }).click();
+    // Paused, both positions show at once, which suits a still picture.
+    await page.getByRole('dialog').getByRole('button', { name: 'Pause and show both positions' }).click();
+    await page.waitForTimeout(600);
+    await saveWebp(page, `guide-exercise-${size}`);
+
     if (existsSync(MEAL_PHOTO)) {
       await settle(page, '/meals', 'Meals');
       await page.getByRole('button', { name: 'Add meal' }).click();
