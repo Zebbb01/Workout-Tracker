@@ -31,6 +31,8 @@ for (const colorScheme of ['light', 'dark'] as const) {
       await startTrial(page, { skipSetup: false });
       await expectNoViolations(page, 'onboarding');
       await page.getByRole('button', { name: 'Skip setup' }).click();
+      // Leaving before the skip has saved would land back on setup.
+      await expect(page.getByRole('heading', { name: 'Today', level: 1 })).toBeVisible({ timeout: 20_000 });
 
       for (const [path, heading] of [['/', 'Today'], ['/log', 'Log'], ['/meals', 'Meals'], ['/progress', 'Progress'], ['/more', 'More']]) {
         await page.goto(path);

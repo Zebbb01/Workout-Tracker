@@ -6,10 +6,11 @@ no signal at the gym, and see how you're trending.
 **Live:** https://body-tracker-iota.vercel.app · tap **Try it without an account**, no email needed.
 
 <p>
-  <img src="docs/screenshots/today-phone.webp" width="200" alt="Today on a phone: 1,250 kcal left, protein, carbs and fat, five sets logged and the weight trend">
-  <img src="docs/screenshots/log-phone.webp" width="200" alt="Log on a phone: recent exercises, weight and reps steppers prefilled from the last set, and Add set">
-  <img src="docs/screenshots/meals-phone.webp" width="200" alt="Meals on a phone: 1,250 kcal left of a 2,290 goal, macros, the fasting timer and the day's meals">
-  <img src="docs/screenshots/progress-phone.webp" width="200" alt="Progress on a phone: weight over 90 days and the best estimated one-rep max for overhead press">
+  <img src="docs/screenshots/today-phone.webp" width="160" alt="Today on a phone: 1,150 kcal left, protein, carbs and fat, five sets logged and the weight trend">
+  <img src="docs/screenshots/log-phone.webp" width="160" alt="Log on a phone: recent exercises, weight and reps steppers prefilled from the last set, and Add set">
+  <img src="docs/screenshots/guide-exercise-phone.webp" width="160" alt="The exercise guide on a phone: bench press drawn in its two positions, the muscles it works and four short steps">
+  <img src="docs/screenshots/meals-phone.webp" width="160" alt="Meals on a phone: 1,150 kcal left of a 2,290 goal, macros, the fasting timer and the day's meals">
+  <img src="docs/screenshots/progress-phone.webp" width="160" alt="Progress on a phone: weight over 90 days and the best estimated one-rep max for overhead press">
 </p>
 
 ![Today on a desktop, with the sidebar, food, workout and weight cards](docs/screenshots/today-desktop.webp)
