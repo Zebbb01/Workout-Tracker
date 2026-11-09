@@ -17,12 +17,12 @@
  * Never delete it: a browser whose update check gets a 404 keeps the old
  * worker. proxy.ts must keep letting /sw.js through for the same reason.
  */
-const VERSION = 'v3';
+const VERSION = 'v4';
 const CACHE = `shell-${VERSION}`;
 const OFFLINE = '/offline.html';
 const PRECACHE = [OFFLINE, '/icon-192.png', '/icon-512.png'];
 const MAX_ENTRIES = 200;
-const DRAWINGS = 'drawings-v1';
+const DRAWINGS = 'drawings-v2'; // the file names never change, so bump this whenever the art is re-imported
 const MAX_DRAWINGS = 800; // every exercise's two frames and thumbnail
 
 self.addEventListener('install', (event) => {
@@ -36,7 +36,7 @@ self.addEventListener('activate', (event) => {
       self.registration.navigationPreload?.enable(),
       caches
         .keys()
-        .then((keys) => Promise.all(keys.filter((k) => k.startsWith('shell-') && k !== CACHE).map((k) => caches.delete(k)))),
+        .then((keys) => Promise.all(keys.filter((k) => /^(shell|drawings)-/.test(k) && k !== CACHE && k !== DRAWINGS).map((k) => caches.delete(k)))),
     ]).then(() => self.clients.claim())
   );
 });
