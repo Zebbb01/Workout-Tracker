@@ -22,6 +22,9 @@ Real screenshots of the app, taken by [`screenshots/capture.ts`](screenshots/cap
   sets, your weight trend and a running fast.
 - **Log** a set in two or three taps: the next set starts as a copy of the
   last one, and **Repeat** logs your last workout again.
+- **Exercise guide**: forgot how a move goes? Search 254 exercises by name, body
+  part or plain words like "arms" or "no equipment". Each one shows the movement
+  drawn in two positions, what it works and short steps, and logs in one tap.
 - **Meals**: photograph a meal or describe it, and AI (Google's Gemini) fills
   in the numbers. Nothing is saved until you check them and tap Save.
 - **Progress**: weight, strength (best estimated one-rep max) and weekly
@@ -111,6 +114,15 @@ practices and SEO.
   page), and Google may use free-tier inputs to improve its products, which
   the app says next to the photo button. Each person gets 25 estimates a day.
 - **GitHub Actions** minutes are free for public repositories.
+
+## Credits
+
+Exercise drawings and many of the instructions are adapted from
+[Everkinetic](https://github.com/everkinetic/data) by Greg Priday, under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The drawings
+were cropped and lined up and the text shortened by
+[`scripts/import-exercises.mjs`](scripts/import-exercises.mjs); those adapted
+files stay under the same licence.
 
 ## Workflow
 

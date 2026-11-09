@@ -37,6 +37,14 @@ for (const colorScheme of ['light', 'dark'] as const) {
         await expect(page.getByRole('heading', { name: heading, level: 1 })).toBeVisible();
         await expectNoViolations(page, heading);
       }
+
+      await page.goto('/log/guide');
+      await expect(page.getByRole('heading', { name: 'Exercises', level: 1 })).toBeVisible();
+      await expectNoViolations(page, 'Exercises');
+
+      await page.goto('/log/guide?e=bench-press');
+      await expect(page.getByRole('dialog').getByRole('heading', { name: 'Bench press' })).toBeVisible();
+      await expectNoViolations(page, 'An exercise');
     });
   });
 }

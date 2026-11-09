@@ -28,6 +28,7 @@
   --protein: 213 68% 50%;
   --carbs: 40 100% 46%;
   --fat: 339 60% 58%;
+  --ink: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -48,6 +49,7 @@
     --protein: 213 77% 56%;
     --carbs: 40 100% 39%;
     --fat: 339 60% 58%;
+    --ink: invert(1);
   }
 }
 
@@ -68,6 +70,7 @@
   --protein: 213 77% 56%;
   --carbs: 40 100% 39%;
   --fat: 339 60% 58%;
+  --ink: invert(1);
 }
 
 @layer base {
@@ -88,6 +91,66 @@
   /* A small label over a group, the way a printed form would set it. */
   .eyebrow {
     @apply text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground;
+  }
+
+  /* Exercise drawings are black ink on transparent; the dark themes flip them to light. */
+  .ink {
+    filter: var(--ink);
+  }
+
+  /* Two lined-up drawings shown in turn, with a quick fade, so they read as one movement. */
+  .flipbook {
+    display: grid;
+  }
+
+  .flipbook > * {
+    grid-area: 1 / 1;
+    animation: flip-frame 2.6s infinite;
+  }
+
+  .flipbook > :last-child {
+    animation-delay: -1.3s;
+  }
+
+  .flipbook-still {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .flipbook-still > *,
+  .flipbook-still > :last-child {
+    grid-area: auto;
+    animation: none;
+  }
+}
+
+@keyframes flip-frame {
+  0%,
+  46% {
+    opacity: 1;
+  }
+
+  50%,
+  96% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Nothing moves on its own for people who asked for that: both positions, side by side. */
+@media (prefers-reduced-motion: reduce) {
+  .flipbook {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .flipbook > *,
+  .flipbook > :last-child {
+    grid-area: auto;
+    animation: none;
   }
 }
 

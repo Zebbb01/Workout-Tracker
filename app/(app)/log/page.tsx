@@ -1,13 +1,14 @@
 'use client';
 
 import { Suspense, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Repeat, Search, Trash2 } from 'lucide-react';
+import { BookOpen, Plus, Repeat, Trash2 } from 'lucide-react';
 import { useActions, useCustomExercises, useProfile, useSets } from '@/lib/data';
 import { byExercise, formatWeight, fromKg, lastSetOf, lastWorkout, localDay, recentExercises, toKg, unitLabel } from '@/lib/calc';
-import { CATEGORIES, EXERCISES } from '@/lib/exercises';
+import { EXERCISES } from '@/lib/exercises';
 import type { Units, WorkoutSet } from '@/lib/types';
-import { Button, Empty, IconButton, PageHeader, Panel, ScreenSkeleton, Select, Sheet, Stepper, cx, inputClass, useToast } from '@/components/ui';
+import { Button, ButtonLink, Chips, Empty, IconButton, PageHeader, Panel, ScreenSkeleton, Sheet, Stepper, useToast } from '@/components/ui';
 import { SyncBadge } from '@/components/Shell';
 
 const STARTERS = ['bench-press', 'squat', 'deadlift', 'overhead-press', 'pull-up', 'barbell-row'];
@@ -25,13 +26,15 @@ function LogScreen() {
 
   // What the person has picked or changed; until then, the last exercise they did.
   const [draft, setDraft] = useState<{ id: string; weight: number; reps: number } | null>(null);
-  const [picking, setPicking] = useState(false);
   const [repeating, setRepeating] = useState(params.get('repeat') === '1');
   const [saving, setSaving] = useState(false);
 
   const units: Units = profile?.units ?? 'metric';
   const allExercises = useMemo(() => [...EXERCISES, ...(custom ?? []).map((e) => ({ id: e.id, name: e.name, category: e.category }))], [custom]);
-  const nameOf = (id: string) => allExercises.find((e) => e.id === id)?.name ?? sets?.find((s) => s.exercise_id === id)?.exercise_name ?? id;
+  // Sent here from the exercise guide.
+  const picked = params.get('exercise')?.slice(0, 60) ?? null;
+  const pickedName = params.get('name')?.slice(0, 60) ?? null;
+  const nameOf = (id: string) => allExercises.find((e) => e.id === id)?.name ?? sets?.find((s) => s.exercise_id === id)?.exercise_name ?? (id === picked && pickedName ? pickedName : id);
 
   const recent = useMemo(() => (sets ? recentExercises(sets) : []), [sets]);
   // Recent exercises first, then the common lifts, so one set logged never empties the row.
@@ -48,7 +51,8 @@ function LogScreen() {
       reps: previous ? previous.reps : 8,
     };
   };
-  const current = draft ?? (recent[0] ? startFor(recent[0].id) : null);
+  const current = draft ?? (picked ? startFor(picked) : recent[0] ? startFor(recent[0].id) : null);
+  const inGuide = current !== null && !custom.some((e) => e.id === current.id);
   const previous = current ? lastSetOf(sets, current.id) : null;
   const choose = (id: string) => setDraft(startFor(id));
 
@@ -104,36 +108,29 @@ function LogScreen() {
         <Panel aria-label="Add a set" className="p-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="eyebrow">Exercise</h2>
-            <Button variant="ghost" size="sm" onClick={() => setPicking(true)}>
-              <Search size={15} aria-hidden /> All exercises
-            </Button>
+            <ButtonLink href="/log/guide" variant="ghost" size="sm">
+              <BookOpen size={15} aria-hidden className="mr-1.5" /> Exercise guide
+            </ButtonLink>
           </div>
           {/* One scrolling row on phones keeps the steppers within thumb reach. */}
-          <div className="-mx-4 mt-1 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0" role="radiogroup" aria-label="Exercise">
-            {shownChips.map((e) => (
-              <button
-                key={e.id}
-                type="button"
-                role="radio"
-                aria-checked={current?.id === e.id}
-                onClick={() => choose(e.id)}
-                className={cx(
-                  'h-11 shrink-0 whitespace-nowrap rounded-full px-4 text-sm font-medium transition active:scale-[0.97] lg:h-9',
-                  current?.id === e.id ? 'bg-foreground text-background' : 'bg-muted text-foreground hover:bg-muted/70',
-                )}
-              >
-                {e.name}
-              </button>
-            ))}
+          <div className="mt-1">
+            <Chips label="Exercise" options={shownChips.map((e) => ({ value: e.id, label: e.name }))} value={current?.id} onChange={choose} />
           </div>
 
           {current ? (
             <div className="mt-4 space-y-4">
-              <div>
-                <p className="font-display text-xl font-bold">{nameOf(current.id)}</p>
-                <p className="tabular text-sm text-muted-foreground">
-                  {previous ? `Last time: ${formatWeight(previous.weight_kg, units)} × ${previous.reps}` : 'First time logging this one'}
-                </p>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="font-display text-xl font-bold">{nameOf(current.id)}</p>
+                  <p className="tabular text-sm text-muted-foreground">
+                    {previous ? `Last time: ${formatWeight(previous.weight_kg, units)} × ${previous.reps}` : 'First time logging this one'}
+                  </p>
+                </div>
+                {inGuide && (
+                  <Link href={`/log/guide?e=${encodeURIComponent(current.id)}`} className="shrink-0 py-1 text-sm font-medium text-accent underline-offset-4 hover:underline">
+                    How to do it
+                  </Link>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <Stepper label="Weight" unit={unitLabel(units)} value={current.weight} onChange={(weight) => setDraft({ ...current, weight })} step={units === 'metric' ? 2.5 : 5} max={units === 'metric' ? 999 : 2200} />
@@ -198,66 +195,7 @@ function LogScreen() {
         )}
       </Sheet>
 
-      <ExercisePicker open={picking} onClose={() => setPicking(false)} exercises={allExercises} onPick={(id) => { choose(id); setPicking(false); }} />
     </>
-  );
-}
-
-function ExercisePicker({ open, onClose, exercises, onPick }: {
-  open: boolean; onClose: () => void; exercises: { id: string; name: string; category: string }[]; onPick: (id: string) => void;
-}) {
-  const actions = useActions();
-  const [query, setQuery] = useState('');
-  const [category, setCategory] = useState('Other');
-  const q = query.trim().toLowerCase();
-  const matches = exercises.filter((e) => e.name.toLowerCase().includes(q));
-  const exact = exercises.some((e) => e.name.toLowerCase() === q);
-  const groups = CATEGORIES.map((c) => ({ category: c, items: matches.filter((e) => e.category === c) })).filter((g) => g.items.length);
-
-  return (
-    <Sheet open={open} onClose={onClose} title="Choose an exercise">
-      <label className="relative block">
-        <span className="sr-only">Search exercises</span>
-        <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" aria-hidden />
-        <input className={cx(inputClass, 'pl-9')} value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search" autoComplete="off" />
-      </label>
-      <div className="mt-3 max-h-[50dvh] overflow-y-auto">
-        {groups.map((g) => (
-          <div key={g.category} className="mb-2">
-            <h3 className="eyebrow px-1 py-1">{g.category}</h3>
-            <ul>
-              {g.items.map((e) => (
-                <li key={e.id}>
-                  <button type="button" onClick={() => onPick(e.id)} className="flex min-h-11 w-full items-center rounded-lg px-2 text-left hover:bg-muted">
-                    {e.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-      {q && !exact && (
-        <form
-          className="mt-3 space-y-3 rounded-xl bg-muted/60 p-3"
-          onSubmit={async (e) => {
-            e.preventDefault();
-            const row = await actions.addExercise(query, category);
-            setQuery('');
-            onPick(row.id);
-          }}
-        >
-          <p className="text-sm">
-            New exercise: <strong>{query.trim()}</strong>
-          </p>
-          <Select label="Body part" value={category} onChange={setCategory} options={CATEGORIES.map((c) => ({ value: c, label: c }))} />
-          <Button type="submit" block>
-            Add exercise
-          </Button>
-        </form>
-      )}
-      {!groups.length && !q && <Empty title="No exercises" />}
-    </Sheet>
   );
 }
 
