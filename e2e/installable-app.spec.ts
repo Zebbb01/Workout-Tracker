@@ -8,6 +8,7 @@
  * so these tests register it the way the deployed site does.
  */
 import { test, expect, chromium, type Page } from '@playwright/test';
+import { needsSupabase, startTrial } from './helpers';
 
 async function withServiceWorker(page: Page) {
   await page.goto('/welcome');
@@ -81,4 +82,76 @@ test('a page never opened says it is offline instead of a browser error', async 
   await expect(page.getByRole('heading', { name: "You're offline" })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
   await context.setOffline(false);
+});
+
+const IPHONE = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko)';
+
+test.describe('on an iPhone in Safari', () => {
+  test.use({ userAgent: `${IPHONE} Version/18.5 Mobile/15E148 Safari/604.1` });
+
+  test('Add to Home Screen opens the steps instead of doing nothing', async ({ page }) => {
+    await page.goto('/welcome');
+    await page.getByRole('button', { name: 'Add to Home Screen' }).click();
+
+    const sheet = page.getByRole('dialog');
+    await expect(sheet.getByRole('heading', { name: 'Add to Home Screen' })).toBeVisible();
+    await expect(sheet.getByRole('listitem')).toHaveCount(4);
+    await expect(sheet.getByRole('listitem').first()).toContainText('next to the address bar');
+    await expect(sheet.getByText('No ••• button?')).toBeVisible();
+
+    await sheet.getByRole('button', { name: 'Close' }).click();
+    await expect(sheet).toBeHidden();
+  });
+
+  test('the rows on Today and More open the same steps', async ({ page }) => {
+    test.skip(needsSupabase, 'needs a Supabase with anonymous sign-ins (CI starts one)');
+    await startTrial(page);
+    await page.getByRole('button', { name: /^Add to Home Screen/ }).click();
+    await expect(page.getByRole('dialog').getByRole('listitem')).toHaveCount(4);
+    await page.getByRole('dialog').getByRole('button', { name: 'Close' }).click();
+
+    await page.getByRole('link', { name: 'More' }).click();
+    await page.getByRole('button', { name: /^Add to Home Screen/ }).click();
+    await expect(page.getByRole('dialog').getByRole('listitem')).toHaveCount(4);
+  });
+});
+
+test.describe('on an iPhone in Chrome', () => {
+  test.use({ userAgent: `${IPHONE} CriOS/131.0.6778.73 Mobile/15E148 Safari/604.1` });
+
+  test('the steps point at the browser it is really in', async ({ page }) => {
+    await page.goto('/welcome');
+    await page.getByRole('button', { name: 'Add to Home Screen' }).click();
+    const sheet = page.getByRole('dialog');
+    await expect(sheet.getByRole('listitem').first()).toContainText("your browser's");
+    await expect(sheet.getByText('•••')).toBeHidden();
+  });
+});
+
+test.describe('on an iPhone inside Messenger', () => {
+  test.use({ userAgent: `${IPHONE} Mobile/15E148 [FBAN/MessengerForiOS;FBAV/483.0;FBBV/1]`, permissions: ['clipboard-read', 'clipboard-write'] });
+
+  test('it explains the built-in browser cannot do this and copies the link for Safari', async ({ page, baseURL }) => {
+    await page.goto('/welcome');
+    await page.getByRole('button', { name: 'Add to Home Screen' }).click();
+    const sheet = page.getByRole('dialog');
+    await expect(sheet.getByText("This app's built-in browser can't add to the Home Screen.")).toBeVisible();
+
+    await sheet.getByRole('button', { name: 'Copy link' }).click();
+    await expect(sheet.getByRole('button', { name: 'Link copied' })).toBeVisible();
+    expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(baseURL);
+  });
+
+  test('if copying is refused, it says so and the address is there to type', async ({ page }) => {
+    await page.addInitScript(() => {
+      Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => Promise.reject(new Error('NotAllowedError: raw detail')) } });
+    });
+    await page.goto('/welcome');
+    await page.getByRole('button', { name: 'Add to Home Screen' }).click();
+    const sheet = page.getByRole('dialog');
+    await sheet.getByRole('button', { name: 'Copy link' }).click();
+    await expect(sheet.getByRole('button', { name: "Couldn't copy. Type the address above." })).toBeVisible();
+    await expect(sheet).not.toContainText('NotAllowedError');
+    await expect(sheet.getByText('localhost')).toBeVisible();
+  });
 });
